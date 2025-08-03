@@ -94,7 +94,7 @@ This module focuses on creating the robot's digital twin. We will build the robo
 
 This module focuses on creating a virtual world and placing the robot model within it.
 
-- [ ] **Task 2.1:** **Create Simulation and Bringup Packages**
+- [x] **Task 2.1:** **Create Simulation and Bringup Packages**
     - **Dependencies:** 1.4
     - **Context:** Create the dedicated packages for simulation assets and top-level launch files.
     - **Sub-Task 2.1.1:** In `mower_ws/src`, create `mower_simulation` (`ament_cmake`).
@@ -102,13 +102,13 @@ This module focuses on creating a virtual world and placing the robot model with
     - **Sub-Task 2.1.3:** Inside `mower_simulation`, create `worlds/` and `launch/` directories.
     - **Sub-Task 2.1.4:** Commit the new packages. (`git commit -m "feat: Create simulation and bringup packages"`)
 
-- [ ] **Task 2.2:** **Create Gazebo World**
+- [x] **Task 2.2:** **Create Gazebo World**
     - **Dependencies:** 2.1
     - **Context:** Define the virtual environment for the robot.
     - **Sub-Task 2.2.1:** In `mower_simulation/worlds`, create a file `lawn.world`.
     - **Sub-Task 2.2.2:** In this file, define a basic world including a ground plane, a sun for lighting, and the default physics engine. Add a simple static box or wall as an obstacle.
 
-- [ ] **Task 2.3:** **Create Simulation Launch File**
+- [x] **Task 2.3:** **Create Simulation Launch File**
     - **Dependencies:** 2.2
     - **Context:** Create a launch file that starts Gazebo and spawns the robot model.
     - **Sub-Task 2.3.1:** In `mower_bringup/launch`, create `sim.launch.py`.
@@ -119,7 +119,7 @@ This module focuses on creating a virtual world and placing the robot model with
         - Use the `spawn_entity.py` script from `gazebo_ros` to spawn the robot model (read from the `robot_description` topic) into the simulation.
     - **Sub-Task 2.3.3:** Commit the Gazebo world and launch file. (`git commit -m "feat(simulation): Create Gazebo world and bringup launch file"`)
 
-- [ ] **MANDATORY TEST 2.A: Spawn Robot in Gazebo**
+- [x] **MANDATORY TEST 2.A: Spawn Robot in Gazebo**
     - **Context:** This is the first full integration test. It verifies that the model is valid for simulation and the launch files are correct. **This test cannot be skipped.**
     - **Procedure:**
         1. Build and source the workspace.
