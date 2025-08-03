@@ -52,4 +52,56 @@
     <origin xyz="0.0 0.0 0.11" rpy="0 0 0"/>
   </joint>
 
+  <!-- Left Drive Wheel -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <!-- Wheel dimensions: Ø19.5cm, W:3.6cm -->
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Left wheel joint -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <!-- Position: At (0, 23cm, 9.75cm) -->
+    <origin xyz="0.0 0.23 0.0975" rpy="-1.5707963 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Right Drive Wheel -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <!-- Wheel dimensions: Ø19.5cm, W:3.6cm -->
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Right wheel joint -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <!-- Position: At (0, -23cm, 9.75cm) -->
+    <origin xyz="0.0 -0.23 0.0975" rpy="1.5707963 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
 </robot>

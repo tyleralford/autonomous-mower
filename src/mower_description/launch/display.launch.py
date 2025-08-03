@@ -1,9 +1,10 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     # Get the package share directory
@@ -19,6 +20,10 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     
     return LaunchDescription([
+        # Fix snap conflicts
+        SetEnvironmentVariable('GTK_PATH', ''),
+        SetEnvironmentVariable('GIO_MODULE_DIR', ''),
+        
         # Declare launch arguments
         DeclareLaunchArgument(
             'model',
@@ -45,7 +50,9 @@ def generate_launch_description():
             name='robot_state_publisher',
             output='screen',
             parameters=[{
-                'robot_description': Command(['xacro ', model]),
+                'robot_description': ParameterValue(
+                    Command(['xacro ', model]), value_type=str
+                ),
                 'use_sim_time': use_sim_time
             }]
         ),

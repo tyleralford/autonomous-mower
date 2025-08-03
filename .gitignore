@@ -33,3 +33,18 @@ core.*
 
 # RViz configuration files (we'll keep specific ones)
 *.rviz.backup
+
+# Temporary files
+*.tmp
+*.temp
+# Coverage reports
+.coverage
+.coverage.*
+
+# Additional files to ignore
+*.orig
+*.rej
+*.diff
+*.patch
+frames*.gv
+framges*.pdf
