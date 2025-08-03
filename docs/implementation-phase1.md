@@ -82,7 +82,7 @@ This module focuses on creating the robot's digital twin. We will build the robo
     - **Sub-Task 1.4.3:** Calculate and specify the `<inertia>` tensor for each link. Assume simple uniform geometry (e.g., box inertia, cylinder inertia) for these calculations.
     - **Sub-Task 1.4.4:** Commit the inertial properties. (`git commit -m "feat(description): Add mass and inertia properties to all links"`)
 
-- [ ] **MANDATORY TEST 1.D: Verify Inertial Properties**
+- [x] **MANDATORY TEST 1.D: Verify Inertial Properties**
     - **Context:** Ensure the robot model is valid with all inertial properties and ready for physics simulation. **This test cannot be skipped.**
     - **Procedure:**
         1. Build the workspace with `colcon build`.
