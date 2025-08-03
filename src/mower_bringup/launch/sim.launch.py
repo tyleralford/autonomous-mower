@@ -90,38 +90,43 @@ def generate_launch_description():
             }.items()
         ),
         
-        # Controller Manager (loads and manages all controllers)
-        Node(
-            package='controller_manager',
-            executable='ros2_control_node',
-            parameters=[controller_config],
-            output='both',
-            remappings=[
-                ('~/robot_description', '/robot_description'),
-            ]
-        ),
+        # Note: Controller manager is provided by the Gazebo gz_ros2_control plugin
+        # No need for a standalone ros2_control_node
         
         # Joint State Broadcaster (replaces joint_state_publisher_gui)
+        # Delay spawning to ensure Gazebo controller manager is ready
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['joint_state_broadcaster'],
+            arguments=[
+                'joint_state_broadcaster', 
+                '--controller-manager', '/controller_manager',
+                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
+            ],
             output='screen'
         ),
-        
+
         # Differential Drive Controller for chassis movement
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['diff_drive_controller'],
+            arguments=[
+                'diff_drive_controller', 
+                '--controller-manager', '/controller_manager',
+                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
+            ],
             output='screen'
         ),
-        
+
         # Reel Controller for cutting reel
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['reel_controller'],
+            arguments=[
+                'reel_controller', 
+                '--controller-manager', '/controller_manager',
+                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
+            ],
             output='screen'
         ),
     ])

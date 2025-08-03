@@ -15,46 +15,43 @@
   -->
 
   <!-- ROS2 Control Integration -->
-  <ros2_control name="GazeboSystem" type="system">
+  <ros2_control name="GazeboSimSystem" type="system">
     <hardware>
       <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
     
-    <!-- Left Wheel Joint Control -->
-    <joint name="left_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    
-    <!-- Right Wheel Joint Control -->
+    <!-- Right Wheel Joint -->
     <joint name="right_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
+      <command_interface name="velocity"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
     
-    <!-- Reel Joint Control -->
+    <!-- Left Wheel Joint -->
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <!-- Reel Joint -->
     <joint name="reel_joint">
-      <command_interface name="velocity">
-        <param name="min">-20</param>
-        <param name="max">20</param>
-      </command_interface>
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <!-- Front Roller Joint (passive, state-only) -->
+    <joint name="front_roller_joint">
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
   </ros2_control>
 
-  <!-- Gazebo ROS2 Control Plugin -->
+  <!-- Gazebo ros2_control Plugin -->
   <gazebo>
-    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <parameters>/home/tyler/mower_ws/install/mower_control/share/mower_control/config/mower_controllers.yaml</parameters>
+    <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system">
+      <parameters>$(find mower_control)/config/mower_controllers.yaml</parameters>
     </plugin>
   </gazebo>
 

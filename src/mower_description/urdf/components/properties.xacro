@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    Mower Properties - Dimensional and Physical Parameters
+    
+    This file contains all the dimensional and physical properties for the mower robot.
+    Values are based on the reference mower design specifications.
+  -->
+
+  <!-- Chassis Properties -->
+  <xacro:property name="chassis_length" value="0.19" />
+  <xacro:property name="chassis_width" value="0.44" />
+  <xacro:property name="chassis_height" value="0.22" />
+  <xacro:property name="chassis_mass" value="2.27" />
+
+  <!-- Counterweight Properties -->
+  <xacro:property name="counterweight_length" value="0.21" />
+  <xacro:property name="counterweight_width" value="0.13" />
+  <xacro:property name="counterweight_height" value="0.13" />
+  <xacro:property name="counterweight_mass" value="9.07" />
+
+  <!-- Wheel Properties -->
+  <xacro:property name="wheel_radius" value="0.0975" />
+  <xacro:property name="wheel_width" value="0.036" />
+  <xacro:property name="wheel_mass" value="1.81" />
+  <xacro:property name="wheel_separation" value="0.46" />
+
+  <!-- Front Roller Properties -->
+  <xacro:property name="front_roller_radius" value="0.04445" />
+  <xacro:property name="front_roller_width" value="0.33" />
+  <xacro:property name="front_roller_mass" value="0.45" />
+
+  <!-- Reel Properties -->
+  <xacro:property name="reel_radius" value="0.0875" />
+  <xacro:property name="reel_width" value="0.47" />
+  <xacro:property name="reel_mass" value="11.34" />
+
+  <!-- Reel Motor Properties -->
+  <xacro:property name="reel_motor_mass" value="1.0" />
+
+  <!-- Sensor Positions -->
+  <!-- IMU sensor position -->
+  <xacro:property name="imu_x" value="0.0775" />
+  <xacro:property name="imu_y" value="0.0875" />
+  <xacro:property name="imu_z" value="0.169" />
+
+  <!-- GPS sensor position -->
+  <xacro:property name="gps_x" value="0.0" />
+  <xacro:property name="gps_y" value="0.21415" />
+  <xacro:property name="gps_z" value="0.253" />
+
+</robot>

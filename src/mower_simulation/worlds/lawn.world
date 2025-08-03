@@ -2,10 +2,17 @@
 <sdf version="1.7">
   <world name="lawn">
     <!-- Physics engine configuration -->
-    <physics name="default_physics" default="0" type="ode">
+    <physics name="dart_physics" default="true" type="dart">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
+      <!-- DART solver configuration for stability -->
+      <dart>
+        <solver>
+          <solver_type>pgs</solver_type>
+        </solver>
+        <collision_detector>fcl</collision_detector>
+      </dart>
     </physics>
 
     <!-- Scene lighting -->
@@ -30,7 +37,7 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <!-- Ground plane -->
+    <!-- A ground plane -->
     <model name="ground_plane">
       <static>true</static>
       <link name="link">
@@ -41,17 +48,8 @@
               <size>100 100</size>
             </plane>
           </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>100</mu>
-                <mu2>50</mu2>
-              </ode>
-            </friction>
-          </surface>
         </collision>
         <visual name="visual">
-          <cast_shadows>false</cast_shadows>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
@@ -59,66 +57,9 @@
             </plane>
           </geometry>
           <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grass</name>
-            </script>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Simple wall obstacle -->
-    <model name="wall_obstacle">
-      <static>true</static>
-      <pose>5 0 0.5 0 0 0</pose>
-      <link name="wall_link">
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>0.2 3.0 1.0</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>0.2 3.0 1.0</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Wood</name>
-            </script>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Simple slope for testing -->
-    <model name="slope_test">
-      <static>true</static>
-      <pose>-3 3 0 0 0.2 0</pose>
-      <link name="slope_link">
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>2.0 2.0 0.1</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>2.0 2.0 0.1</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
           </material>
         </visual>
       </link>

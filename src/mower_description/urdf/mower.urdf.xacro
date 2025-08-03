@@ -22,10 +22,12 @@
   -->
 
   <!-- Include all component files -->
+  <xacro:include filename="$(find mower_description)/urdf/components/properties.xacro"/>
   <xacro:include filename="$(find mower_description)/urdf/components/materials.xacro"/>
   <xacro:include filename="$(find mower_description)/urdf/components/chassis.xacro"/>
   <xacro:include filename="$(find mower_description)/urdf/components/wheels.xacro"/>
   <xacro:include filename="$(find mower_description)/urdf/components/cutting_system.xacro"/>
+  <xacro:include filename="$(find mower_description)/urdf/components/sensors.xacro"/>
   <xacro:include filename="$(find mower_description)/urdf/components/ros2_control.xacro"/>
 
 </robot>

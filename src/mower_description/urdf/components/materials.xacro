@@ -11,27 +11,42 @@
 
   <!-- Blue material for chassis -->
   <material name="blue">
-    <color rgba="0.0 0.0 0.8 1.0"/>
+    <color rgba="0.0 0.0 1.0 1.0"/>
   </material>
   
-  <!-- Red material for cutting reel -->
+  <!-- Red material for reel motor -->
   <material name="red">
-    <color rgba="0.8 0.0 0.0 1.0"/>
+    <color rgba="1.0 0.0 0.0 1.0"/>
   </material>
   
-  <!-- Green material for front roller -->
+  <!-- Green material for cutting reel -->
   <material name="green">
-    <color rgba="0.0 0.8 0.0 1.0"/>
+    <color rgba="0.0 1.0 0.0 1.0"/>
   </material>
   
-  <!-- Grey material for counterweight -->
-  <material name="grey">
+  <!-- Gray material for counterweight -->
+  <material name="gray">
     <color rgba="0.5 0.5 0.5 1.0"/>
   </material>
   
-  <!-- Black material for wheels and motor -->
+  <!-- Black material for wheels -->
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  
+  <!-- White material for front roller -->
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  
+  <!-- Purple material for IMU -->
+  <material name="purple">
+    <color rgba="0.5 0.0 0.5 1.0"/>
+  </material>
+  
+  <!-- Orange material for GPS -->
+  <material name="orange">
+    <color rgba="1.0 0.5 0.0 1.0"/>
   </material>
 
 </robot>

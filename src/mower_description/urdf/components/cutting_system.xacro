@@ -4,132 +4,110 @@
   <!-- 
     Cutting System Component
     
-    This file defines the cutting and support system of the mower:
+    This file defines the cutting and support system following the reference style:
     - front_roller: Front support roller
-    - reel: Main cutting reel assembly
+    - reel: Main cutting reel assembly  
     - reel_motor: Motor that drives the cutting reel
     
-    The cutting system includes both active (reel) and passive (roller) elements.
-    Dimensions and masses are based on the Product Requirements Document.
+    All dimensions and masses use properties from properties.xacro.
   -->
 
-  <!-- Front Roller -->
+  <!-- Front Roller Link -->
   <link name="front_roller">
     <visual>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <!-- Front roller dimensions: Ø8.89cm, W:33cm -->
-        <cylinder radius="0.04445" length="0.33"/>
+        <cylinder radius="${front_roller_radius}" length="${front_roller_width}"/>
       </geometry>
-      <material name="green"/>
+      <material name="white"/>
     </visual>
-    
     <collision>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <cylinder radius="0.04445" length="0.33"/>
+        <cylinder radius="${front_roller_radius}" length="${front_roller_width}"/>
       </geometry>
     </collision>
-    
     <inertial>
-      <mass value="0.45"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <!-- Cylinder inertia: m/12 * [3r²+l², 3r²+l², 6r²] -->
-      <!-- r=0.04445, l=0.33 -->
-      <!-- Ixx = 0.45/12 * (3*0.04445² + 0.33²) = 0.0375 * (0.00593 + 0.1089) = 0.00431 -->
-      <!-- Iyy = 0.45/12 * (3*0.04445² + 0.33²) = 0.0375 * (0.00593 + 0.1089) = 0.00431 -->
-      <!-- Izz = 0.45/12 * (6*0.04445²) = 0.0375 * 0.01185 = 0.000444 -->
-      <inertia ixx="0.00431" ixy="0.0" ixz="0.0"
-               iyy="0.00431" iyz="0.0"
-               izz="0.000444"/>
+      <mass value="${front_roller_mass}"/>
+      <inertia ixx="${front_roller_mass * (3*front_roller_radius*front_roller_radius + front_roller_width*front_roller_width) / 12}" 
+               ixy="0.0" ixz="0.0" 
+               iyy="${front_roller_mass * front_roller_radius*front_roller_radius / 2}" 
+               iyz="0.0" 
+               izz="${front_roller_mass * (3*front_roller_radius*front_roller_radius + front_roller_width*front_roller_width) / 12}"/>
     </inertial>
   </link>
 
-  <!-- Front roller joint -->
+  <!-- Front Roller Joint -->
   <joint name="front_roller_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_roller"/>
-    <!-- Position: At (48cm, 0, 4.445cm) -->
-    <origin xyz="0.48 0.0 0.04445" rpy="-1.5707963 0 0"/>
-    <axis xyz="0 0 1"/>
+    <origin xyz="0.48 0.0 -${chassis_height/2 + front_roller_radius}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.5" friction="0.8"/>
   </joint>
 
-  <!-- Cutting Reel -->
+  <!-- Reel Link -->
   <link name="reel">
     <visual>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <!-- Reel dimensions: Ø17.5cm, W:47cm -->
-        <cylinder radius="0.0875" length="0.47"/>
+        <cylinder radius="${reel_radius}" length="${reel_width}"/>
       </geometry>
-      <material name="red"/>
+      <material name="green"/>
     </visual>
-    
     <collision>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <cylinder radius="0.0875" length="0.47"/>
+        <cylinder radius="${reel_radius}" length="${reel_width}"/>
       </geometry>
     </collision>
-    
     <inertial>
-      <mass value="11.34"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <!-- Cylinder inertia: m/12 * [3r²+l², 3r²+l², 6r²] -->
-      <!-- r=0.0875, l=0.47 -->
-      <!-- Ixx = 11.34/12 * (3*0.0875² + 0.47²) = 0.945 * (0.0229 + 0.2209) = 0.230 -->
-      <!-- Iyy = 11.34/12 * (3*0.0875² + 0.47²) = 0.945 * (0.0229 + 0.2209) = 0.230 -->
-      <!-- Izz = 11.34/12 * (6*0.0875²) = 0.945 * 0.0459 = 0.0434 -->
-      <inertia ixx="0.230" ixy="0.0" ixz="0.0"
-               iyy="0.230" iyz="0.0"
-               izz="0.0434"/>
+      <mass value="${reel_mass}"/>
+      <inertia ixx="${reel_mass * (3*reel_radius*reel_radius + reel_width*reel_width) / 12}" 
+               ixy="0.0" ixz="0.0" 
+               iyy="${reel_mass * reel_radius*reel_radius / 2}" 
+               iyz="0.0" 
+               izz="${reel_mass * (3*reel_radius*reel_radius + reel_width*reel_width) / 12}"/>
     </inertial>
   </link>
 
-  <!-- Reel joint -->
+  <!-- Reel Joint -->
   <joint name="reel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="reel"/>
-    <!-- Position: Raise reel 3cm off ground
-         Reel radius is 8.75cm, so center should be at 3 + 8.75 = 11.75cm -->
-    <origin xyz="0.30 0.0 0.1175" rpy="-1.5707963 0 0"/>
-    <axis xyz="0 0 1"/>
+    <origin xyz="0.30 0.0 -${chassis_height/2 - 0.02}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.8" friction="1.2"/>
   </joint>
 
-  <!-- Reel Motor -->
+  <!-- Reel Motor Link -->
   <link name="reel_motor">
     <visual>
       <geometry>
-        <!-- Motor dimensions: cylinder with 2cm radius, 12cm height -->
-        <cylinder radius="0.02" length="0.12"/>
+        <box size="0.05 0.05 0.05"/>
       </geometry>
-      <material name="black"/>
+      <material name="red"/>
     </visual>
-    
     <collision>
       <geometry>
-        <cylinder radius="0.02" length="0.12"/>
+        <box size="0.05 0.05 0.05"/>
       </geometry>
     </collision>
-    
     <inertial>
-      <mass value="1.0"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <!-- Cylinder inertia: m/12 * [3r²+l², 3r²+l², 6r²] -->
-      <!-- r=0.02, l=0.12 -->
-      <!-- Ixx = 1.0/12 * (3*0.02² + 0.12²) = 0.0833 * (0.0012 + 0.0144) = 0.00130 -->
-      <!-- Iyy = 1.0/12 * (3*0.02² + 0.12²) = 0.0833 * (0.0012 + 0.0144) = 0.00130 -->
-      <!-- Izz = 1.0/12 * (6*0.02²) = 0.0833 * 0.0024 = 0.000200 -->
-      <inertia ixx="0.00130" ixy="0.0" ixz="0.0"
-               iyy="0.00130" iyz="0.0"
-               izz="0.000200"/>
+      <mass value="${reel_motor_mass}"/>
+      <inertia ixx="${reel_motor_mass * (0.05*0.05 + 0.05*0.05) / 12}" 
+               ixy="0.0" ixz="0.0" 
+               iyy="-${reel_motor_mass * (0.05*0.05 + 0.05*0.05) / 12}" 
+               iyz="0.0" 
+               izz="${reel_motor_mass * (0.05*0.05 + 0.05*0.05) / 12}"/>
     </inertial>
   </link>
 
-  <!-- Reel motor joint - fixed to chassis -->
-  <joint name="reel_motor_joint" type="fixed">
-    <parent link="chassis"/>
+  <!-- Reel Motor Joint -->
+  <joint name="chassis_to_reel_motor" type="fixed">
+    <parent link="base_link"/>
     <child link="reel_motor"/>
-    <!-- Position: At (21.8cm, -23.5cm, 17.55cm) relative to base_link
-         Since chassis is now at Z=20.75cm, adjust relative position:
-         Z_relative = 17.55 - 20.75 = -3.2cm -->
-    <origin xyz="0.218 -0.235 -0.032" rpy="-1.5707963 0 0"/>
+    <origin xyz="0.125 0.11 0.04" rpy="0 0 0"/>
   </joint>
 
 </robot>

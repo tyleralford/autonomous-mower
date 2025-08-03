@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    Sensors Component
+    
+    This file defines the sensor systems for the mower:
+    - IMU sensor: Inertial Measurement Unit for orientation and motion
+    - GPS sensor: Global Positioning System for location tracking
+    
+    All positions use properties from properties.xacro.
+  -->
+
+  <!-- IMU Sensor Link -->
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="purple"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <!-- IMU Sensor Joint -->
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius - chassis_height/2}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GPS Sensor Link -->
+  <link name="gps_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.03 0.01"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.03 0.03 0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <!-- GPS Sensor Joint -->
+  <joint name="base_to_gps" type="fixed">
+    <parent link="base_link"/>
+    <child link="gps_link"/>
+    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius - chassis_height/2}" rpy="0 0 0"/>
+  </joint>
+
+</robot>
