@@ -27,7 +27,7 @@ This initial module establishes the foundational environment for all future work
 
 This module focuses on creating the robot's digital twin. We will build the robot model link-by-link, testing at each stage.
 
-- [ ] **Task 1.1:** **Create Description Package and Base Model**
+- [x] **Task 1.1:** **Create Description Package and Base Model**
     - **Dependencies:** 0.2
     - **Context:** Create the package to hold the robot's URDF and establish the base XACRO file with the main chassis link.
     - **Sub-Task 1.1.1:** Navigate to `mower_ws/src` and create a new ROS 2 package: `ros2 pkg create --build-type ament_cmake mower_description`.
@@ -38,7 +38,7 @@ This module focuses on creating the robot's digital twin. We will build the robo
     - **Sub-Task 1.1.6:** Create a basic RViz configuration file `urdf_config.rviz` in the `rviz/` directory and save it. This should display the RobotModel and TF frames.
     - **Sub-Task 1.1.7:** Commit your work. (`git commit -m "feat(description): Create package and base chassis model"`)
 
-- [ ] **MANDATORY TEST 1.A: Visualize Base Model**
+- [x] **MANDATORY TEST 1.A: Visualize Base Model**
     - **Context:** Before adding complexity, ensure the base model and visualization tools are working correctly. **This test cannot be skipped.**
     - **Procedure:**
         1. Build the workspace with `colcon build`.
@@ -46,19 +46,19 @@ This module focuses on creating the robot's digital twin. We will build the robo
         3. Launch the display file: `ros2 launch mower_description display.launch.py`.
     - **Expected Outcome:** RViz opens and displays the `chassis` link correctly. The GUI slider window for joint states also appears. Confirm this before proceeding.
 
-- [ ] **Task 1.2:** **Add Drive Wheels to Model**
+- [x] **Task 1.2:** **Add Drive Wheels to Model**
     - **Dependencies:** 1.1
     - **Context:** Add the left and right drive wheels to the URDF model.
     - **Sub-Task 1.2.1:** In `mower.urdf.xacro`, define the `left_wheel` and `right_wheel` links. Use cylinder primitives for their visual and collision geometries based on the PRD dimensions.
     - **Sub-Task 1.2.2:** Define the `left_wheel_joint` and `right_wheel_joint`. These must be of type `continuous` and connect each wheel link to `base_link` at the positions specified in the PRD.
     - **Sub-Task 1.2.3:** Commit your work. (`git commit -m "feat(description): Add drive wheel links and joints"`)
 
-- [ ] **MANDATORY TEST 1.B: Visualize Wheels**
+- [x] **MANDATORY TEST 1.B: Visualize Wheels**
     - **Context:** Verify the wheels have been added correctly. **This test cannot be skipped.**
     - **Procedure:** Relaunch the display file: `ros2 launch mower_description display.launch.py`.
     - **Expected Outcome:** The robot model now appears in RViz with both drive wheels correctly positioned. Use the `joint_state_publisher_gui` to move the wheel joint sliders and confirm they rotate as expected.
 
-- [ ] **Task 1.3:** **Add Remaining Links to Model**
+- [x] **Task 1.3:** **Add Remaining Links to Model**
     - **Dependencies:** 1.2
     - **Context:** Complete the robot's physical structure by adding the counterweight, front roller, reel, and reel motor.
     - **Sub-Task 1.3.1:** Add the `counterweight` link and its fixed joint.
@@ -68,6 +68,11 @@ This module focuses on creating the robot's digital twin. We will build the robo
     - **Sub-Task 1.3.5:** For all new links, create visual and collision geometries using simple primitives (box, cylinder) based on the PRD.
     - **Sub-Task 1.3.6:** Relaunch `display.launch.py` and verify in RViz that all links appear correctly and all non-fixed joints can be moved with the GUI sliders.
     - **Sub-Task 1.3.7:** Commit the complete robot structure. (`git commit -m "feat(description): Add all remaining structural links"`)
+
+- [x] **MANDATORY TEST 1.C: Visualize Complete Robot Structure**
+    - **Context:** Verify all links have been added correctly and joints work properly. **This test cannot be skipped.**
+    - **Procedure:** Relaunch the display file: `ros2 launch mower_description display.launch.py`.
+    - **Expected Outcome:** The complete robot model appears in RViz with chassis, wheels, counterweight, front roller, reel, and reel motor correctly positioned. All continuous joints (wheels, front roller, reel) can be moved independently with GUI sliders. Robot sits properly with chassis bottom at wheel center level.
 
 - [ ] **Task 1.4:** **Add Inertial Properties**
     - **Dependencies:** 1.3
