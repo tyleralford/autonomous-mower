@@ -74,13 +74,21 @@ This module focuses on creating the robot's digital twin. We will build the robo
     - **Procedure:** Relaunch the display file: `ros2 launch mower_description display.launch.py`.
     - **Expected Outcome:** The complete robot model appears in RViz with chassis, wheels, counterweight, front roller, reel, and reel motor correctly positioned. All continuous joints (wheels, front roller, reel) can be moved independently with GUI sliders. Robot sits properly with chassis bottom at wheel center level.
 
-- [ ] **Task 1.4:** **Add Inertial Properties**
+- [x] **Task 1.4:** **Add Inertial Properties**
     - **Dependencies:** 1.3
     - **Context:** Add physical properties to the model for a realistic physics simulation.
     - **Sub-Task 1.4.1:** For every link in `mower.urdf.xacro`, add an `<inertial>` tag.
     - **Sub-Task 1.4.2:** Inside each tag, specify the `<mass>` using the value from the PRD.
     - **Sub-Task 1.4.3:** Calculate and specify the `<inertia>` tensor for each link. Assume simple uniform geometry (e.g., box inertia, cylinder inertia) for these calculations.
     - **Sub-Task 1.4.4:** Commit the inertial properties. (`git commit -m "feat(description): Add mass and inertia properties to all links"`)
+
+- [ ] **MANDATORY TEST 1.D: Verify Inertial Properties**
+    - **Context:** Ensure the robot model is valid with all inertial properties and ready for physics simulation. **This test cannot be skipped.**
+    - **Procedure:**
+        1. Build the workspace with `colcon build`.
+        2. Validate URDF syntax: `check_urdf src/mower_description/urdf/mower.urdf.xacro`.
+        3. Launch the display file: `ros2 launch mower_description display.launch.py`.
+    - **Expected Outcome:** URDF validation passes, RViz displays the complete robot model correctly, and all joint controls work. Robot model is now ready for Gazebo physics simulation with proper mass and inertia properties.
 
 ### **Module 2: Gazebo Simulation Environment**
 
