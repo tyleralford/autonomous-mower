@@ -6,7 +6,7 @@ This document provides a detailed, step-by-step plan for executing Phase 1 of th
 
 This initial module establishes the foundational environment for all future work.
 
-- [ ] **Task 0.1:** **Initialize Git Repository**
+- [x] **Task 0.1:** **Initialize Git Repository**
     - **Context:** Create a centralized repository to track all code changes, manage branches, and collaborate.
     - **Sub-Task 0.1.1:** Create a new repository on GitHub named `autonomous_mower`.
     - **Sub-Task 0.1.2:** Clone the repository to your local development machine.
@@ -15,7 +15,7 @@ This initial module establishes the foundational environment for all future work
     - **Sub-Task 0.1.5:** Create an empty `README.md` file.
     - **Sub-Task 0.1.6:** Commit and push the initial setup. (`git commit -m "Initial project setup with gitignore and README"`)
 
-- [ ] **Task 0.2:** **Set Up ROS 2 Workspace**
+- [x] **Task 0.2:** **Set Up ROS 2 Workspace**
     - **Dependencies:** 0.1
     - **Context:** Create the ROS 2 workspace that will contain all custom software packages for the project.
     - **Sub-Task 0.2.1:** Inside the repository, create the workspace directory structure: `mower_ws/src`.

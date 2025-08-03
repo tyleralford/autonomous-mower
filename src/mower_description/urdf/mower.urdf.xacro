@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mower">
+
+  <!-- Include materials -->
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <!-- Base link - central reference frame -->
+  <link name="base_link">
+    <!-- This is just a reference frame, no visual or collision geometry -->
+  </link>
+
+  <!-- Chassis link - main body of the robot -->
+  <link name="chassis">
+    <visual>
+      <geometry>
+        <!-- Chassis dimensions: L:19cm, W:44cm, H:22cm -->
+        <box size="0.19 0.44 0.22"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <box size="0.19 0.44 0.22"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Joint connecting chassis to base_link -->
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <!-- Position chassis at ground level, centered -->
+    <origin xyz="0.0 0.0 0.11" rpy="0 0 0"/>
+  </joint>
+
+</robot>
