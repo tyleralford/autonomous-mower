@@ -1,0 +1,35 @@
+# ROS 2 specific files and directories
+build/
+install/
+log/
+
+# Compiled python modules
+*.pyc
+__pycache__/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+
+# Log files
+*.log
+
+# Core dumps
+core.*
+
+# Gazebo logs
+.gazebo/
+
+# RViz configuration files (we'll keep specific ones)
+*.rviz.backup
