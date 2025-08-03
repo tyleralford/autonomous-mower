@@ -12,9 +12,13 @@ def generate_launch_description():
     pkg_mower_bringup = FindPackageShare(package='mower_bringup').find('mower_bringup')
     pkg_mower_description = FindPackageShare(package='mower_description').find('mower_description')
     pkg_mower_simulation = FindPackageShare(package='mower_simulation').find('mower_simulation')
+    pkg_mower_control = FindPackageShare(package='mower_control').find('mower_control')
     
     # World file path
     world_file = os.path.join(pkg_mower_simulation, 'worlds', 'lawn.world')
+    
+    # Controller config file path  
+    controller_config = os.path.join(pkg_mower_control, 'config', 'mower_controllers.yaml')
     
     # Launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -48,7 +52,8 @@ def generate_launch_description():
                 ])
             ]),
             launch_arguments={
-                'use_sim_time': use_sim_time
+                'use_sim_time': use_sim_time,
+                'use_joint_state_gui': 'false'  # Disable GUI since we use ros2_control
             }.items()
         ),
         
@@ -83,5 +88,40 @@ def generate_launch_description():
                 'y': '0.0',
                 'z': '0.2'
             }.items()
+        ),
+        
+        # Controller Manager (loads and manages all controllers)
+        Node(
+            package='controller_manager',
+            executable='ros2_control_node',
+            parameters=[controller_config],
+            output='both',
+            remappings=[
+                ('~/robot_description', '/robot_description'),
+            ]
+        ),
+        
+        # Joint State Broadcaster (replaces joint_state_publisher_gui)
+        Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['joint_state_broadcaster'],
+            output='screen'
+        ),
+        
+        # Differential Drive Controller for chassis movement
+        Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['diff_drive_controller'],
+            output='screen'
+        ),
+        
+        # Reel Controller for cutting reel
+        Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['reel_controller'],
+            output='screen'
         ),
     ])

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    Wheels Component
+    
+    This file defines the drive wheels and their joints:
+    - left_wheel: Left drive wheel with hub motor
+    - right_wheel: Right drive wheel with hub motor
+    - Continuous joints for wheel rotation
+    
+    Both wheels are identical except for their position and rotation axis.
+    Dimensions and masses are based on the Product Requirements Document.
+  -->
+
+  <!-- Left Drive Wheel -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <!-- Wheel dimensions: Ø19.5cm, W:3.6cm -->
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.81"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- Cylinder inertia: m/12 * [3r²+l², 3r²+l², 6r²] -->
+      <!-- r=0.0975, l=0.036 -->
+      <!-- Ixx = 1.81/12 * (3*0.0975² + 0.036²) = 0.151 * (0.02847 + 0.001296) = 0.00449 -->
+      <!-- Iyy = 1.81/12 * (3*0.0975² + 0.036²) = 0.151 * (0.02847 + 0.001296) = 0.00449 -->
+      <!-- Izz = 1.81/12 * (6*0.0975²) = 0.151 * 0.05693 = 0.00860 -->
+      <inertia ixx="0.00449" ixy="0.0" ixz="0.0"
+               iyy="0.00449" iyz="0.0"
+               izz="0.00860"/>
+    </inertial>
+  </link>
+
+  <!-- Left wheel joint -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <!-- Position: At (0, 23cm, 9.75cm) -->
+    <origin xyz="0.0 0.23 0.0975" rpy="-1.5707963 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Right Drive Wheel -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <!-- Wheel dimensions: Ø19.5cm, W:3.6cm -->
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <cylinder radius="0.0975" length="0.036"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.81"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- Cylinder inertia: m/12 * [3r²+l², 3r²+l², 6r²] -->
+      <!-- r=0.0975, l=0.036 -->
+      <!-- Ixx = 1.81/12 * (3*0.0975² + 0.036²) = 0.151 * (0.02847 + 0.001296) = 0.00449 -->
+      <!-- Iyy = 1.81/12 * (3*0.0975² + 0.036²) = 0.151 * (0.02847 + 0.001296) = 0.00449 -->
+      <!-- Izz = 1.81/12 * (6*0.0975²) = 0.151 * 0.05693 = 0.00860 -->
+      <inertia ixx="0.00449" ixy="0.0" ixz="0.0"
+               iyy="0.00449" iyz="0.0"
+               izz="0.00860"/>
+    </inertial>
+  </link>
+
+  <!-- Right wheel joint -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <!-- Position: At (0, -23cm, 9.75cm) -->
+    <origin xyz="0.0 -0.23 0.0975" rpy="1.5707963 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+</robot>

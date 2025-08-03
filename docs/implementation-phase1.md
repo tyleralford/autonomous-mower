@@ -25,33 +25,57 @@ This initial module establishes the foundational environment for all future work
 
 ### **Module 1: Robot Description (`mower_description`)**
 
-This module focuses on creating the robot's digital twin. We will build the robot model link-by-link, testing at each stage.
+This module focuses on creating the robot's digital twin using a modular URDF/XACRO approach. We will build the robot model component-by-component, with each logical subsystem in its own file for better maintainability, reusability, and clarity. The modular structure provides the following benefits:
 
-- [x] **Task 1.1:** **Create Description Package and Base Model**
+- **Maintainability:** Each component can be modified independently without affecting others
+- **Reusability:** Components can be reused in different robot configurations
+- **Clarity:** Logical separation makes the model easier to understand and debug
+- **Collaboration:** Multiple developers can work on different components simultaneously
+- **Modularity:** Easy to add or remove components for different robot variants
+
+**Modular Structure:**
+- `mower.urdf.xacro` - Main assembly file that includes all components
+- `components/materials.xacro` - Material definitions and colors
+- `components/chassis.xacro` - Base link, chassis, and counterweight
+- `components/wheels.xacro` - Drive wheels and their joints
+- `components/cutting_system.xacro` - Reel, front roller, and motor components
+- `components/ros2_control.xacro` - Control interfaces (added in Module 3)
+
+- [x] **Task 1.1:** **Create Description Package and Modular URDF Structure**
     - **Dependencies:** 0.2
-    - **Context:** Create the package to hold the robot's URDF and establish the base XACRO file with the main chassis link.
+    - **Context:** Create the package to hold the robot's URDF using a modular approach with separate files for different robot components.
     - **Sub-Task 1.1.1:** Navigate to `mower_ws/src` and create a new ROS 2 package: `ros2 pkg create --build-type ament_cmake mower_description`.
-    - **Sub-Task 1.1.2:** Inside `mower_description`, create the following directory structure: `urdf/`, `meshes/`, `rviz/`.
-    - **Sub-Task 1.1.3:** In the `urdf/` directory, create a main XACRO file: `mower.urdf.xacro`.
-    - **Sub-Task 1.1.4:** In `mower.urdf.xacro`, define the `base_link` and the `chassis` link with its visual (as a box) and collision geometries based on the PRD. Define the fixed joint connecting them.
-    - **Sub-Task 1.1.5:** Create a basic launch file `display.launch.py` in a new `launch/` directory. This launch file will start the `robot_state_publisher` and `joint_state_publisher_gui` nodes, and launch RViz with a specific config file.
-    - **Sub-Task 1.1.6:** Create a basic RViz configuration file `urdf_config.rviz` in the `rviz/` directory and save it. This should display the RobotModel and TF frames.
-    - **Sub-Task 1.1.7:** Commit your work. (`git commit -m "feat(description): Create package and base chassis model"`)
+    - **Sub-Task 1.1.2:** Inside `mower_description`, create the following directory structure: `urdf/`, `urdf/components/`, `meshes/`, `rviz/`.
+    - **Sub-Task 1.1.3:** In the `urdf/` directory, create a main XACRO file: `mower.urdf.xacro` that will include all component files.
+    - **Sub-Task 1.1.4:** In the `urdf/components/` directory, create modular XACRO files:
+        - `materials.xacro` - Define all material colors and properties
+        - `chassis.xacro` - Define base_link, chassis link and counterweight
+        - `wheels.xacro` - Define left and right drive wheels with joints
+        - `cutting_system.xacro` - Define reel, front roller, and reel motor
+        - `ros2_control.xacro` - Define ros2_control interfaces (for later use)
+    - **Sub-Task 1.1.5:** In `materials.xacro`, define all material colors (blue, red, green, grey, black) that will be used across components.
+    - **Sub-Task 1.1.6:** In `chassis.xacro`, define the `base_link` and the `chassis` link with its visual and collision geometries based on the PRD. Define the fixed joint connecting them.
+    - **Sub-Task 1.1.7:** In `mower.urdf.xacro`, include all component files using `<xacro:include filename="..."/>` tags.
+    - **Sub-Task 1.1.8:** Create a basic launch file `display.launch.py` in a new `launch/` directory. This launch file will start the `robot_state_publisher` and `joint_state_publisher_gui` nodes, and launch RViz with a specific config file.
+    - **Sub-Task 1.1.9:** Create a basic RViz configuration file `urdf_config.rviz` in the `rviz/` directory and save it. This should display the RobotModel and TF frames.
+    - **Sub-Task 1.1.10:** Commit your work. (`git commit -m "feat(description): Create package and modular URDF structure with chassis"`)
 
 - [x] **MANDATORY TEST 1.A: Visualize Base Model**
-    - **Context:** Before adding complexity, ensure the base model and visualization tools are working correctly. **This test cannot be skipped.**
+    - **Context:** Before adding complexity, ensure the base model and visualization tools are working correctly with the modular structure. **This test cannot be skipped.**
     - **Procedure:**
         1. Build the workspace with `colcon build`.
         2. Source the workspace: `source install/setup.bash`.
         3. Launch the display file: `ros2 launch mower_description display.launch.py`.
-    - **Expected Outcome:** RViz opens and displays the `chassis` link correctly. The GUI slider window for joint states also appears. Confirm this before proceeding.
+    - **Expected Outcome:** RViz opens and displays the `chassis` link correctly. The GUI slider window for joint states also appears. Confirm the modular XACRO includes are working properly before proceeding.
 
 - [x] **Task 1.2:** **Add Drive Wheels to Model**
     - **Dependencies:** 1.1
-    - **Context:** Add the left and right drive wheels to the URDF model.
-    - **Sub-Task 1.2.1:** In `mower.urdf.xacro`, define the `left_wheel` and `right_wheel` links. Use cylinder primitives for their visual and collision geometries based on the PRD dimensions.
-    - **Sub-Task 1.2.2:** Define the `left_wheel_joint` and `right_wheel_joint`. These must be of type `continuous` and connect each wheel link to `base_link` at the positions specified in the PRD.
-    - **Sub-Task 1.2.3:** Commit your work. (`git commit -m "feat(description): Add drive wheel links and joints"`)
+    - **Context:** Add the left and right drive wheels to the modular URDF structure.
+    - **Sub-Task 1.2.1:** In `urdf/components/wheels.xacro`, define the `left_wheel` and `right_wheel` links. Use cylinder primitives for their visual and collision geometries based on the PRD dimensions.
+    - **Sub-Task 1.2.2:** In the same file, define the `left_wheel_joint` and `right_wheel_joint`. These must be of type `continuous` and connect each wheel link to `base_link` at the positions specified in the PRD.
+    - **Sub-Task 1.2.3:** Ensure proper inertial properties are calculated and included for both wheel links.
+    - **Sub-Task 1.2.4:** Verify that `mower.urdf.xacro` includes the `wheels.xacro` file properly.
+    - **Sub-Task 1.2.5:** Commit your work. (`git commit -m "feat(description): Add drive wheel links and joints to modular structure"`)
 
 - [x] **MANDATORY TEST 1.B: Visualize Wheels**
     - **Context:** Verify the wheels have been added correctly. **This test cannot be skipped.**
@@ -60,35 +84,39 @@ This module focuses on creating the robot's digital twin. We will build the robo
 
 - [x] **Task 1.3:** **Add Remaining Links to Model**
     - **Dependencies:** 1.2
-    - **Context:** Complete the robot's physical structure by adding the counterweight, front roller, reel, and reel motor.
-    - **Sub-Task 1.3.1:** Add the `counterweight` link and its fixed joint.
-    - **Sub-Task 1.3.2:** Add the `front_roller` link and its `continuous` joint.
-    - **Sub-Task 1.3.3:** Add the `reel` link and its `continuous` joint (`reel_joint`).
-    - **Sub-Task 1.3.4:** Add the `reel_motor` link and its fixed joint.
+    - **Context:** Complete the robot's physical structure by adding the remaining components using the modular approach.
+    - **Sub-Task 1.3.1:** In `urdf/components/chassis.xacro`, add the `counterweight` link and its fixed joint to the chassis.
+    - **Sub-Task 1.3.2:** In `urdf/components/cutting_system.xacro`, add the `front_roller` link and its `continuous` joint.
+    - **Sub-Task 1.3.3:** In the same file, add the `reel` link and its `continuous` joint (`reel_joint`).
+    - **Sub-Task 1.3.4:** In the same file, add the `reel_motor` link and its fixed joint to the chassis.
     - **Sub-Task 1.3.5:** For all new links, create visual and collision geometries using simple primitives (box, cylinder) based on the PRD.
-    - **Sub-Task 1.3.6:** Relaunch `display.launch.py` and verify in RViz that all links appear correctly and all non-fixed joints can be moved with the GUI sliders.
-    - **Sub-Task 1.3.7:** Commit the complete robot structure. (`git commit -m "feat(description): Add all remaining structural links"`)
+    - **Sub-Task 1.3.6:** Calculate and add proper inertial properties for all new links.
+    - **Sub-Task 1.3.7:** Ensure that `mower.urdf.xacro` includes the `cutting_system.xacro` file properly.
+    - **Sub-Task 1.3.8:** Relaunch `display.launch.py` and verify in RViz that all links appear correctly and all non-fixed joints can be moved with the GUI sliders.
+    - **Sub-Task 1.3.9:** Commit the complete robot structure. (`git commit -m "feat(description): Add remaining structural links to modular components"`)
 
 - [x] **MANDATORY TEST 1.C: Visualize Complete Robot Structure**
     - **Context:** Verify all links have been added correctly and joints work properly. **This test cannot be skipped.**
     - **Procedure:** Relaunch the display file: `ros2 launch mower_description display.launch.py`.
     - **Expected Outcome:** The complete robot model appears in RViz with chassis, wheels, counterweight, front roller, reel, and reel motor correctly positioned. All continuous joints (wheels, front roller, reel) can be moved independently with GUI sliders. Robot sits properly with chassis bottom at wheel center level.
 
-- [x] **Task 1.4:** **Add Inertial Properties**
+- [x] **Task 1.4:** **Finalize Modular URDF Structure**
     - **Dependencies:** 1.3
-    - **Context:** Add physical properties to the model for a realistic physics simulation.
-    - **Sub-Task 1.4.1:** For every link in `mower.urdf.xacro`, add an `<inertial>` tag.
-    - **Sub-Task 1.4.2:** Inside each tag, specify the `<mass>` using the value from the PRD.
-    - **Sub-Task 1.4.3:** Calculate and specify the `<inertia>` tensor for each link. Assume simple uniform geometry (e.g., box inertia, cylinder inertia) for these calculations.
-    - **Sub-Task 1.4.4:** Commit the inertial properties. (`git commit -m "feat(description): Add mass and inertia properties to all links"`)
+    - **Context:** Ensure all components have proper inertial properties and validate the complete modular structure.
+    - **Sub-Task 1.4.1:** Review all component files (`materials.xacro`, `chassis.xacro`, `wheels.xacro`, `cutting_system.xacro`) to ensure every link has proper `<inertial>` tags with mass and inertia tensor calculations.
+    - **Sub-Task 1.4.2:** Verify that `mower.urdf.xacro` properly includes all component files in the correct order.
+    - **Sub-Task 1.4.3:** Add comments to each component file explaining the purpose and contents of each module.
+    - **Sub-Task 1.4.4:** Test the complete assembly by running URDF validation and visual inspection.
+    - **Sub-Task 1.4.5:** Commit the finalized modular structure. (`git commit -m "feat(description): Finalize modular URDF structure with proper documentation"`)
 
-- [x] **MANDATORY TEST 1.D: Verify Inertial Properties**
-    - **Context:** Ensure the robot model is valid with all inertial properties and ready for physics simulation. **This test cannot be skipped.**
+- [x] **MANDATORY TEST 1.D: Verify Modular URDF Structure**
+    - **Context:** Ensure the robot model is valid with the modular structure and all inertial properties, ready for physics simulation. **This test cannot be skipped.**
     - **Procedure:**
         1. Build the workspace with `colcon build`.
         2. Validate URDF syntax: `check_urdf src/mower_description/urdf/mower.urdf.xacro`.
         3. Launch the display file: `ros2 launch mower_description display.launch.py`.
-    - **Expected Outcome:** URDF validation passes, RViz displays the complete robot model correctly, and all joint controls work. Robot model is now ready for Gazebo physics simulation with proper mass and inertia properties.
+        4. Verify that all component files are being included correctly by checking console output for any missing file errors.
+    - **Expected Outcome:** URDF validation passes, RViz displays the complete robot model correctly, all joint controls work, and the modular structure allows for easy maintenance and future modifications. Robot model is now ready for Gazebo physics simulation with proper mass and inertia properties.
 
 ### **Module 2: Gazebo Simulation Environment**
 
@@ -134,14 +162,16 @@ This module focuses on creating a virtual world and placing the robot model with
 
 This is the most complex module, integrating the control framework. It will be done in careful, verifiable steps.
 
-- [ ] **Task 3.1:** **Add `ros2_control` Tags to URDF**
+- [ ] **Task 3.1:** **Add `ros2_control` Tags to Modular URDF**
     - **Dependencies:** 2.3
-    - **Context:** Instrument the robot's URDF to make it compatible with `ros2_control` for simulation.
-    - **Sub-Task 3.1.1:** Open `mower.urdf.xacro`.
-    - **Sub-Task 3.1.2:** Add a `<ros2_control>` tag for the `GazeboSystem` plugin. This tells `ros2_control` how to interface with Gazebo's physics.
+    - **Context:** Instrument the robot's modular URDF to make it compatible with `ros2_control` for simulation.
+    - **Sub-Task 3.1.1:** Create a new component file `urdf/components/ros2_control.xacro`.
+    - **Sub-Task 3.1.2:** In this file, add a `<ros2_control>` tag for the `GazeboSystem` plugin. This tells `ros2_control` how to interface with Gazebo's physics.
     - **Sub-Task 3.1.3:** Within the tag, define the `command_interface` (`velocity`) and `state_interface` (`position` and `velocity`) for the two drive wheel joints (`left_wheel_joint`, `right_wheel_joint`).
     - **Sub-Task 3.1.4:** Define the interfaces for the `reel_joint` as well (command `velocity`, state `position` and `velocity`).
-    - **Sub-Task 3.1.5:** Commit the URDF changes. (`git commit -m "feat(control): Add ros2_control tags to URDF for Gazebo"`)
+    - **Sub-Task 3.1.5:** Add the Gazebo ros2_control plugin configuration in the same file.
+    - **Sub-Task 3.1.6:** Update `mower.urdf.xacro` to include the `ros2_control.xacro` component file.
+    - **Sub-Task 3.1.7:** Commit the URDF changes. (`git commit -m "feat(control): Add ros2_control component to modular URDF structure"`)
 
 - [ ] **Task 3.2:** **Create Control Package and Configuration**
     - **Dependencies:** 3.1

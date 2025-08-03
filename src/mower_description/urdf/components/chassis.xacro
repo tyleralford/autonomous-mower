@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    Chassis Component
+    
+    This file defines the main structural elements of the mower:
+    - base_link: Central reference frame at ground level
+    - chassis: Main body of the robot
+    - counterweight: Rear counterweight for balance
+    
+    All dimensions and masses are based on the Product Requirements Document.
+  -->
+
+  <!-- Base link - central reference frame at ground level -->
+  <link name="base_link">
+    <!-- This is just a reference frame, no visual or collision geometry -->
+  </link>
+
+  <!-- Chassis link - main body of the robot -->
+  <link name="chassis">
+    <visual>
+      <geometry>
+        <!-- Chassis dimensions: L:19cm, W:44cm, H:22cm -->
+        <box size="0.19 0.44 0.22"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <box size="0.19 0.44 0.22"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="2.27"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- Box inertia: m/12 * [y²+z², x²+z², x²+y²] -->
+      <!-- x=0.19, y=0.44, z=0.22 -->
+      <!-- Ixx = 2.27/12 * (0.44² + 0.22²) = 0.189 * (0.1936 + 0.0484) = 0.0457 -->
+      <!-- Iyy = 2.27/12 * (0.19² + 0.22²) = 0.189 * (0.0361 + 0.0484) = 0.0160 -->
+      <!-- Izz = 2.27/12 * (0.19² + 0.44²) = 0.189 * (0.0361 + 0.1936) = 0.0434 -->
+      <inertia ixx="0.0457" ixy="0.0" ixz="0.0"
+               iyy="0.0160" iyz="0.0"
+               izz="0.0434"/>
+    </inertial>
+  </link>
+
+  <!-- Joint connecting chassis to base_link -->
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <!-- Position chassis so its bottom is at wheel center height (9.75cm) 
+         Chassis height is 22cm, so center should be at 9.75 + 11 = 20.75cm -->
+    <origin xyz="0.0 0.0 0.2075" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Counterweight -->
+  <link name="counterweight">
+    <visual>
+      <geometry>
+        <!-- Counterweight dimensions: L:21cm, W:13cm, H:13cm -->
+        <box size="0.21 0.13 0.13"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <box size="0.21 0.13 0.13"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="9.07"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- Box inertia: m/12 * [y²+z², x²+z², x²+y²] -->
+      <!-- x=0.21, y=0.13, z=0.13 -->
+      <!-- Ixx = 9.07/12 * (0.13² + 0.13²) = 0.756 * (0.0169 + 0.0169) = 0.0255 -->
+      <!-- Iyy = 9.07/12 * (0.21² + 0.13²) = 0.756 * (0.0441 + 0.0169) = 0.0461 -->
+      <!-- Izz = 9.07/12 * (0.21² + 0.13²) = 0.756 * (0.0441 + 0.0169) = 0.0461 -->
+      <inertia ixx="0.0255" ixy="0.0" ixz="0.0"
+               iyy="0.0461" iyz="0.0"
+               izz="0.0461"/>
+    </inertial>
+  </link>
+
+  <!-- Counterweight joint - fixed to chassis -->
+  <joint name="counterweight_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="counterweight"/>
+    <!-- Position at rear of chassis, butting up against it
+         Chassis length is 19cm, so half is 9.5cm
+         Counterweight length is 21cm, so half is 10.5cm
+         Total distance from chassis center to counterweight center: 9.5/2 + 10.5 = 20cm
+         
+         Counterweight bottom should align with chassis bottom:
+         Chassis center at 20.75cm, counterweight height 13cm
+         Counterweight center should be at 9.75 + 6.5 = 16.25cm
+         Relative to chassis: 16.25 - 20.75 = -4.5cm -->
+    <origin xyz="-0.20 0.0 -0.045" rpy="0 0 0"/>
+  </joint>
+
+</robot>

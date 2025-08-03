@@ -1,6 +1,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -18,6 +19,7 @@ def generate_launch_description():
     model = LaunchConfiguration('model')
     rviz_config = LaunchConfiguration('rviz_config')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    use_joint_state_gui = LaunchConfiguration('use_joint_state_gui')
     
     return LaunchDescription([
         # Fix snap conflicts
@@ -43,6 +45,12 @@ def generate_launch_description():
             description='Use simulation (Gazebo) clock if true'
         ),
         
+        DeclareLaunchArgument(
+            'use_joint_state_gui',
+            default_value='true',
+            description='Start joint state publisher GUI (disable when using ros2_control)'
+        ),
+        
         # Robot State Publisher Node
         Node(
             package='robot_state_publisher',
@@ -57,12 +65,13 @@ def generate_launch_description():
             }]
         ),
         
-        # Joint State Publisher GUI Node
+        # Joint State Publisher GUI Node (conditional)
         Node(
             package='joint_state_publisher_gui',
             executable='joint_state_publisher_gui',
             name='joint_state_publisher_gui',
-            output='screen'
+            output='screen',
+            condition=IfCondition(use_joint_state_gui)
         ),
         
         # RViz Node

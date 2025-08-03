@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- 
+    Materials Component
+    
+    This file defines all material colors and properties used throughout
+    the mower robot model. Centralizing materials here allows for easy
+    color scheme changes and consistent appearance across all components.
+  -->
+
+  <!-- Blue material for chassis -->
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  
+  <!-- Red material for cutting reel -->
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  
+  <!-- Green material for front roller -->
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  
+  <!-- Grey material for counterweight -->
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  
+  <!-- Black material for wheels and motor -->
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+</robot>
