@@ -1,6 +1,6 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -71,6 +71,16 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time
             }.items()
         ),
+
+        # ROS-Gazebo Clock Bridge - Essential for proper timestamp synchronization
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='clock_bridge',
+            arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
         
         # Spawn the robot using the gz_spawn_model launch file
         IncludeLaunchDescription(
@@ -92,41 +102,47 @@ def generate_launch_description():
         
         # Note: Controller manager is provided by the Gazebo gz_ros2_control plugin
         # No need for a standalone ros2_control_node
-        
+
         # Joint State Broadcaster (replaces joint_state_publisher_gui)
         # Delay spawning to ensure Gazebo controller manager is ready
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=[
-                'joint_state_broadcaster', 
-                '--controller-manager', '/controller_manager',
-                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
-            ],
-            output='screen'
-        ),
+        TimerAction(period=2.0, actions=[
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'joint_state_broadcaster',
+                    '--controller-manager', '/controller_manager',
+                    '--controller-ros-args', '--ros-args -p use_sim_time:=true'
+                ],
+                output='screen'
+            )
+        ]),
 
         # Differential Drive Controller for chassis movement
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=[
-                'diff_drive_controller', 
-                '--controller-manager', '/controller_manager',
-                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
-            ],
-            output='screen'
-        ),
+        TimerAction(period=3.0, actions=[
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'diff_drive_controller',
+                    '--controller-manager', '/controller_manager',
+                    '--controller-ros-args', '--ros-args -p use_sim_time:=true'
+                ],
+                output='screen'
+            )
+        ]),
 
         # Reel Controller for cutting reel
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=[
-                'reel_controller', 
-                '--controller-manager', '/controller_manager',
-                '--controller-ros-args', '--ros-args --remap /clock:=/clock -p use_sim_time:=true'
-            ],
-            output='screen'
-        ),
+        TimerAction(period=3.5, actions=[
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=[
+                    'reel_controller',
+                    '--controller-manager', '/controller_manager',
+                    '--controller-ros-args', '--ros-args -p use_sim_time:=true'
+                ],
+                output='screen'
+            )
+        ])
     ])

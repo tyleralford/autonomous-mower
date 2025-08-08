@@ -34,20 +34,20 @@
   <joint name="base_to_imu" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius - chassis_height/2}" rpy="0 0 0"/>
+    <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius}" rpy="0 0 0"/>
   </joint>
 
   <!-- GPS Sensor Link -->
   <link name="gps_link">
     <visual>
       <geometry>
-        <box size="0.03 0.03 0.01"/>
+        <box size="0.03 0.03 0.04"/>
       </geometry>
       <material name="orange"/>
     </visual>
     <collision>
       <geometry>
-        <box size="0.03 0.03 0.01"/>
+        <box size="0.03 0.03 0.04"/>
       </geometry>
     </collision>
     <inertial>
@@ -60,7 +60,7 @@
   <joint name="base_to_gps" type="fixed">
     <parent link="base_link"/>
     <child link="gps_link"/>
-    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius - chassis_height/2}" rpy="0 0 0"/>
+    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 0"/>
   </joint>
 
 </robot>

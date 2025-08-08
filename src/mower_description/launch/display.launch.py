@@ -63,10 +63,7 @@ def generate_launch_description():
                 ),
                 'use_sim_time': use_sim_time,
                 'publish_frequency': 200.0  # Match controller update rate
-            }],
-            remappings=[
-                ('joint_states', '/joint_states')
-            ]
+            }]
         ),
         
         # Joint State Publisher GUI Node (conditional)

@@ -4,7 +4,7 @@ controller_manager:
     use_sim_time: true  # Ensure proper clock synchronization
     
     # Clock source configuration
-    clock_interface_timeout: 0.1  # seconds to wait for clock source
+    clock_interface_timeout: 3  # seconds to wait for clock source
 
     # List of controllers to load and start
     joint_state_broadcaster:
@@ -23,10 +23,7 @@ joint_state_broadcaster:
       - right_wheel_joint
       - reel_joint
       - front_roller_joint
-    
-    # QoS settings to match robot_state_publisher
-    use_local_topics: false
-    
+
     # Publishing frequency
     publish_rate: 200.0  # Hz
 
@@ -48,8 +45,8 @@ diff_drive_controller:
     publish_rate: 50.0  # Hz
     odom_frame_id: odom
     base_frame_id: base_link
-    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    pose_covariance_diagonal: [0.001, 0.001, 10.0, 10.0, 10.0, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 10.0, 10.0, 10.0, 0.01]
     
     # Open loop odometry (no feedback from wheels)
     open_loop: false
@@ -65,5 +62,6 @@ diff_drive_controller:
 
 reel_controller:
   ros__parameters:
-    joints:
-      - reel_joint
+    joints: [reel_joint]
+    command_interfaces: [velocity]
+    state_interfaces: [position, velocity]
