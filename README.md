@@ -18,8 +18,9 @@ Phase 1 focuses on creating a high-fidelity digital twin of the mower within a s
 
 #### Prerequisites
 - ROS 2 Jazzy
-- Gazebo Harmonic
+- Gazebo Harmonic  
 - ros2_control and related packages
+- teleop_twist_keyboard package
 
 #### Build and Launch
 ```bash
@@ -30,24 +31,35 @@ source install/setup.bash
 
 # Launch complete simulation
 ros2 launch mower_bringup sim.launch.py
+
+# In new terminal: Launch teleoperation (for keyboard control)
+ros2 launch mower_bringup teleop.launch.py
+```
+
+#### Manual Control
+```bash
+# Use keyboard in teleop terminal:
+# i - Forward    j - Turn left    l - Turn right
+# k - Stop       u - Forward+left o - Forward+right  
+# , - Backward   m - Back+left    . - Back+right
 ```
 
 #### Test Robot Movement
 ```bash
-# Send movement command (TwistStamped format)
+# Send direct movement command (alternative to teleop)
 ros2 topic pub --once /diff_drive_controller/cmd_vel geometry_msgs/msg/TwistStamped \
   '{header: {frame_id: "base_link"}, twist: {linear: {x: 0.5}, angular: {z: 0.5}}}'
 
-# Monitor joint states
-ros2 topic echo /joint_states
+# Test reel controller
+ros2 topic pub --once /reel_controller/commands std_msgs/msg/Float64MultiArray \
+  '{data: [2.0]}'  # Reel velocity in rad/s
 
-# Check controller status  
+# Monitor system status
+ros2 topic echo /joint_states
 ros2 control list_controllers
 ```
 
-### **Next Steps**
-- [ ] Add teleoperation interface
-- [ ] Final system validation
+### **System Status: Phase 1 Complete ✅**
 
 ## Project Structure
 
