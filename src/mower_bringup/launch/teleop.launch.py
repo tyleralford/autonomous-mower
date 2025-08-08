@@ -2,22 +2,30 @@
 Teleoperation Launch File for Autonomous Mower
 
 This launch file provides keyboard teleoperation control for the mower robot.
-It launches the teleop_twist_keyboard node and properly maps the command
-velocity topic to the differential drive controller.
+It launches a custom simple teleop node that publishes TwistStamped messages
+to the differential drive controller.
 
 Usage:
     ros2 launch mower_bringup teleop.launch.py
     
+This will open a new gnome-terminal window for keyboard input.
+Keep the teleop terminal window focused for keyboard control!
+    
 Controls:
-    i - Move forward
-    k - Stop  
-    j - Turn left
-    l - Turn right
-    u - Forward + left
-    o - Forward + right
-    m - Backward + left
-    . - Backward + right
-    , - Move backward
+    w - Move forward
+    s - Move backward  
+    a - Turn left
+    d - Turn right
+    q - Forward + left
+    e - Forward + right
+    z - Backward + left
+    c - Backward + right
+    x - Stop
+    
+    SPACE - Emergency stop
+    ESC or Ctrl+C - Exit
+    
+Press Ctrl+C in the teleop terminal to stop.
 """
 
 from launch import LaunchDescription
@@ -37,17 +45,13 @@ def generate_launch_description():
             description='Use simulation (Gazebo) clock if true'
         ),
         
-        # Keyboard Teleoperation Node
+        # Simple Teleoperation Node (Custom Implementation)
         Node(
-            package='teleop_twist_keyboard',
-            executable='teleop_twist_keyboard',
-            name='teleop_twist_keyboard',
+            package='mower_bringup',
+            executable='simple_teleop',
+            name='simple_teleop',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
-            remappings=[
-                # Map teleop output to diff_drive_controller input
-                ('cmd_vel', '/diff_drive_controller/cmd_vel')
-            ],
-            prefix='xterm -e',  # Run in separate terminal window
+            prefix='gnome-terminal --'
         )
     ])

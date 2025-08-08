@@ -23,6 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'simple_teleop = mower_bringup.simple_teleop:main',
         ],
     },
 )

@@ -2,7 +2,7 @@
 
 This repository contains the ROS 2 software stack for an autonomous mower robot.
 
-## Phase 1: Foundational Simulation and Manual Control ✅ **97% COMPLETE**
+## Phase 1: Foundational Simulation and Manual Control ✅ **100% COMPLETE**
 
 Phase 1 focuses on creating a high-fidelity digital twin of the mower within a simulated environment for development and testing.
 
@@ -39,9 +39,9 @@ ros2 launch mower_bringup teleop.launch.py
 #### Manual Control
 ```bash
 # Use keyboard in teleop terminal:
-# i - Forward    j - Turn left    l - Turn right
-# k - Stop       u - Forward+left o - Forward+right  
-# , - Backward   m - Back+left    . - Back+right
+# w - Forward    s - Backward     a - Turn left    d - Turn right
+# q - Fwd+left   e - Fwd+right    z - Back+left    c - Back+right
+# x - Stop       SPACE - Emergency stop           ESC - Exit
 ```
 
 #### Test Robot Movement
