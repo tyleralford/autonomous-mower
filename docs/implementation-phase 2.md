@@ -24,7 +24,7 @@ This module focuses on adding the required sensors to the robot's description an
     - [x] **Sub-Task 1.1.3:** In the same file, add the `gazebo_ros_imu_sensor` plugin. Configure it to publish to the `/imu/data_raw` topic and set its `frame_id` to `imu_link`.
     - [x] **Sub-Task 1.1.4:** Configure the plugin with basic Gaussian noise for all sensor axes. Enable the debug visualization flag.
     - [x] **Sub-Task 1.1.5:** Update `mower.urdf.xacro` to include the new `sensors.xacro` file.
-    - [ ] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(description): Add IMU sensor to model"`)
+    - [x] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(description): Add IMU sensor to model"`)
 
 - [ ] **MANDATORY TEST 1.A: Verify IMU Data Publication**
     - **Context:** Before proceeding, ensure the IMU is correctly integrated and publishing data. **This test cannot be skipped.**
