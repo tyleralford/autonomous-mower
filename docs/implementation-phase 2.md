@@ -6,11 +6,11 @@ This document provides a detailed, step-by-step plan for executing Phase 2 of th
 
 This initial module prepares the codebase for Phase 2 development.
 
-- [ ] **Task 0.1:** **Create and Checkout a New Branch**
+- [x] **Task 0.1:** **Create and Checkout a New Branch**
     - **Context:** Isolate all Phase 2 development on a dedicated branch to maintain a clean `main` branch.
-    - **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch.
-    - **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-2-sensors-ekf`.
-    - **Sub-Task 0.1.3:** Push the new branch to the remote repository.
+    - [x] **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch.
+    - [x] **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-2-sensors-ekf`.
+    - [x] **Sub-Task 0.1.3:** Push the new branch to the remote repository.
 
 ### **Module 1: Sensor Integration into the URDF Model**
 
@@ -19,12 +19,12 @@ This module focuses on adding the required sensors to the robot's description an
 - [ ] **Task 1.1:** **Add Simulated IMU**
     - **Dependencies:** 0.1
     - **Context:** Add an Inertial Measurement Unit to the robot model to provide acceleration and angular velocity data.
-    - **Sub-Task 1.1.1:** In `mower_description/urdf/components/`, create a new file `sensors.xacro`.
-    - **Sub-Task 1.1.2:** In `sensors.xacro`, define a new link `imu_link` and a fixed joint to attach it to the `chassis` link.
-    - **Sub-Task 1.1.3:** In the same file, add the `gazebo_ros_imu_sensor` plugin. Configure it to publish to the `/imu/data_raw` topic and set its `frame_id` to `imu_link`.
-    - **Sub-Task 1.1.4:** Configure the plugin with basic Gaussian noise for all sensor axes. Enable the debug visualization flag.
-    - **Sub-Task 1.1.5:** Update `mower.urdf.xacro` to include the new `sensors.xacro` file.
-    - **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(description): Add IMU sensor to model"`)
+    - [x] **Sub-Task 1.1.1:** In `mower_description/urdf/components/`, create a new file `sensors.xacro`.
+    - [ ] **Sub-Task 1.1.2:** In `sensors.xacro`, define a new link `imu_link` and a fixed joint to attach it to the `chassis` link.
+    - [ ] **Sub-Task 1.1.3:** In the same file, add the `gazebo_ros_imu_sensor` plugin. Configure it to publish to the `/imu/data_raw` topic and set its `frame_id` to `imu_link`.
+    - [ ] **Sub-Task 1.1.4:** Configure the plugin with basic Gaussian noise for all sensor axes. Enable the debug visualization flag.
+    - [x] **Sub-Task 1.1.5:** Update `mower.urdf.xacro` to include the new `sensors.xacro` file.
+    - [ ] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(description): Add IMU sensor to model"`)
 
 - [ ] **MANDATORY TEST 1.A: Verify IMU Data Publication**
     - **Context:** Before proceeding, ensure the IMU is correctly integrated and publishing data. **This test cannot be skipped.**
@@ -38,13 +38,13 @@ This module focuses on adding the required sensors to the robot's description an
 - [ ] **Task 1.2:** **Add Simulated Dual GPS**
     - **Dependencies:** 1.1
     - **Context:** Add two GPS sensors to the model. These will provide raw location data and be used to calculate an absolute heading.
-    - **Sub-Task 1.2.1:** In `sensors.xacro`, define two new links: `gps_left_link` and `gps_right_link`.
-    - **Sub-Task 1.2.2:** Attach them with fixed joints to the `chassis` link. Place them symmetrically along the Y-axis with a **43cm baseline** (e.g., at `y=+0.215` and `y=-0.215` at an appropriate X/Z offset).
-    - **Sub-Task 1.2.3:** Add two instances of the `gazebo_ros_gps_sensor` plugin.
-    - **Sub-Task 1.2.4:** Configure the first plugin to publish to `/gps/left/fix` with `frame_id: gps_left_link`.
-    - **Sub-Task 1.2.5:** Configure the second plugin to publish to `/gps/right/fix` with `frame_id: gps_right_link`.
-    - **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
-    - **Sub-Task 1.2.7:** Commit your work. (`git commit -m "feat(description): Add dual GPS sensors to model"`)
+    - [ ] **Sub-Task 1.2.1:** In `sensors.xacro`, define two new links: `gps_left_link` and `gps_right_link`.
+    - [ ] **Sub-Task 1.2.2:** Attach them with fixed joints to the `chassis` link. Place them symmetrically along the Y-axis with a **43cm baseline** (e.g., at `y=+0.215` and `y=-0.215` at an appropriate X/Z offset).
+    - [ ] **Sub-Task 1.2.3:** Add two instances of the `gazebo_ros_gps_sensor` plugin.
+    - [ ] **Sub-Task 1.2.4:** Configure the first plugin to publish to `/gps/left/fix` with `frame_id: gps_left_link`.
+    - [ ] **Sub-Task 1.2.5:** Configure the second plugin to publish to `/gps/right/fix` with `frame_id: gps_right_link`.
+    - [ ] **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
+    - [ ] **Sub-Task 1.2.7:** Commit your work. (`git commit -m "feat(description): Add dual GPS sensors to model"`)
 
 - [ ] **MANDATORY TEST 1.B: Verify GPS Data Publication**
     - **Context:** Ensure both GPS sensors are publishing data independently. **This test cannot be skipped.**
@@ -61,28 +61,28 @@ This module focuses on creating the new ROS 2 node that provides the absolute he
 - [ ] **Task 2.1:** **Create Localization Package and Node Skeleton**
     - **Dependencies:** 1.2
     - **Context:** Create the package that will hold all state estimation configurations and the new custom node.
-    - **Sub-Task 2.1.1:** In `mower_ws/src`, create a new ROS 2 package: `ros2 pkg create --build-type ament_python mower_localization`.
-    - **Sub-Task 2.1.2:** Inside `mower_localization`, create a node file named `gps_heading_node.py`.
-    - **Sub-Task 2.1.3:** In the node, create the basic structure: two subscribers for the left and right GPS topics, and one publisher for the `/gps/heading` topic.
-    - **Sub-Task 2.1.4:** Commit the new package and node skeleton. (`git commit -m "feat(localization): Create package and gps_heading_node skeleton"`)
+    - [ ] **Sub-Task 2.1.1:** In `mower_ws/src`, create a new ROS 2 package: `ros2 pkg create --build-type ament_python mower_localization`.
+    - [ ] **Sub-Task 2.1.2:** Inside `mower_localization`, create a node file named `gps_heading_node.py`.
+    - [ ] **Sub-Task 2.1.3:** In the node, create the basic structure: two subscribers for the left and right GPS topics, and one publisher for the `/gps/heading` topic.
+    - [ ] **Sub-Task 2.1.4:** Commit the new package and node skeleton. (`git commit -m "feat(localization): Create package and gps_heading_node skeleton"`)
 
 - [ ] **Task 2.2:** **Implement Heading Calculation Logic**
     - **Dependencies:** 2.1
     - **Context:** Implement the core logic of the node to calculate and publish the heading.
-    - **Sub-Task 2.2.1:** In the GPS callback, store the latest messages from both sensors.
-    - **Sub-Task 2.2.2:** In a timer callback (e.g., at 20 Hz), calculate the vector between the two GPS positions. Use `math.atan2` to get the heading angle in radians.
-    - **Sub-Task 2.2.3:** Add **1.5707963 radians (90 degrees)** to the calculated angle to perform the mandatory yaw offset correction.
-    - **Sub-Task 2.2.4:** Convert the final angle into a quaternion.
-    - **Sub-Task 2.2.5:** Populate a `sensor_msgs/Imu` message with the calculated orientation and a fixed, reasonable orientation covariance.
-    - **Sub-Task 2.2.6:** Publish the message.
-    - **Sub-Task 2.2.7:** Commit the implemented logic. (`git commit -m "feat(localization): Implement GPS heading calculation logic"`)
+    - [ ] **Sub-Task 2.2.1:** In the GPS callback, store the latest messages from both sensors.
+    - [ ] **Sub-Task 2.2.2:** In a timer callback (e.g., at 20 Hz), calculate the vector between the two GPS positions. Use `math.atan2` to get the heading angle in radians.
+    - [ ] **Sub-Task 2.2.3:** Add **1.5707963 radians (90 degrees)** to the calculated angle to perform the mandatory yaw offset correction.
+    - [ ] **Sub-Task 2.2.4:** Convert the final angle into a quaternion.
+    - [ ] **Sub-Task 2.2.5:** Populate a `sensor_msgs/Imu` message with the calculated orientation and a fixed, reasonable orientation covariance.
+    - [ ] **Sub-Task 2.2.6:** Publish the message.
+    - [ ] **Sub-Task 2.2.7:** Commit the implemented logic. (`git commit -m "feat(localization): Implement GPS heading calculation logic"`)
 
 - [ ] **Task 2.3:** **Integrate Heading Node into Launch**
     - **Dependencies:** 2.2
     - **Context:** Add the new node to the main simulation launch file so it runs as part of the system.
-    - **Sub-Task 2.3.1:** Edit `mower_bringup/launch/sim.launch.py`.
-    - **Sub-Task 2.3.2:** Add a `Node` action to execute the `gps_heading_node.py`.
-    - **Sub-Task 2.3.3:** Commit the launch file update. (`git commit -m "feat(bringup): Add gps_heading_node to main launch"`)
+    - [ ] **Sub-Task 2.3.1:** Edit `mower_bringup/launch/sim.launch.py`.
+    - [ ] **Sub-Task 2.3.2:** Add a `Node` action to execute the `gps_heading_node.py`.
+    - [ ] **Sub-Task 2.3.3:** Commit the launch file update. (`git commit -m "feat(bringup): Add gps_heading_node to main launch"`)
 
 - [ ] **MANDATORY TEST 2.A: Verify Heading Publication**
     - **Context:** Test the custom node's logic in isolation before feeding its data to the EKF. **This test cannot be skipped.**
@@ -100,17 +100,17 @@ This module implements the core dual-EKF setup.
 - [ ] **Task 3.1:** **Create EKF Configuration Files**
     - **Dependencies:** 2.3
     - **Context:** Create the YAML files that will configure the two EKF nodes.
-    - **Sub-Task 3.1.1:** In `mower_localization`, create a `config/` directory.
-    - **Sub-Task 3.1.2:** Inside `config/`, create three files: `ekf_local.yaml`, `ekf_global.yaml`, and `navsat_transform.yaml`.
-    - **Sub-Task 3.1.3:** Commit the empty config files. (`git commit -m "feat(localization): Add EKF config files"`)
+    - [ ] **Sub-Task 3.1.1:** In `mower_localization`, create a `config/` directory.
+    - [ ] **Sub-Task 3.1.2:** Inside `config/`, create three files: `ekf_local.yaml`, `ekf_global.yaml`, and `navsat_transform.yaml`.
+    - [ ] **Sub-Task 3.1.3:** Commit the empty config files. (`git commit -m "feat(localization): Add EKF config files"`)
 
 - [ ] **Task 3.2:** **Configure and Integrate Local EKF**
     - **Dependencies:** 3.1
     - **Context:** Set up the first EKF to provide a smooth, continuous odometry based on relative sensors.
-    - **Sub-Task 3.2.1:** Edit `ekf_local.yaml`. Configure the `frequency`, `world_frame` (`odom`), and the inputs for wheel odometry (`odom0`) and the IMU (`imu0`), including their respective `_config` matrices for fusing velocity and angular rate.
-    - **Sub-Task 3.2.2:** Edit `sim.launch.py` to launch the `ekf_node` from `robot_localization`, giving it a unique name (`local_ekf_node`) and passing the `ekf_local.yaml` configuration to it.
-    - **Sub-Task 3.2.3:** **Crucially,** edit the `diff_drive_controller` parameters in `mower_controllers.yaml` and set `enable_odom_tf: false`. The EKF will now be responsible for this transform.
-    - **Sub-Task 3.2.4:** Commit the local EKF configuration. (`git commit -m "feat(localization): Configure and launch local EKF"`)
+    - [ ] **Sub-Task 3.2.1:** Edit `ekf_local.yaml`. Configure the `frequency`, `world_frame` (`odom`), and the inputs for wheel odometry (`odom0`) and the IMU (`imu0`), including their respective `_config` matrices for fusing velocity and angular rate.
+    - [ ] **Sub-Task 3.2.2:** Edit `sim.launch.py` to launch the `ekf_node` from `robot_localization`, giving it a unique name (`local_ekf_node`) and passing the `ekf_local.yaml` configuration to it.
+    - [ ] **Sub-Task 3.2.3:** **Crucially,** edit the `diff_drive_controller` parameters in `mower_controllers.yaml` and set `enable_odom_tf: false`. The EKF will now be responsible for this transform.
+    - [ ] **Sub-Task 3.2.4:** Commit the local EKF configuration. (`git commit -m "feat(localization): Configure and launch local EKF"`)
 
 - [ ] **MANDATORY TEST 3.A: Verify Local EKF Operation**
     - **Context:** Ensure the local EKF is correctly fusing wheel odometry and IMU data. **This test cannot be skipped.**
@@ -124,17 +124,17 @@ This module implements the core dual-EKF setup.
 - [ ] **Task 3.3:** **Configure and Integrate `navsat_transform_node`**
     - **Dependencies:** 3.2
     - **Context:** Set up the node that converts GPS lat/lon to the Cartesian `map` frame.
-    - **Sub-Task 3.3.1:** Edit `navsat_transform.yaml`. Configure the topic subscriptions and, most importantly, set `yaw_offset: 1.5707963`.
-    - **Sub-Task 3.3.2:** Edit `sim.launch.py` to launch the `navsat_transform_node` from `robot_localization` with its configuration file.
-    - **Sub-Task 3.3.3:** Commit the configuration. (`git commit -m "feat(localization): Configure and launch navsat_transform_node"`)
+    - [ ] **Sub-Task 3.3.1:** Edit `navsat_transform.yaml`. Configure the topic subscriptions and, most importantly, set `yaw_offset: 1.5707963`.
+    - [ ] **Sub-Task 3.3.2:** Edit `sim.launch.py` to launch the `navsat_transform_node` from `robot_localization` with its configuration file.
+    - [ ] **Sub-Task 3.3.3:** Commit the configuration. (`git commit -m "feat(localization): Configure and launch navsat_transform_node"`)
 
 - [ ] **Task 3.4:** **Configure and Integrate Global EKF**
     - **Dependencies:** 3.3
     - **Context:** Set up the second EKF to provide a globally accurate, drift-corrected pose.
-    - **Sub-Task 3.4.1:** Edit `ekf_global.yaml`. Configure the `world_frame` (`map`).
-    - **Sub-Task 3.4.2:** Configure the inputs to fuse the output of the local EKF (`odom0`), the output of `navsat_transform_node` (`odom1`), and the output of the custom heading node (`imu0`). Set the `_config` matrices to fuse only the appropriate values from each (e.g., only XY from `odom1`, only Yaw from `imu0`).
-    - **Sub-Task 3.4.3:** Edit `sim.launch.py` to launch a second `ekf_node` with a different name (`global_ekf_node`) and the `ekf_global.yaml` configuration.
-    - **Sub-Task 3.4.4:** Commit the global EKF configuration. (`git commit -m "feat(localization): Configure and launch global EKF"`)
+    - [ ] **Sub-Task 3.4.1:** Edit `ekf_global.yaml`. Configure the `world_frame` (`map`).
+    - [ ] **Sub-Task 3.4.2:** Configure the inputs to fuse the output of the local EKF (`odom0`), the output of `navsat_transform_node` (`odom1`), and the output of the custom heading node (`imu0`). Set the `_config` matrices to fuse only the appropriate values from each (e.g., only XY from `odom1`, only Yaw from `imu0`).
+    - [ ] **Sub-Task 3.4.3:** Edit `sim.launch.py` to launch a second `ekf_node` with a different name (`global_ekf_node`) and the `ekf_global.yaml` configuration.
+    - [ ] **Sub-Task 3.4.4:** Commit the global EKF configuration. (`git commit -m "feat(localization): Configure and launch global EKF"`)
 
 - [ ] **MANDATORY TEST 3.B: Verify Full TF Tree**
     - **Context:** Statically verify that all nodes are running and the complete transformation chain is present. **This test cannot be skipped.**
@@ -151,18 +151,18 @@ This module performs the final acceptance test as defined in the PRD.
 - [ ] **Task 4.1:** **Perform Loop-Closure Validation Test**
     - **Dependencies:** 3.4
     - **Context:** This is the final end-to-end test for Phase 2, validating the entire state estimation pipeline's performance.
-    - **Sub-Task 4.1.1:** In RViz, create a clean configuration to visualize the required elements for the test. Add two `Path` displays.
-    - **Sub-Task 4.1.2:** Configure the first Path to display `/odometry/filtered/local` in the `odom` fixed frame.
-    - **Sub-Task 4.1.3:** Configure the second Path to display `/odometry/filtered/global` in the `map` fixed frame.
-    - **Sub-Task 4.1.4:** Save this configuration to `mower_localization/rviz/ekf_test.rviz`.
-    - **Sub-Task 4.1.5:** Launch the simulation and RViz.
-    - **Sub-Task 4.1.6:** Perform the loop-closure driving test as described in the PRD's success metrics. Record screenshots or a short video for documentation.
-    - **Sub-Task 4.1.7:** Confirm that the global path shows minimal drift while the local path shows significant drift.
+    - [ ] **Sub-Task 4.1.1:** In RViz, create a clean configuration to visualize the required elements for the test. Add two `Path` displays.
+    - [ ] **Sub-Task 4.1.2:** Configure the first Path to display `/odometry/filtered/local` in the `odom` fixed frame.
+    - [ ] **Sub-Task 4.1.3:** Configure the second Path to display `/odometry/filtered/global` in the `map` fixed frame.
+    - [ ] **Sub-Task 4.1.4:** Save this configuration to `mower_localization/rviz/ekf_test.rviz`.
+    - [ ] **Sub-Task 4.1.5:** Launch the simulation and RViz.
+    - [ ] **Sub-Task 4.1.6:** Perform the loop-closure driving test as described in the PRD's success metrics. Record screenshots or a short video for documentation.
+    - [ ] **Sub-Task 4.1.7:** Confirm that the global path shows minimal drift while the local path shows significant drift.
 
 - [ ] **Task 4.2:** **Finalize and Merge**
     - **Dependencies:** 4.1
     - **Context:** Clean up the feature branch and merge it into the main branch, completing the phase.
-    - **Sub-Task 4.2.1:** Review all new code for clarity and comments.
-    - **Sub-Task 4.2.2:** Update the `README.md` file with instructions on how to view the new sensor data and EKF outputs.
-    - **Sub-Task 4.2.3:** Create a Pull Request on GitHub from `feature/phase-2-sensors-ekf` to `main`, including the validation screenshots in the description.
-    - **Sub-Task 4.2.4:** After review, merge the pull request. Phase 2 is now complete.
+    - [ ] **Sub-Task 4.2.1:** Review all new code for clarity and comments.
+    - [ ] **Sub-Task 4.2.2:** Update the `README.md` file with instructions on how to view the new sensor data and EKF outputs.
+    - [ ] **Sub-Task 4.2.3:** Create a Pull Request on GitHub from `feature/phase-2-sensors-ekf` to `main`, including the validation screenshots in the description.
+    - [ ] **Sub-Task 4.2.4:** After review, merge the pull request. Phase 2 is now complete.
