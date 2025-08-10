@@ -20,9 +20,9 @@ This module focuses on adding the required sensors to the robot's description an
     - **Dependencies:** 0.1
     - **Context:** Add an Inertial Measurement Unit to the robot model to provide acceleration and angular velocity data.
     - [x] **Sub-Task 1.1.1:** In `mower_description/urdf/components/`, create a new file `sensors.xacro`.
-    - [ ] **Sub-Task 1.1.2:** In `sensors.xacro`, define a new link `imu_link` and a fixed joint to attach it to the `chassis` link.
-    - [ ] **Sub-Task 1.1.3:** In the same file, add the `gazebo_ros_imu_sensor` plugin. Configure it to publish to the `/imu/data_raw` topic and set its `frame_id` to `imu_link`.
-    - [ ] **Sub-Task 1.1.4:** Configure the plugin with basic Gaussian noise for all sensor axes. Enable the debug visualization flag.
+    - [x] **Sub-Task 1.1.2:** In `sensors.xacro`, define a new link `imu_link` and a fixed joint to attach it to the `chassis` link.
+    - [x] **Sub-Task 1.1.3:** In the same file, add the `gazebo_ros_imu_sensor` plugin. Configure it to publish to the `/imu/data_raw` topic and set its `frame_id` to `imu_link`.
+    - [x] **Sub-Task 1.1.4:** Configure the plugin with basic Gaussian noise for all sensor axes. Enable the debug visualization flag.
     - [x] **Sub-Task 1.1.5:** Update `mower.urdf.xacro` to include the new `sensors.xacro` file.
     - [ ] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(description): Add IMU sensor to model"`)
 
