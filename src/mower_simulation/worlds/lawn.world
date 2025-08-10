@@ -1,6 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.7">
   <world name="lawn">
+    <!-- Sensor systems (added for IMU publishing) -->
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
     <!-- Physics engine configuration -->
     <physics name="dart_physics" default="true" type="dart">
       <max_step_size>0.001</max_step_size>
