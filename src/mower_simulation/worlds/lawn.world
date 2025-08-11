@@ -1,6 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.7">
   <world name="lawn">
+    <!-- Required core systems for Gazebo Harmonic -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    
     <!-- Sensor systems (added for IMU publishing) -->
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"/>
     <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
