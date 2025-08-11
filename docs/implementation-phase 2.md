@@ -58,13 +58,13 @@ This module focuses on adding the required sensors to the robot's description an
 
 This module focuses on creating the new ROS 2 node that provides the absolute heading measurement required by the global EKF.
 
-- [ ] **Task 2.1:** **Create Localization Package and Node Skeleton**
+- [x] **Task 2.1:** **Create Localization Package and Node Skeleton** (✅ COMPLETED)
     - **Dependencies:** 1.2
     - **Context:** Create the package that will hold all state estimation configurations and the new custom node.
-    - [ ] **Sub-Task 2.1.1:** In `mower_ws/src`, create a new ROS 2 package: `ros2 pkg create --build-type ament_python mower_localization`.
-    - [ ] **Sub-Task 2.1.2:** Inside `mower_localization`, create a node file named `gps_heading_node.py`.
-    - [ ] **Sub-Task 2.1.3:** In the node, create the basic structure: two subscribers for the left and right GPS topics, and one publisher for the `/gps/heading` topic.
-    - [ ] **Sub-Task 2.1.4:** Commit the new package and node skeleton. (`git commit -m "feat(localization): Create package and gps_heading_node skeleton"`)
+    - [x] **Sub-Task 2.1.1:** In `mower_ws/src`, create a new ROS 2 package: `ros2 pkg create --build-type ament_python mower_localization`.
+    - [x] **Sub-Task 2.1.2:** Inside `mower_localization`, create a node file named `gps_heading_node.py`.
+    - [x] **Sub-Task 2.1.3:** In the node, create the basic structure: two subscribers for the left and right GPS topics, and one publisher for the `/gps/heading` topic.
+    - [x] **Sub-Task 2.1.4:** Commit the new package and node skeleton. (`git commit -m "Create package and gps_heading_node skeleton. Complete Task 2.1 Sub-tasks 2.1.1-2.1.4"`)
 
 - [ ] **Task 2.2:** **Implement Heading Calculation Logic**
     - **Dependencies:** 2.1
