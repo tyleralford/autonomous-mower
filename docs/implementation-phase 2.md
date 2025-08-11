@@ -46,7 +46,7 @@ This module focuses on adding the required sensors to the robot's description an
     - [x] **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
     - [x] **Sub-Task 1.2.7:** Commit your work. (`git commit -m "Add dual GPS sensor configuration for Task 1.2"`)
 
-- [ ] **MANDATORY TEST 1.B: Verify GPS Data Publication**
+- [x] **MANDATORY TEST 1.B: Verify GPS Data Publication** (✅ COMPLETED - Dual GPS sensors publishing at 20Hz)
     - **Context:** Ensure both GPS sensors are publishing data independently. **This test cannot be skipped.**
     - **Procedure:**
         1. Relaunch the simulation: `ros2 launch mower_bringup sim.launch.py`.
