@@ -77,14 +77,14 @@ This module focuses on creating the new ROS 2 node that provides the absolute he
     - [x] **Sub-Task 2.2.6:** Publish the message.
     - [x] **Sub-Task 2.2.7:** Commit the implemented logic. (`git commit -m "Implement GPS heading calculation logic"`)
 
-- [ ] **Task 2.3:** **Integrate Heading Node into Launch**
+- [x] **Task 2.3:** **Integrate Heading Node into Launch** (✅ COMPLETED)
     - **Dependencies:** 2.2
     - **Context:** Add the new node to the main simulation launch file so it runs as part of the system.
-    - [ ] **Sub-Task 2.3.1:** Edit `mower_bringup/launch/sim.launch.py`.
-    - [ ] **Sub-Task 2.3.2:** Add a `Node` action to execute the `gps_heading_node.py`.
-    - [ ] **Sub-Task 2.3.3:** Commit the launch file update. (`git commit -m "feat(bringup): Add gps_heading_node to main launch"`)
+    - [x] **Sub-Task 2.3.1:** Edit `mower_bringup/launch/sim.launch.py`.
+    - [x] **Sub-Task 2.3.2:** Add a `Node` action to execute the `gps_heading_node.py`.
+    - [x] **Sub-Task 2.3.3:** Commit the launch file update. (`git commit -m "Add gps_heading_node to main launch"`)
 
-- [ ] **MANDATORY TEST 2.A: Verify Heading Publication**
+- [x] **MANDATORY TEST 2.A: Verify Heading Publication** (✅ COMPLETED)
     - **Context:** Test the custom node's logic in isolation before feeding its data to the EKF. **This test cannot be skipped.**
     - **Procedure:**
         1. Build and source the workspace.

@@ -106,9 +106,9 @@ class GPSHeadingNode(Node):
         # Set orientation covariance (reasonable fixed values)
         # Only set the yaw covariance (position [8] in 3x3 matrix)
         imu_msg.orientation_covariance = [
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.1  # Yaw variance: 0.1 rad^2
+            100.0, 0.0, 0.0,
+            0.0, 100.0, 0.0,
+            0.0, 0.0, 0.01  # Yaw variance: 0.01 rad^2
         ]
         
         # Set unused angular velocity and acceleration to zero with high covariance
