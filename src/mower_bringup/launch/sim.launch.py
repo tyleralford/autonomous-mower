@@ -111,6 +111,15 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
+
+        # GPS Heading Node - Calculates absolute heading from dual GPS baseline
+        Node(
+            package='mower_localization',
+            executable='gps_heading_node',
+            name='gps_heading_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
         
         # Spawn the robot using the gz_spawn_model launch file
         IncludeLaunchDescription(

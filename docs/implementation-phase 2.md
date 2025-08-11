@@ -66,16 +66,16 @@ This module focuses on creating the new ROS 2 node that provides the absolute he
     - [x] **Sub-Task 2.1.3:** In the node, create the basic structure: two subscribers for the left and right GPS topics, and one publisher for the `/gps/heading` topic.
     - [x] **Sub-Task 2.1.4:** Commit the new package and node skeleton. (`git commit -m "Create package and gps_heading_node skeleton. Complete Task 2.1 Sub-tasks 2.1.1-2.1.4"`)
 
-- [ ] **Task 2.2:** **Implement Heading Calculation Logic**
+- [x] **Task 2.2:** **Implement Heading Calculation Logic** (✅ COMPLETED)
     - **Dependencies:** 2.1
     - **Context:** Implement the core logic of the node to calculate and publish the heading.
-    - [ ] **Sub-Task 2.2.1:** In the GPS callback, store the latest messages from both sensors.
-    - [ ] **Sub-Task 2.2.2:** In a timer callback (e.g., at 20 Hz), calculate the vector between the two GPS positions. Use `math.atan2` to get the heading angle in radians.
-    - [ ] **Sub-Task 2.2.3:** Add **1.5707963 radians (90 degrees)** to the calculated angle to perform the mandatory yaw offset correction.
-    - [ ] **Sub-Task 2.2.4:** Convert the final angle into a quaternion.
-    - [ ] **Sub-Task 2.2.5:** Populate a `sensor_msgs/Imu` message with the calculated orientation and a fixed, reasonable orientation covariance.
-    - [ ] **Sub-Task 2.2.6:** Publish the message.
-    - [ ] **Sub-Task 2.2.7:** Commit the implemented logic. (`git commit -m "feat(localization): Implement GPS heading calculation logic"`)
+    - [x] **Sub-Task 2.2.1:** In the GPS callback, store the latest messages from both sensors.
+    - [x] **Sub-Task 2.2.2:** In a timer callback (e.g., at 20 Hz), calculate the vector between the two GPS positions. Use `math.atan2` to get the heading angle in radians.
+    - [x] **Sub-Task 2.2.3:** Add **1.5707963 radians (90 degrees)** to the calculated angle to perform the mandatory yaw offset correction.
+    - [x] **Sub-Task 2.2.4:** Convert the final angle into a quaternion.
+    - [x] **Sub-Task 2.2.5:** Populate a `sensor_msgs/Imu` message with the calculated orientation and a fixed, reasonable orientation covariance.
+    - [x] **Sub-Task 2.2.6:** Publish the message.
+    - [x] **Sub-Task 2.2.7:** Commit the implemented logic. (`git commit -m "Implement GPS heading calculation logic"`)
 
 - [ ] **Task 2.3:** **Integrate Heading Node into Launch**
     - **Dependencies:** 2.2
