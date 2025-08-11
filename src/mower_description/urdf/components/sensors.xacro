@@ -28,7 +28,43 @@
       <mass value="0.01"/>
       <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
     </inertial>
-    <!-- Native IMU sensor definition inside link (no <gazebo> wrapper) -->
+  </link>
+
+  <!-- IMU Sensor Joint -->
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GPS Sensor Link -->
+  <link name="gps_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.03 0.04"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.03 0.03 0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <!-- GPS Sensor Joint -->
+  <joint name="base_to_gps" type="fixed">
+    <parent link="base_link"/>
+    <child link="gps_link"/>
+    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo IMU Sensor (native gz-sim format) -->
+  <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
       <always_on>1</always_on>
       <update_rate>70</update_rate>
@@ -89,39 +125,6 @@
         </linear_acceleration>
       </imu>
     </sensor>
-  </link>
-
-  <!-- IMU Sensor Joint -->
-  <joint name="base_to_imu" type="fixed">
-    <parent link="base_link"/>
-    <child link="imu_link"/>
-    <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius}" rpy="0 0 0"/>
-  </joint>
-
-  <!-- GPS Sensor Link -->
-  <link name="gps_link">
-    <visual>
-      <geometry>
-        <box size="0.03 0.03 0.04"/>
-      </geometry>
-      <material name="orange"/>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="0.03 0.03 0.04"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
-    </inertial>
-  </link>
-
-  <!-- GPS Sensor Joint -->
-  <joint name="base_to_gps" type="fixed">
-    <parent link="base_link"/>
-    <child link="gps_link"/>
-    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 0"/>
-  </joint>
+  </gazebo>
 
 </robot>
