@@ -1,0 +1,9 @@
+# NavSat Transform Configuration
+#
+# This node converts GPS lat/lon coordinates to Cartesian coordinates in the map frame.
+# It subscribes to GPS data and publishes odometry messages for the global EKF.
+#
+# Inputs: GPS fix data
+# Output: /odometry/gps in 'map' frame
+
+# TODO: Configure navsat_transform parameters in Task 3.3

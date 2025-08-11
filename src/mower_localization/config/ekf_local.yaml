@@ -1,0 +1,8 @@
+# EKF Local Configuration
+# 
+# This EKF provides smooth, continuous odometry based on relative sensors.
+# It fuses wheel odometry and IMU data to produce drift-prone but smooth pose estimates.
+#
+# Output: /odometry/filtered/local in 'odom' frame
+
+# TODO: Configure local EKF parameters in Task 3.2

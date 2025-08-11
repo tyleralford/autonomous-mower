@@ -1,0 +1,8 @@
+# EKF Global Configuration
+#
+# This EKF provides globally accurate, drift-corrected pose estimates.
+# It fuses local EKF output, GPS position data, and GPS heading data.
+#
+# Output: /odometry/filtered/global in 'map' frame
+
+# TODO: Configure global EKF parameters in Task 3.4
