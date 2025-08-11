@@ -77,7 +77,17 @@ def generate_launch_description():
             package='ros_gz_bridge',
             executable='parameter_bridge',
             name='clock_bridge',
-            arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock', '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+            arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
+
+        # ROS-Gazebo IMU Bridge
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='imu_bridge',
+            arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
