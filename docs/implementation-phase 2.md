@@ -35,16 +35,16 @@ This module focuses on adding the required sensors to the robot's description an
         4. Echo the topic: `ros2 topic echo /imu/data_raw`.
     - **Expected Outcome:** The topic exists and publishes `sensor_msgs/Imu` messages at a steady rate. The data should change when you manually move or rotate the robot in the Gazebo interface.
 
-- [ ] **Task 1.2:** **Add Simulated Dual GPS**
+- [x] **Task 1.2:** **Add Simulated Dual GPS** (✅ COMPLETED)
     - **Dependencies:** 1.1
     - **Context:** Add two GPS sensors to the model. These will provide raw location data and be used to calculate an absolute heading.
-    - [ ] **Sub-Task 1.2.1:** In `sensors.xacro`, define two new links: `gps_left_link` and `gps_right_link`.
-    - [ ] **Sub-Task 1.2.2:** Attach them with fixed joints to the `chassis` link. Place them symmetrically along the Y-axis with a **43cm baseline** (e.g., at `y=+0.215` and `y=-0.215` at an appropriate X/Z offset).
-    - [ ] **Sub-Task 1.2.3:** Add two instances of the `gazebo_ros_gps_sensor` plugin.
-    - [ ] **Sub-Task 1.2.4:** Configure the first plugin to publish to `/gps/left/fix` with `frame_id: gps_left_link`.
-    - [ ] **Sub-Task 1.2.5:** Configure the second plugin to publish to `/gps/right/fix` with `frame_id: gps_right_link`.
-    - [ ] **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
-    - [ ] **Sub-Task 1.2.7:** Commit your work. (`git commit -m "feat(description): Add dual GPS sensors to model"`)
+    - [x] **Sub-Task 1.2.1:** In `sensors.xacro`, define two new links: `gps_left_link` and `gps_right_link`.
+    - [x] **Sub-Task 1.2.2:** Attach them with fixed joints to the `chassis` link. Place them symmetrically along the Y-axis with a **43cm baseline** (e.g., at `y=+0.215` and `y=-0.215` at an appropriate X/Z offset).
+    - [x] **Sub-Task 1.2.3:** Add two instances of the NavSat sensor using native Gazebo Harmonic format.
+    - [x] **Sub-Task 1.2.4:** Configure the first plugin to publish to `/gps/left/fix` with `frame_id: gps_left_link`.
+    - [x] **Sub-Task 1.2.5:** Configure the second plugin to publish to `/gps/right/fix` with `frame_id: gps_right_link`.
+    - [x] **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
+    - [x] **Sub-Task 1.2.7:** Commit your work. (`git commit -m "Add dual GPS sensor configuration for Task 1.2"`)
 
 - [ ] **MANDATORY TEST 1.B: Verify GPS Data Publication**
     - **Context:** Ensure both GPS sensors are publishing data independently. **This test cannot be skipped.**

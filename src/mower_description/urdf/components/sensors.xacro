@@ -169,17 +169,17 @@
           <horizontal>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>2.0</stddev>
+              <stddev>0.01</stddev>
               <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.1</bias_stddev>
+              <bias_stddev>0.001</bias_stddev>
             </noise>
           </horizontal>
           <vertical>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>4.0</stddev>
+              <stddev>0.02</stddev>
               <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.2</bias_stddev>
+              <bias_stddev>0.002</bias_stddev>
             </noise>
           </vertical>
         </position_sensing>
@@ -199,17 +199,17 @@
           <horizontal>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>2.0</stddev>
+              <stddev>0.01</stddev>
               <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.1</bias_stddev>
+              <bias_stddev>0.001</bias_stddev>
             </noise>
           </horizontal>
           <vertical>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>4.0</stddev>
+              <stddev>0.02</stddev>
               <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.2</bias_stddev>
+              <bias_stddev>0.002</bias_stddev>
             </noise>
           </vertical>
         </position_sensing>

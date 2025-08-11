@@ -91,6 +91,26 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
+
+        # ROS-Gazebo GPS Left Bridge
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='gps_left_bridge',
+            arguments=['/gps/left/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
+
+        # ROS-Gazebo GPS Right Bridge
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='gps_right_bridge',
+            arguments=['/gps/right/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
         
         # Spawn the robot using the gz_spawn_model launch file
         IncludeLaunchDescription(
