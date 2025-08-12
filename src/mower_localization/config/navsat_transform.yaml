@@ -21,13 +21,3 @@ navsat_transform:
     base_link_frame: base_link
     odom_frame: odom
     world_frame: map
-
-  ros__remappings:
-    - from: /imu
-      to: /gps/heading
-    - from: /gps/fix
-      to: /gps/left/fix
-    - from: /odometry/filtered
-      to: /odometry/filtered/local
-    - from: /odometry/gps
-      to: /odometry/gps
