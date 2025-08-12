@@ -151,10 +151,10 @@ This module performs the final acceptance test as defined in the PRD.
 - [ ] **Task 4.1:** **Perform Loop-Closure Validation Test**
     - **Dependencies:** 3.4
     - **Context:** This is the final end-to-end test for Phase 2, validating the entire state estimation pipeline's performance.
-    - [ ] **Sub-Task 4.1.1:** In RViz, create a clean configuration to visualize the required elements for the test. Add two `Path` displays.
-    - [ ] **Sub-Task 4.1.2:** Configure the first Path to display `/odometry/filtered/local` in the `odom` fixed frame.
-    - [ ] **Sub-Task 4.1.3:** Configure the second Path to display `/odometry/filtered/global` in the `map` fixed frame.
-    - [ ] **Sub-Task 4.1.4:** Save this configuration to `mower_localization/rviz/ekf_test.rviz`.
+    - [x] **Sub-Task 4.1.1:** In RViz, create a clean configuration to visualize the required elements for the test. Add two `Path` displays.
+    - [x] **Sub-Task 4.1.2:** Configure the first Path to display `/odometry/filtered/local` in the `odom` fixed frame.
+    - [x] **Sub-Task 4.1.3:** Configure the second Path to display `/odometry/filtered/global` in the `map` fixed frame.
+    - [x] **Sub-Task 4.1.4:** Save this configuration to `mower_localization/rviz/ekf_test.rviz`.
     - [ ] **Sub-Task 4.1.5:** Launch the simulation and RViz.
     - [ ] **Sub-Task 4.1.6:** Perform the loop-closure driving test as described in the PRD's success metrics. Record screenshots or a short video for documentation.
     - [ ] **Sub-Task 4.1.7:** Confirm that the global path shows minimal drift while the local path shows significant drift.
