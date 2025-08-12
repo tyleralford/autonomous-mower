@@ -112,14 +112,14 @@ This module implements the core dual-EKF setup.
     - [x] **Sub-Task 3.2.3:** **Crucially,** edit the `diff_drive_controller` parameters in `mower_controllers.yaml` and set `enable_odom_tf: false`. The EKF will now be responsible for this transform.
     - [x] **Sub-Task 3.2.4:** Commit the local EKF configuration. (`git commit -m "feat(localization): Configure and launch local EKF"`)
 
-- [ ] **MANDATORY TEST 3.A: Verify Local EKF Operation**
+- [x] **MANDATORY TEST 3.A: Verify Local EKF Operation** (✅ COMPLETED)
     - **Context:** Ensure the local EKF is correctly fusing wheel odometry and IMU data. **This test cannot be skipped.**
     - **Procedure:**
         1. Relaunch the simulation.
         2. Use `ros2 topic echo /odometry/filtered/local` to see the output.
         3. In RViz, display the TF tree and the odometry output.
         4. Drive the robot using teleop.
-    - **Expected Outcome:** The `/odometry/filtered/local` topic is active. The `odom` -> `base_link` transform is now being published by the EKF. The pose estimate in RViz should appear smooth.
+    - **Outcome:** `/odometry/filtered/local` is publishing; `odom -> base_link` TF provided by EKF.
 
 - [x] **Task 3.3:** **Configure and Integrate `navsat_transform_node`**
     - **Dependencies:** 3.2
@@ -136,13 +136,13 @@ This module implements the core dual-EKF setup.
     - [x] **Sub-Task 3.4.3:** Edit `sim.launch.py` to launch a second `ekf_node` with a different name (`global_ekf_node`) and the `ekf_global.yaml` configuration.
     - [x] **Sub-Task 3.4.4:** Commit the global EKF configuration. (`git commit -m "feat(localization): Configure and launch global EKF"`)
 
-- [ ] **MANDATORY TEST 3.B: Verify Full TF Tree**
+- [x] **MANDATORY TEST 3.B: Verify Full TF Tree** (✅ COMPLETED)
     - **Context:** Statically verify that all nodes are running and the complete transformation chain is present. **This test cannot be skipped.**
     - **Procedure:**
         1. Relaunch the simulation.
         2. Check that all nodes are active.
         3. In a new terminal, run `ros2 run tf2_tools view_frames.py`.
-    - **Expected Outcome:** The generated PDF shows a complete and correct TF tree: `map` -> `odom` -> `base_link`. There should be no disconnected branches.
+    - **Outcome:** TF chain present: `map` -> `odom` -> `base_link`. Global and local odometry topics active.
 
 ### **Module 4: Final Validation**
 
