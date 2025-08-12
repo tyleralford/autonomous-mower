@@ -97,20 +97,20 @@ This module focuses on creating the new ROS 2 node that provides the absolute he
 
 This module implements the core dual-EKF setup.
 
-- [ ] **Task 3.1:** **Create EKF Configuration Files**
+- [x] **Task 3.1:** **Create EKF Configuration Files** (✅ COMPLETED)
     - **Dependencies:** 2.3
     - **Context:** Create the YAML files that will configure the two EKF nodes.
-    - [ ] **Sub-Task 3.1.1:** In `mower_localization`, create a `config/` directory.
-    - [ ] **Sub-Task 3.1.2:** Inside `config/`, create three files: `ekf_local.yaml`, `ekf_global.yaml`, and `navsat_transform.yaml`.
-    - [ ] **Sub-Task 3.1.3:** Commit the empty config files. (`git commit -m "feat(localization): Add EKF config files"`)
+    - [x] **Sub-Task 3.1.1:** In `mower_localization`, create a `config/` directory.
+    - [x] **Sub-Task 3.1.2:** Inside `config/`, create three files: `ekf_local.yaml`, `ekf_global.yaml`, and `navsat_transform.yaml`.
+    - [x] **Sub-Task 3.1.3:** Commit the empty config files. (`git commit -m "Add EKF config files"`)
 
-- [ ] **Task 3.2:** **Configure and Integrate Local EKF**
+- [x] **Task 3.2:** **Configure and Integrate Local EKF**
     - **Dependencies:** 3.1
     - **Context:** Set up the first EKF to provide a smooth, continuous odometry based on relative sensors.
-    - [ ] **Sub-Task 3.2.1:** Edit `ekf_local.yaml`. Configure the `frequency`, `world_frame` (`odom`), and the inputs for wheel odometry (`odom0`) and the IMU (`imu0`), including their respective `_config` matrices for fusing velocity and angular rate.
-    - [ ] **Sub-Task 3.2.2:** Edit `sim.launch.py` to launch the `ekf_node` from `robot_localization`, giving it a unique name (`local_ekf_node`) and passing the `ekf_local.yaml` configuration to it.
-    - [ ] **Sub-Task 3.2.3:** **Crucially,** edit the `diff_drive_controller` parameters in `mower_controllers.yaml` and set `enable_odom_tf: false`. The EKF will now be responsible for this transform.
-    - [ ] **Sub-Task 3.2.4:** Commit the local EKF configuration. (`git commit -m "feat(localization): Configure and launch local EKF"`)
+    - [x] **Sub-Task 3.2.1:** Edit `ekf_local.yaml`. Configure the `frequency`, `world_frame` (`odom`), and the inputs for wheel odometry (`odom0`) and the IMU (`imu0`), including their respective `_config` matrices for fusing velocity and angular rate.
+    - [x] **Sub-Task 3.2.2:** Edit `sim.launch.py` to launch the `ekf_node` from `robot_localization`, giving it a unique name (`local_ekf_node`) and passing the `ekf_local.yaml` configuration to it.
+    - [x] **Sub-Task 3.2.3:** **Crucially,** edit the `diff_drive_controller` parameters in `mower_controllers.yaml` and set `enable_odom_tf: false`. The EKF will now be responsible for this transform.
+    - [x] **Sub-Task 3.2.4:** Commit the local EKF configuration. (`git commit -m "feat(localization): Configure and launch local EKF"`)
 
 - [ ] **MANDATORY TEST 3.A: Verify Local EKF Operation**
     - **Context:** Ensure the local EKF is correctly fusing wheel odometry and IMU data. **This test cannot be skipped.**
@@ -121,20 +121,20 @@ This module implements the core dual-EKF setup.
         4. Drive the robot using teleop.
     - **Expected Outcome:** The `/odometry/filtered/local` topic is active. The `odom` -> `base_link` transform is now being published by the EKF. The pose estimate in RViz should appear smooth.
 
-- [ ] **Task 3.3:** **Configure and Integrate `navsat_transform_node`**
+- [x] **Task 3.3:** **Configure and Integrate `navsat_transform_node`**
     - **Dependencies:** 3.2
     - **Context:** Set up the node that converts GPS lat/lon to the Cartesian `map` frame.
-    - [ ] **Sub-Task 3.3.1:** Edit `navsat_transform.yaml`. Configure the topic subscriptions and, most importantly, set `yaw_offset: 1.5707963`.
-    - [ ] **Sub-Task 3.3.2:** Edit `sim.launch.py` to launch the `navsat_transform_node` from `robot_localization` with its configuration file.
-    - [ ] **Sub-Task 3.3.3:** Commit the configuration. (`git commit -m "feat(localization): Configure and launch navsat_transform_node"`)
+    - [x] **Sub-Task 3.3.1:** Edit `navsat_transform.yaml`. Configure the topic subscriptions and, most importantly, set `yaw_offset: 1.5707963`.
+    - [x] **Sub-Task 3.3.2:** Edit `sim.launch.py` to launch the `navsat_transform_node` from `robot_localization` with its configuration file.
+    - [x] **Sub-Task 3.3.3:** Commit the configuration. (`git commit -m "feat(localization): Configure and launch navsat_transform_node"`)
 
-- [ ] **Task 3.4:** **Configure and Integrate Global EKF**
+- [x] **Task 3.4:** **Configure and Integrate Global EKF**
     - **Dependencies:** 3.3
     - **Context:** Set up the second EKF to provide a globally accurate, drift-corrected pose.
-    - [ ] **Sub-Task 3.4.1:** Edit `ekf_global.yaml`. Configure the `world_frame` (`map`).
-    - [ ] **Sub-Task 3.4.2:** Configure the inputs to fuse the output of the local EKF (`odom0`), the output of `navsat_transform_node` (`odom1`), and the output of the custom heading node (`imu0`). Set the `_config` matrices to fuse only the appropriate values from each (e.g., only XY from `odom1`, only Yaw from `imu0`).
-    - [ ] **Sub-Task 3.4.3:** Edit `sim.launch.py` to launch a second `ekf_node` with a different name (`global_ekf_node`) and the `ekf_global.yaml` configuration.
-    - [ ] **Sub-Task 3.4.4:** Commit the global EKF configuration. (`git commit -m "feat(localization): Configure and launch global EKF"`)
+    - [x] **Sub-Task 3.4.1:** Edit `ekf_global.yaml`. Configure the `world_frame` (`map`).
+    - [x] **Sub-Task 3.4.2:** Configure the inputs to fuse the output of the local EKF (`odom0`), the output of `navsat_transform_node` (`odom1`), and the output of the custom heading node (`imu0`). Set the `_config` matrices to fuse only the appropriate values from each (e.g., only XY from `odom1`, only Yaw from `imu0`).
+    - [x] **Sub-Task 3.4.3:** Edit `sim.launch.py` to launch a second `ekf_node` with a different name (`global_ekf_node`) and the `ekf_global.yaml` configuration.
+    - [x] **Sub-Task 3.4.4:** Commit the global EKF configuration. (`git commit -m "feat(localization): Configure and launch global EKF"`)
 
 - [ ] **MANDATORY TEST 3.B: Verify Full TF Tree**
     - **Context:** Statically verify that all nodes are running and the complete transformation chain is present. **This test cannot be skipped.**
