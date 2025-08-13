@@ -28,5 +28,9 @@
 - Follow established code-writing standards for your language (spacing, comments, naming).
 - Prioritize clarity and adhere to coding standards.
 - Use version control best practices, such as meaningful and concise commit messages.
+  - For example, use comments like this: 
+    - "fix(ekf): use top-level ros__parameters for node-independent configs" 
+    - "docs(phase-2): mark Tests 3.A and 3.B completed; EKFs and navsat running"
+    - "feat(phase-2): add GPS and IMU sensors with respective EKFs"
 - Keep documentation up to date with code changes.
 - Do not use emojis or informal language in code comments or documentation.
