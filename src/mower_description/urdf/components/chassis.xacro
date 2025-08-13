@@ -12,16 +12,16 @@
   -->
 
   <!-- Root Link (dummy link without inertia for KDL compatibility) -->
-  <link name="base_footprint">
+  <!-- <link name="base_footprint"> -->
     <!-- No inertia on root link - KDL requirement -->
-  </link>
+  <!-- </link> -->
 
   <!-- Fixed joint connecting root to actual chassis -->
-  <joint name="base_footprint_joint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
-  </joint>
+  <!-- <joint name="base_footprint_joint" type="fixed"> -->
+    <!-- <parent link="base_footprint"/> -->
+    <!-- <child link="base_link"/> -->
+    <!-- <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/> -->
+  <!-- </joint> -->
 
   <!-- Base Link (main chassis) - now as child link with inertia -->
   <link name="base_link">

@@ -45,14 +45,9 @@
   <xacro:property name="imu_y" value="0.0875" />
   <xacro:property name="imu_z" value="0.169" />
 
-  <!-- GPS sensor positions (dual GPS setup with 43cm baseline) -->
-  <!-- GPS Left sensor position -->
-  <xacro:property name="gps_left_x" value="0.0" />
-  <xacro:property name="gps_left_y" value="0.215" />
-  <xacro:property name="gps_left_z" value="0.253" />
-  <!-- GPS Right sensor position -->
-  <xacro:property name="gps_right_x" value="0.0" />
-  <xacro:property name="gps_right_y" value="-0.215" />
-  <xacro:property name="gps_right_z" value="0.253" />
+  <!-- GPS sensor position -->
+  <xacro:property name="gps_x" value="0.0" />
+  <xacro:property name="gps_y" value="0.215" />
+  <xacro:property name="gps_z" value="0.253" />
 
 </robot>

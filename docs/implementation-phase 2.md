@@ -38,21 +38,20 @@ This module focuses on adding the required sensors to the robot's description an
 - [x] **Task 1.2:** **Add Simulated Dual GPS** (✅ COMPLETED)
     - **Dependencies:** 1.1
     - **Context:** Add two GPS sensors to the model. These will provide raw location data and be used to calculate an absolute heading.
-    - [x] **Sub-Task 1.2.1:** In `sensors.xacro`, define two new links: `gps_left_link` and `gps_right_link`.
-    - [x] **Sub-Task 1.2.2:** Attach them with fixed joints to the `chassis` link. Place them symmetrically along the Y-axis with a **43cm baseline** (e.g., at `y=+0.215` and `y=-0.215` at an appropriate X/Z offset).
-    - [x] **Sub-Task 1.2.3:** Add two instances of the NavSat sensor using native Gazebo Harmonic format.
-    - [x] **Sub-Task 1.2.4:** Configure the first plugin to publish to `/gps/left/fix` with `frame_id: gps_left_link`.
-    - [x] **Sub-Task 1.2.5:** Configure the second plugin to publish to `/gps/right/fix` with `frame_id: gps_right_link`.
-    - [x] **Sub-Task 1.2.6:** Configure both plugins with basic Gaussian noise and enable their debug visualization.
-    - [x] **Sub-Task 1.2.7:** Commit your work. (`git commit -m "Add dual GPS sensor configuration for Task 1.2"`)
+    - [x] **Sub-Task 1.2.1:** In `sensors.xacro`, define a new link: `gps_link`.
+    - [x] **Sub-Task 1.2.2:** Attach it with a fixed joint to the `chassis` link.
+    - [x] **Sub-Task 1.2.3:** Add an instance of the NavSat sensor using native Gazebo Harmonic format.
+    - [x] **Sub-Task 1.2.4:** Configure the plugin to publish to `/gps/fix` with `frame_id: gps_link`.
+    - [x] **Sub-Task 1.2.5:** Configure the plugin with basic Gaussian noise and enable its debug visualization.
+    - [x] **Sub-Task 1.2.6:** Commit your work. (`git commit -m "Add dual GPS sensor configuration for Task 1.2"`)
 
 - [x] **MANDATORY TEST 1.B: Verify GPS Data Publication** (✅ COMPLETED - Dual GPS sensors publishing at 20Hz)
-    - **Context:** Ensure both GPS sensors are publishing data independently. **This test cannot be skipped.**
+    - **Context:** Ensure the GPS sensor is publishing data. **This test cannot be skipped.**
     - **Procedure:**
         1. Relaunch the simulation: `ros2 launch mower_bringup sim.launch.py`.
-        2. Check for the `/gps/left/fix` and `/gps/right/fix` topics.
-        3. Echo both topics to confirm they are publishing `sensor_msgs/NavSatFix` messages.
-    - **Expected Outcome:** Both topics exist and are publishing valid latitude/longitude data.
+        2. Check for the `/gps/fix` topic.
+        3. Echo the topic to confirm it is publishing `sensor_msgs/NavSatFix` messages.
+    - **Expected Outcome:** The topic exists and is publishing valid latitude/longitude data.
 
 ### **Module 2: Custom GPS Heading Calculation Node**
 
@@ -166,3 +165,31 @@ This module performs the final acceptance test as defined in the PRD.
     - [ ] **Sub-Task 4.2.2:** Update the `README.md` file with instructions on how to view the new sensor data and EKF outputs.
     - [ ] **Sub-Task 4.2.3:** Create a Pull Request on GitHub from `feature/phase-2-sensors-ekf` to `main`, including the validation screenshots in the description.
     - [ ] **Sub-Task 4.2.4:** After review, merge the pull request. Phase 2 is now complete.
+
+### **Module 5: Refine Heading Calculation for Simulation**
+
+This module replaces the dual-GPS heading calculation with a more stable simulation-only method that derives heading from the simulator's ground truth pose.
+
+- [ ] **Task 5.1:** **Create Ground Truth Heading Node**
+    - **Context:** Create a new node that subscribes to the ground truth pose from Gazebo, adds noise, and publishes it as a standard sensor message for the EKF.
+    - [ ] **Sub-Task 5.1.1:** In `mower_localization/mower_localization/`, create a new file `ground_truth_heading_node.py`.
+    - [ ] **Sub-Task 5.1.2:** The node will subscribe to the `/model/mower/pose` topic from Gazebo, which provides the ground truth position and orientation.
+    - [ ] **Sub-Task 5.1.3:** In the callback, extract the orientation quaternion.
+    - [ ] **Sub-Task 5.1.4:** Apply a small amount of Gaussian noise to the quaternion to simulate a high-quality GPS-based heading sensor.
+    - [ ] **Sub-Task 5.1.5:** Publish the resulting orientation in a `sensor_msgs/Imu` message to the existing `/gps/heading` topic. Ensure a realistic covariance is set.
+
+- [ ] **Task 5.2:** **Update System Integration**
+    - **Context:** Modify the launch files and robot description to remove the now-redundant components and integrate the new heading node.
+    - [ ] **Sub-Task 5.2.1:** In `sensors.xacro`, ensure only one `gps_link` and its associated joint and Gazebo plugin exist.
+    - [ ] **Sub-Task 5.2.2:** In `sim.launch.py`, ensure there is only one `gps_bridge` node.
+    - [ ] **Sub-Task 5.2.3:** In `sim.launch.py`, replace the `gps_heading_node` with the new `ground_truth_heading_node`.
+    - [ ] **Sub-Task 5.2.4:** In `navsat_transform.yaml`, ensure the input GPS topic is `/gps/fix`.
+
+- [ ] **MANDATORY TEST 5.A: Verify New Heading Publication**
+    - **Context:** Ensure the new node is correctly publishing a stable, noisy heading based on ground truth.
+    - **Procedure:**
+        1. Build and source the workspace.
+        2. Relaunch the simulation: `ros2 launch mower_bringup sim.launch.py`.
+        3. Echo the `/gps/heading` topic.
+        4. In Gazebo, rotate the robot model on the spot.
+    - **Expected Outcome:** The `/gps/heading` topic publishes `sensor_msgs/Imu` messages. The orientation should closely track the robot's rotation in Gazebo but with slight variations due to the added noise.

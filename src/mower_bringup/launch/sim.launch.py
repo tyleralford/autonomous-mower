@@ -60,7 +60,9 @@ def generate_launch_description():
             ]),
             launch_arguments={
                 'use_sim_time': use_sim_time,
-                'use_joint_state_gui': 'false'  # Disable GUI since we use ros2_control
+                'use_joint_state_gui': 'false',  # Disable GUI since we use ros2_control
+                # Use the EKF test RViz configuration for loop-closure validation
+                'rviz_config': os.path.join(pkg_mower_localization, 'rviz', 'ekf_test.rviz')
             }.items()
         ),
         
@@ -99,31 +101,21 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}]
         ),
 
-        # ROS-Gazebo GPS Left Bridge
+        # ROS-Gazebo GPS Bridge
         Node(
             package='ros_gz_bridge',
             executable='parameter_bridge',
-            name='gps_left_bridge',
-            arguments=['/gps/left/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
+            name='gps_bridge',
+            arguments=['/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
 
-        # ROS-Gazebo GPS Right Bridge
-        Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            name='gps_right_bridge',
-            arguments=['/gps/right/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
-        ),
-
-        # GPS Heading Node - Calculates absolute heading from dual GPS baseline
+        # Ground Truth Heading Node - Calculates absolute heading from ground truth with noise
         Node(
             package='mower_localization',
-            executable='gps_heading_node',
-            name='gps_heading_node',
+            executable='ground_truth_heading_node',
+            name='ground_truth_heading_node',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
@@ -149,7 +141,7 @@ def generate_launch_description():
             parameters=[navsat_config, {'use_sim_time': use_sim_time}],
             remappings=[
                 ('/imu', '/gps/heading'),
-                ('/gps/fix', '/gps/left/fix'),
+                ('/gps/fix', '/gps/fix'),
                 ('/odometry/filtered', '/odometry/filtered/local'),
                 ('/odometry/gps', '/odometry/gps')
             ]

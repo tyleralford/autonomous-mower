@@ -37,8 +37,8 @@
     <origin xyz="${imu_x} ${imu_y} ${imu_z - wheel_radius}" rpy="0 0 0"/>
   </joint>
 
-  <!-- GPS Left Sensor Link -->
-  <link name="gps_left_link">
+  <!-- GPS Sensor Link -->
+  <link name="gps_link">
     <visual>
       <geometry>
         <box size="0.03 0.03 0.04"/>
@@ -56,37 +56,11 @@
     </inertial>
   </link>
 
-  <!-- GPS Left Sensor Joint -->
-  <joint name="base_to_gps_left" type="fixed">
+  <!-- GPS Sensor Joint -->
+  <joint name="base_to_gps" type="fixed">
     <parent link="base_link"/>
-    <child link="gps_left_link"/>
-    <origin xyz="${gps_left_x} ${gps_left_y} ${gps_left_z - wheel_radius}" rpy="0 0 0"/>
-  </joint>
-
-  <!-- GPS Right Sensor Link -->
-  <link name="gps_right_link">
-    <visual>
-      <geometry>
-        <box size="0.03 0.03 0.04"/>
-      </geometry>
-      <material name="orange"/>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="0.03 0.03 0.04"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
-    </inertial>
-  </link>
-
-  <!-- GPS Right Sensor Joint -->
-  <joint name="base_to_gps_right" type="fixed">
-    <parent link="base_link"/>
-    <child link="gps_right_link"/>
-    <origin xyz="${gps_right_x} ${gps_right_y} ${gps_right_z - wheel_radius}" rpy="0 0 0"/>
+    <child link="gps_link"/>
+    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 0"/>
   </joint>
 
   <!-- Gazebo IMU Sensor (native gz-sim format) -->
@@ -157,62 +131,23 @@
     </sensor>
   </gazebo>
 
-  <!-- Gazebo GPS Left Sensor (native gz-sim format) -->
-  <gazebo reference="gps_left_link">
-    <sensor name="gps_left_sensor" type="navsat">
+  <!-- Gazebo GPS Sensor (native gz-sim format) -->
+  <gazebo reference="gps_link">
+    <sensor name="gps_sensor" type="navsat">
       <always_on>1</always_on>
       <update_rate>20</update_rate>
       <visualize>true</visualize>
-      <topic>gps/left/fix</topic>
+      <topic>/gps/fix</topic>
       <navsat>
-        <position_sensing>
-          <horizontal>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>0.01</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.001</bias_stddev>
-            </noise>
-          </horizontal>
-          <vertical>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>0.02</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.002</bias_stddev>
-            </noise>
-          </vertical>
-        </position_sensing>
-      </navsat>
-    </sensor>
-  </gazebo>
-
-  <!-- Gazebo GPS Right Sensor (native gz-sim format) -->
-  <gazebo reference="gps_right_link">
-    <sensor name="gps_right_sensor" type="navsat">
-      <always_on>1</always_on>
-      <update_rate>20</update_rate>
-      <visualize>true</visualize>
-      <topic>gps/right/fix</topic>
-      <navsat>
-        <position_sensing>
-          <horizontal>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>0.01</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.001</bias_stddev>
-            </noise>
-          </horizontal>
-          <vertical>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>0.02</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.002</bias_stddev>
-            </noise>
-          </vertical>
-        </position_sensing>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>
+            <latitude>0.00001</latitude>
+            <longitude>0.00001</longitude>
+            <altitude>0.01</altitude>
+          </stddev>
+        </noise>
       </navsat>
     </sensor>
   </gazebo>

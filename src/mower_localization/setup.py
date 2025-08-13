@@ -24,7 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'gps_heading_node = mower_localization.gps_heading_node:main',
+            'ground_truth_heading_node = mower_localization.ground_truth_heading_node:main',
         ],
     },
 )

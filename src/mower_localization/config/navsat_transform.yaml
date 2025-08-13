@@ -9,13 +9,23 @@
 navsat_transform:
   ros__parameters:
     frequency: 20.0
-    delay: 0.0
+    delay: 5.0
     magnetic_declination_radians: 0.0
     yaw_offset: 1.5707963  # 90 degrees
     zero_altitude: true
     publish_filtered_gps: false
-    use_odometry_yaw: false
-    wait_for_datum: false
+    use_odometry_yaw: true
+    wait_for_datum: true  # Use hardcoded datum for simulation
+    
+    # Hardcoded datum for simulation (Alabama coordinates)
+    datum: [34.603117, -86.749675, 0.0]
+    # datum_latitude: 34.603117
+    # datum_longitude: -86.749675
+    # datum_altitude: 0.0
+    
+    # Frame configuration - ignore GPS sensor frame and assume at robot origin
+    # broadcast_cartesian_transform: true
+    # broadcast_cartesian_transform_as_parent_frame: false
 
     # Frames
     base_link_frame: base_link
