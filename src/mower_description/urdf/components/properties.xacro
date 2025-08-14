@@ -49,5 +49,6 @@
   <xacro:property name="gps_x" value="0.0" />
   <xacro:property name="gps_y" value="0.215" />
   <xacro:property name="gps_z" value="0.253" />
+  <xacro:property name="gps_yaw" value="1.5708" />
 
 </robot>

@@ -111,6 +111,16 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}]
         ),
 
+        # ROS-Gazebo Model Pose Bridge for ground truth heading
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='model_pose_bridge',
+            arguments=['/model/mower/pose@geometry_msgs/msg/Pose[gz.msgs.Pose'],
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
+
         # Ground Truth Heading Node - Calculates absolute heading from ground truth with noise
         Node(
             package='mower_localization',

@@ -60,7 +60,7 @@
   <joint name="base_to_gps" type="fixed">
     <parent link="base_link"/>
     <child link="gps_link"/>
-    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 0"/>
+    <origin xyz="${gps_x} ${gps_y} ${gps_z - wheel_radius}" rpy="0 0 ${gps_yaw}"/>
   </joint>
 
   <!-- Gazebo IMU Sensor (native gz-sim format) -->

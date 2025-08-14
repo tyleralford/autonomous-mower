@@ -170,20 +170,20 @@ This module performs the final acceptance test as defined in the PRD.
 
 This module replaces the dual-GPS heading calculation with a more stable simulation-only method that derives heading from the simulator's ground truth pose.
 
-- [ ] **Task 5.1:** **Create Ground Truth Heading Node**
+- [x] **Task 5.1:** **Create Ground Truth Heading Node**
     - **Context:** Create a new node that subscribes to the ground truth pose from Gazebo, adds noise, and publishes it as a standard sensor message for the EKF.
-    - [ ] **Sub-Task 5.1.1:** In `mower_localization/mower_localization/`, create a new file `ground_truth_heading_node.py`.
-    - [ ] **Sub-Task 5.1.2:** The node will subscribe to the `/model/mower/pose` topic from Gazebo, which provides the ground truth position and orientation.
-    - [ ] **Sub-Task 5.1.3:** In the callback, extract the orientation quaternion.
-    - [ ] **Sub-Task 5.1.4:** Apply a small amount of Gaussian noise to the quaternion to simulate a high-quality GPS-based heading sensor.
-    - [ ] **Sub-Task 5.1.5:** Publish the resulting orientation in a `sensor_msgs/Imu` message to the existing `/gps/heading` topic. Ensure a realistic covariance is set.
+    - [x] **Sub-Task 5.1.1:** In `mower_localization/mower_localization/`, create a new file `ground_truth_heading_node.py`.
+    - [x] **Sub-Task 5.1.2:** The node will subscribe to the `/model/mower/pose` topic from Gazebo, which provides the ground truth position and orientation.
+    - [x] **Sub-Task 5.1.3:** In the callback, extract the orientation quaternion.
+    - [x] **Sub-Task 5.1.4:** Apply a small amount of Gaussian noise to the quaternion to simulate a high-quality GPS-based heading sensor.
+    - [x] **Sub-Task 5.1.5:** Publish the resulting orientation in a `sensor_msgs/Imu` message to the existing `/gps/heading` topic. Ensure a realistic covariance is set.
 
-- [ ] **Task 5.2:** **Update System Integration**
+- [x] **Task 5.2:** **Update System Integration**
     - **Context:** Modify the launch files and robot description to remove the now-redundant components and integrate the new heading node.
-    - [ ] **Sub-Task 5.2.1:** In `sensors.xacro`, ensure only one `gps_link` and its associated joint and Gazebo plugin exist.
-    - [ ] **Sub-Task 5.2.2:** In `sim.launch.py`, ensure there is only one `gps_bridge` node.
-    - [ ] **Sub-Task 5.2.3:** In `sim.launch.py`, replace the `gps_heading_node` with the new `ground_truth_heading_node`.
-    - [ ] **Sub-Task 5.2.4:** In `navsat_transform.yaml`, ensure the input GPS topic is `/gps/fix`.
+    - [x] **Sub-Task 5.2.1:** In `sensors.xacro`, ensure only one `gps_link` and its associated joint and Gazebo plugin exist.
+    - [x] **Sub-Task 5.2.2:** In `sim.launch.py`, ensure there is only one `gps_bridge` node.
+    - [x] **Sub-Task 5.2.3:** In `sim.launch.py`, replace the `gps_heading_node` with the new `ground_truth_heading_node`.
+    - [x] **Sub-Task 5.2.4:** In `navsat_transform.yaml`, ensure the input GPS topic is `/gps/fix`.
 
 - [ ] **MANDATORY TEST 5.A: Verify New Heading Publication**
     - **Context:** Ensure the new node is correctly publishing a stable, noisy heading based on ground truth.
