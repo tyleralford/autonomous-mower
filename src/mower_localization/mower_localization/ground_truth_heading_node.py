@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Pose, Quaternion
+from geometry_msgs.msg import PoseStamped, Quaternion
 from sensor_msgs.msg import Imu
 import numpy as np
 from tf_transformations import euler_from_quaternion, quaternion_from_euler
@@ -23,19 +23,19 @@ class GroundTruthHeadingNode(Node):
         # Publisher for the heading topic
         self.heading_pub = self.create_publisher(Imu, '/gps/heading', 10)
 
-        # Subscriber to the ground truth pose (geometry_msgs/Pose)
+        # Subscriber to the ground truth pose (geometry_msgs/PoseStamped)
         self.pose_sub = self.create_subscription(
-            Pose,
+            PoseStamped,
             '/model/mower/pose',
             self.pose_callback,
             10
         )
 
-    def pose_callback(self, msg: Pose):
+    def pose_callback(self, msg: PoseStamped):
         """
         Callback for receiving the ground truth pose.
         """
-        orientation_q = msg.orientation
+        orientation_q = msg.pose.orientation
 
         # Convert quaternion to Euler angles
         (roll, pitch, yaw) = euler_from_quaternion([orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w])

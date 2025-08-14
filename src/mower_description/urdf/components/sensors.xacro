@@ -105,7 +105,7 @@
           <x>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.05</stddev>
+              <stddev>0.005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -113,7 +113,7 @@
           <y>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.05</stddev>
+              <stddev>0.005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -121,7 +121,7 @@
           <z>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.05</stddev>
+              <stddev>0.005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -145,7 +145,7 @@
           <stddev>
             <latitude>0.00001</latitude>
             <longitude>0.00001</longitude>
-            <altitude>0.01</altitude>
+            <altitude>0.0001</altitude>
           </stddev>
         </noise>
       </navsat>

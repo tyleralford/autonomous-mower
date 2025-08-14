@@ -2,6 +2,13 @@
 
 This document provides a detailed, step-by-step plan for executing Phase 2 of the Autonomous Mower project. It is designed to be followed sequentially by a developer. Each task builds upon the previous one, with mandatory testing checkpoints to ensure system integrity at every stage.
 
+## Status Update — 2025-08-13
+
+- Simulation launches cleanly with bridges for Clock, IMU, GPS, and model Pose.
+- Ground Truth Heading Node updated to consume geometry_msgs/PoseStamped and publish /gps/heading (sensor_msgs/Imu) with noise. Module 5 complete.
+- Issue found: /odometry/gps from navsat_transform_node remains constant when driving. Needs debugging next session.
+- EKF nodes (local and global) are running; functional behavior under motion needs verification. Module 4 loop-closure test still pending.
+
 ### **Module 0: Project Setup**
 
 This initial module prepares the codebase for Phase 2 development.
@@ -185,7 +192,7 @@ This module replaces the dual-GPS heading calculation with a more stable simulat
     - [x] **Sub-Task 5.2.3:** In `sim.launch.py`, replace the `gps_heading_node` with the new `ground_truth_heading_node`.
     - [x] **Sub-Task 5.2.4:** In `navsat_transform.yaml`, ensure the input GPS topic is `/gps/fix`.
 
-- [ ] **MANDATORY TEST 5.A: Verify New Heading Publication**
+- [x] **MANDATORY TEST 5.A: Verify New Heading Publication**
     - **Context:** Ensure the new node is correctly publishing a stable, noisy heading based on ground truth.
     - **Procedure:**
         1. Build and source the workspace.
@@ -193,3 +200,30 @@ This module replaces the dual-GPS heading calculation with a more stable simulat
         3. Echo the `/gps/heading` topic.
         4. In Gazebo, rotate the robot model on the spot.
     - **Expected Outcome:** The `/gps/heading` topic publishes `sensor_msgs/Imu` messages. The orientation should closely track the robot's rotation in Gazebo but with slight variations due to the added noise.
+
+## Next Steps (Upcoming Session)
+
+1) Fix navsat_transform_node not producing changing /odometry/gps under motion
+    - Verify inputs:
+      - /gps/fix: valid, changing NavSatFix with reasonable covariance
+      - /gps/heading: Imu orientation updating (PoseStamped → heading path validated)
+      - /odometry/filtered/local: Local EKF publishing and updating
+    - Check navsat_transform parameters:
+      - frames: base_link_frame, odom_frame, world_frame (map)
+      - yaw_offset: 1.5707963; use_odometry_yaw: true; wait_for_datum; datum configured
+    - Inspect diagnostics/logs for TF lookup errors or datum issues
+    - If needed, temporarily set use_odometry_yaw=false to rely on /gps/heading only and compare
+    - Sanity test with ros2 topic echo /odometry/gps to confirm motion changes
+
+2) EKF functionality verification
+    - Local EKF: confirm /odometry/filtered/local updates and odom→base_link TF present
+    - Global EKF: confirm /odometry/filtered/global updates and map→odom TF present
+    - Validate that global EKF fuses XY from /odometry/gps and yaw from /gps/heading
+
+3) Resume Module 4 validation
+    - Perform loop-closure driving test and capture RViz screenshots (local vs global paths)
+    - Mark Sub-Tasks 4.1.5–4.1.7 when results meet PRD success criteria
+
+4) Prep for merge
+    - Update README with run/inspect steps and known issues
+    - Open PR with validation artifacts

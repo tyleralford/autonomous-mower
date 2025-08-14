@@ -116,7 +116,7 @@ def generate_launch_description():
             package='ros_gz_bridge',
             executable='parameter_bridge',
             name='model_pose_bridge',
-            arguments=['/model/mower/pose@geometry_msgs/msg/Pose[gz.msgs.Pose'],
+            arguments=['/model/mower/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}]
         ),
