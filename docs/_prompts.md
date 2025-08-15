@@ -42,9 +42,11 @@ Assume we are building a ROS 2 system for a robot lawn mower.
 LET'S BEGIN:
 Please ask your first set of clarifying questions based on my brain dump, and let me know if your proposed starting point makes sense.
 
+
 ## **Final PRD generation prompt after all questions have been answered.**
 
 yes, generate the full phase 3 PRD in markdown format. ensure that it includes all details and requirements that we have covered such that it could stand alone and still provide enough information to implement this phase of the project.
+
 
 ## **Implementatino plan generation prompt after all questions have been answered.**
 
@@ -65,3 +67,15 @@ Ask about any missing information from the PRD
 Do not include code in the plan
 Use gh and git for version control, commit should be used often and comments should be short and precise
 If the PRD calls for use of a software or library or system or plugin, search the web for the documentation and understand how it works before formulating the implementation plan
+
+
+## **Agent implementation following the generated documentation.**
+
+You're a senior embedded software and robotics engineer. Study #docs/requirements-phase 3.md and implement what's still missing in #docs/implementation-phase 3.md. Implement each task and subtask in the project plan and respect task and subtask dependencies. Once finished a task or subtask, check it in the list and move to the next. It is critical to always keep the project plan up to date. Reference #docs/Autonomous Mower Development Plan v2.md for context to the larger project.
+
+VERY IMPORTANT:
+- When using a library be sure to search the internet and read and understand the library documentation before implementing any code to use the library.
+- If any changes to requirements or the implementation plan are made, be sure to update all documentation and check the entire code base for anything affected by the change.
+- Only make changes to the requirements and implementation plan when specifically requested. Document current progress and stay up to date at all times.
+- If any work has been already implemented, read through the entire code base and understand the project status and direction.
+- Do not skip any tests.
