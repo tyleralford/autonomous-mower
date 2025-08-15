@@ -67,3 +67,55 @@ ros2 control list_controllers
 - `mower_simulation/` - Gazebo worlds and simulation assets  
 - `mower_control/` - ros2_control configuration
 - `mower_bringup/` - Launch files and system integration
+
+## Phase 2: Sensor Fusion and State Estimation
+
+Phase 2 adds simulated sensors (IMU, GPS) and a dual-EKF pipeline using robot_localization, plus a simulation-only GPS heading republisher.
+
+### Build and Launch
+```bash
+cd mower_ws
+colcon build
+source install/setup.bash
+
+# Launch simulation + bridges + EKFs + navsat_transform + heading node
+ros2 launch mower_bringup sim.launch.py
+```
+
+### Inspect Sensor Data
+- IMU (orientation, angular velocity, linear acceleration)
+  - `ros2 topic hz /imu`
+  - `ros2 topic echo /imu`
+- GPS fix (lat, lon, alt)
+  - `ros2 topic hz /gps/fix`
+  - `ros2 topic echo /gps/fix`
+- Simulated GPS heading (orientation-only Imu)
+  - `ros2 topic hz /gps/heading`
+  - `ros2 topic echo /gps/heading`
+
+### State Estimation Outputs
+- NavSat transform odometry (map frame XY from GPS)
+  - `ros2 topic echo /odometry/gps`
+- Local EKF (odom frame): smooth but drifting
+  - `ros2 topic echo /odometry/filtered/local`
+- Global EKF (map frame): drift-corrected
+  - `ros2 topic echo /odometry/filtered/global`
+
+### Visualize in RViz
+Option A (load saved config):
+- Open RViz and load `src/mower_localization/rviz/ekf_test.rviz`.
+
+Option B (manual):
+- Fixed Frame: set to `odom`.
+- Add Displays:
+  - TF
+  - Odometry: `/diff_drive_controller/odom` (Wheel Odom)
+  - Odometry: `/odometry/gps` (GPS Odom)
+  - Odometry: `/odometry/filtered/local` (Local EKF)
+  - Odometry: `/odometry/filtered/global` (Global EKF)
+
+### TF Frames Diagram (optional)
+```bash
+ros2 run tf2_tools view_frames.py
+```
+This will generate a `frames.pdf` showing `map -> odom -> base_link`.

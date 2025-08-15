@@ -27,20 +27,31 @@ global_ekf_node:
     base_link_frame: base_link
     world_frame: map
 
-    # Input 1: Local EKF output (relative, smooth)
-    odom0: /odometry/filtered/local
+    # Wheel odometry from diff_drive_controller
+    odom0: /diff_drive_controller/odom
     #                x      y      z
     #                r      p      y
     #                vx     vy     vz
     #                vr     vp     vy
     #                ax     ay     az
-    odom0_config: [ true,  true, false,
-                   false, false, true,
-                    true, false, false,
-                   false, false,  true,
+    odom0_config: [false, false, false,
+                   false, false, false,
+                    true,  true, false,
+                   false, false, false,
                    false, false, false]
     odom0_differential: false
     odom0_relative: true
+
+    # IMU 
+    imu0: /imu
+    imu0_config:  [false, false, false,
+                    true,  true,  true,
+                   false, false, false,
+                    true,  true,  true,
+                   false, false, false]
+    imu0_differential: false
+    imu0_relative: true
+    imu0_remove_gravitational_acceleration: true
 
     # Input 2: GPS position via navsat_transform (absolute XY)
     odom1: /odometry/gps

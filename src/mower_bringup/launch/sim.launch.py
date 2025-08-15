@@ -27,6 +27,9 @@ def generate_launch_description():
     ekf_global_config = os.path.join(pkg_mower_localization, 'config', 'ekf_global.yaml')
     navsat_config = os.path.join(pkg_mower_localization, 'config', 'navsat_transform.yaml')
     
+    # Nridge config file
+    gz_bridge_config = os.path.join(pkg_mower_bringup, 'config', 'gz_bridge.yaml')
+
     # Launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('use_rviz')
@@ -81,44 +84,16 @@ def generate_launch_description():
             }.items()
         ),
 
-        # ROS-Gazebo Clock Bridge - Essential for proper timestamp synchronization
+        # Consolidated ROS-Gazebo Bridge
         Node(
             package='ros_gz_bridge',
             executable='parameter_bridge',
-            name='clock_bridge',
-            arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
-        ),
-
-        # ROS-Gazebo IMU Bridge
-        Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            name='imu_bridge',
-            arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
-        ),
-
-        # ROS-Gazebo GPS Bridge
-        Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            name='gps_bridge',
-            arguments=['/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat'],
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
-        ),
-
-        # ROS-Gazebo Model Pose Bridge for ground truth heading
-        Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            name='model_pose_bridge',
-            arguments=['/model/mower/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
+            name='gz_bridge',
+            parameters=[
+                {'config_file': gz_bridge_config},
+                {'use_sim_time': use_sim_time}
+            ],
+            output='screen'
         ),
 
         # Ground Truth Heading Node - Calculates absolute heading from ground truth with noise
