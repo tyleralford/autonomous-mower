@@ -34,3 +34,6 @@
     - "feat(phase-2): add GPS and IMU sensors with respective EKFs"
 - Keep documentation up to date with code changes.
 - Do not use emojis or informal language in code comments or documentation.
+- Run only one bash command at a time and wait for it to finish before running another in the same terminal.
+- If a process is running in a terminal, do not run another command in that terminal until the process is finished.
+  - If you need to run multiple commands, open a new terminal for each command.

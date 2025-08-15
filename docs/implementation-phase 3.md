@@ -23,8 +23,8 @@ This module focuses on creating the core functionality for defining operational 
     - [x] **Sub-Task 1.1.2:** Inside `mower_msgs`, create a `srv/` directory.
     - [x] **Sub-Task 1.1.3:** Create a new file `ManageRecording.srv` with the definition specified in the PRD (request: action, area_type, filename; response: success, message).
     - [x] **Sub-Task 1.1.4:** Update `mower_msgs/CMakeLists.txt` and `package.xml` to build the new service message.
-    - [ ] **Sub-Task 1.1.5:** Build the workspace with `colcon build` to verify the message is generated correctly.
-    - [ ] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(msgs): Create ManageRecording service definition"`)
+    - [x] **Sub-Task 1.1.5:** Build the workspace with `colcon build` to verify the message is generated correctly.
+    - [x] **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(msgs): Create ManageRecording service definition"`)
 
 - [x] **Task 1.2:** **Implement the Recording Node**
     - **Dependencies:** 1.1
@@ -35,7 +35,7 @@ This module focuses on creating the core functionality for defining operational 
     - [x] **Sub-Task 1.2.4:** The subscriber's callback should write the robot's `[x, y]` position to the file in a simple format (e.g., CSV).
     - [x] **Sub-Task 1.2.5:** Add this new node to the `setup.py` in `mower_localization` to make it executable.
     - [x] **Sub-Task 1.2.6:** Integrate the `recorder_node` into the main `sim.launch.py` so it starts with the rest of the system.
-    - [ ] **Sub-Task 1.2.7:** Commit the new node and launch changes. (`git commit -m "feat(localization): Implement recorder_node and service"`)
+    - [x] **Sub-Task 1.2.7:** Commit the new node and launch changes. (`git commit -m "feat(localization): Implement recorder_node and service"`)
 
 - [ ] **MANDATORY TEST 1.A: Verify Zone Recording**
     - **Context:** Before adding map generation, ensure the core recording functionality is working reliably. **This test cannot be skipped.**
