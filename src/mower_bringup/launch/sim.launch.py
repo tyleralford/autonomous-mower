@@ -143,6 +143,15 @@ def generate_launch_description():
                 ('/odometry/filtered', '/odometry/filtered/global')
             ]
         ),
+
+        # Recorder node for drive-to-record zone creation service
+        Node(
+            package='mower_localization',
+            executable='recorder_node',
+            name='recorder_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
+        ),
         
         # Spawn the robot using the gz_spawn_model launch file
         IncludeLaunchDescription(

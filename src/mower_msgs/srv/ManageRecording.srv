@@ -1,0 +1,8 @@
+# Request
+uint8 action   # 0=START, 1=STOP
+uint8 area_type  # 0=BOUNDARY, 1=KEEPOUT, 2=TRAVEL
+string filename  # target CSV path (used only on START)
+---
+# Response
+bool success
+string message
