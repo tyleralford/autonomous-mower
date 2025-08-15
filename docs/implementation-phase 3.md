@@ -6,11 +6,11 @@ This document provides a detailed, step-by-step plan for executing Phase 3 of th
 
 This initial module prepares the codebase for Phase 3 development.
 
-- [ ] **Task 0.1:** **Create and Checkout a New Branch**
+- [x] **Task 0.1:** **Create and Checkout a New Branch**
     - **Context:** Isolate all Phase 3 development on a dedicated branch to maintain a clean `main` branch.
-    - **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch.
-    - **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-3-navigation`.
-    - **Sub-Task 0.1.3:** Push the new branch to the remote repository.
+    - [x] **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch.
+    - [x] **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-3-navigation`.
+    - [x] **Sub-Task 0.1.3:** Push the new branch to the remote repository.
 
 ### **Module 1: "Drive-to-Record" Service and Logic**
 
