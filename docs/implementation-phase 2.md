@@ -172,7 +172,7 @@ This module performs the final acceptance test as defined in the PRD.
     - [x] **Sub-Task 4.2.2:** Update the `README.md` file with instructions on how to view the new sensor data and EKF outputs.
     - [x] **Sub-Task 4.2.3:** Create a Pull Request on GitHub from `feature/phase-2-sensors-ekf` to `main`, including the validation screenshots in the description.
         - PR: https://github.com/tyleralford/autonomous-mower/pull/1
-    - [ ] **Sub-Task 4.2.4:** After review, merge the pull request. Phase 2 is now complete.
+    - [x] **Sub-Task 4.2.4:** After review, merge the pull request. Phase 2 is now complete.
 
 ### **Module 5: Refine Heading Calculation for Simulation**
 
