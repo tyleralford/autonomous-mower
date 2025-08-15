@@ -107,7 +107,7 @@
   <joint name="chassis_to_reel_motor" type="fixed">
     <parent link="base_link"/>
     <child link="reel_motor"/>
-    <origin xyz="0.125 0.11 0.04" rpy="0 0 0"/>
+    <origin xyz="0.125 -0.18 0.04" rpy="0 0 0"/>
   </joint>
 
 </robot>

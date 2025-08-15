@@ -1,19 +1,23 @@
 <?xml version="1.0" ?>
 <sdf version="1.7">
   <world name="lawn">
-    <!-- Physics engine configuration -->
-    <physics name="dart_physics" default="true" type="dart">
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1.0</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
-      <!-- DART solver configuration for stability -->
-      <dart>
-        <solver>
-          <solver_type>pgs</solver_type>
-        </solver>
-        <collision_detector>fcl</collision_detector>
-      </dart>
-    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-navsat-system" name="gz::sim::systems::NavSat"/>
+
+    <!-- Spherical coordinates for GPS -->
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>34.603215</latitude_deg>
+      <longitude_deg>-86.749407</longitude_deg>
+      <elevation>10.0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
 
     <!-- Scene lighting -->
     <scene>

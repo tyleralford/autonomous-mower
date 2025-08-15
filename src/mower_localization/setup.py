@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 import os
 from glob import glob
 
-package_name = 'mower_bringup'
+package_name = 'mower_localization'
 
 setup(
     name=package_name,
@@ -12,20 +12,19 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-        # Install configuration files (e.g., gz_bridge.yaml)
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'rviz'), glob('rviz/*.rviz')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='tyler',
     maintainer_email='alford.tyler94@gmail.com',
-    description='Top-level launch files for the autonomous mower system',
-    license='MIT',
+    description='TODO: Package description',
+    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'simple_teleop = mower_bringup.simple_teleop:main',
+            'ground_truth_heading_node = mower_localization.ground_truth_heading_node:main',
         ],
     },
 )

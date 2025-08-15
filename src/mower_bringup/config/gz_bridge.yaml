@@ -1,0 +1,22 @@
+# Bridge configuration for Gazebo -> ROS 2
+
+- topic_name: "/clock"
+  gz_type_name: "gz.msgs.Clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  direction: GZ_TO_ROS
+
+- topic_name: "/imu"
+  gz_type_name: "gz.msgs.IMU"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  direction: GZ_TO_ROS
+  ros:
+    header:
+      frame_id: "imu_link"
+
+- topic_name: "/gps/fix"
+  gz_type_name: "gz.msgs.NavSat"
+  ros_type_name: "sensor_msgs/msg/NavSatFix"
+  direction: GZ_TO_ROS
+  ros:
+    header:
+      frame_id: "gps_link"

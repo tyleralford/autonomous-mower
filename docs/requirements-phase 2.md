@@ -24,18 +24,16 @@ The principal objective of Phase 2 is to **develop and validate a robust state e
 ## **5. Functional Requirements**
 
 ### **FR1: Sensor Integration (URDF)**
-*   The `mower.urdf.xacro` model **must** be updated to include the following simulated sensors:
-    *   **IMU:** An IMU link and the `GazeboRosImuSensor` plugin **must** be added.
-    *   **Dual GPS:** Two separate GPS links and `GazeboRosGpsSensor` plugins **must** be added. The two sensors **must** be placed with a fixed, known baseline of **43cm** between them.
-*   All sensor plugins **must** be configured with basic Gaussian noise to simulate real-world imperfections.
-*   All sensor plugins **must** be configured to enable their debug visualization flags so that their status can be observed within the Gazebo simulation environment.
+*   The `mower.urdf.xacro` model **must** include the following simulated sensors:
+    *   **IMU:** An IMU link with the native Gazebo IMU sensor configured and publishing to `/imu`.
+    *   **GPS:** A single NavSat sensor configured and publishing to `/gps/fix`.
+*   All sensors **must** use basic Gaussian noise to simulate real-world imperfections and set appropriate `frame_id`s.
 
-### **FR2: Custom GPS Heading Node**
-*   A new ROS 2 Python or C++ node **must** be created to provide an absolute heading measurement.
-*   This node **must** subscribe to the `sensor_msgs/NavSatFix` topics from both simulated GPS sensors.
-*   The node **must** calculate the heading vector between the two GPS positions.
-*   The node **must** apply a yaw offset of **+90 degrees (1.5707963 radians)** to the calculated heading to conform with the REP-103 standard (aligning a North-up heading to a ROS-standard East-up heading).
-*   The node **must** publish the final, corrected orientation as a `sensor_msgs/Imu` message to the `/gps/heading` topic. Only the `orientation` and `orientation_covariance` fields of the message need to be populated.
+### **FR2: Simulated GPS Heading Republisher**
+*   A ROS 2 node **must** provide an absolute heading measurement for the EKF during simulation.
+*   The node **must** subscribe to the simulated IMU topic `/imu`, extract the orientation yaw, add small Gaussian noise, and republish as `sensor_msgs/Imu` on `/gps/heading`.
+*   The node **must** publish at 20 Hz, and only the `orientation` and `orientation_covariance` fields are required.
+*   Note: This simulation-only approach emulates a future dual-antenna GPS heading sensor; the live hardware integration will replace this node in a later phase.
 
 ### **FR3: Dual-EKF Configuration (`robot_localization`)**
 *   Two instances of the `robot_localization` `ekf_node` **must** be configured and launched.
@@ -56,8 +54,8 @@ The principal objective of Phase 2 is to **develop and validate a robust state e
     *   **Output:** Publishes the `map` -> `odom` transform.
 
 ### **FR4: `navsat_transform_node` Configuration**
-*   The `navsat_transform_node` from the `robot_localization` package **must** be configured and launched.
-*   The node **must** be configured with a `yaw_offset` of **1.5707963 radians (90 degrees)** to correctly align the GPS datum with the ROS standard coordinate frames.
+*   The `navsat_transform_node` from `robot_localization` **must** be configured and launched.
+*   The node **must** use `yaw_offset: 0.0` and `use_odometry_yaw: true`, with frames set to `base_link`, `odom`, and `map` as per REP-105.
 
 ## **6. Non-Functional Requirements**
 
@@ -65,10 +63,11 @@ The principal objective of Phase 2 is to **develop and validate a robust state e
 *   The entire system **must** adhere strictly to the coordinate frame conventions defined in **REP-105**, establishing the `map` -> `odom` -> `base_link` transformation hierarchy.
 
 ### **NFR2: Performance & Publish Rates**
-*   The system **must** be configured with the following sensor and node publish rates:
-    *   **IMU Plugin:** 70 Hz
-    *   **GPS Plugins:** 20 Hz
-    *   **EKF Nodes:** ~50 Hz (e.g., 50.0)
+*   The system **must** be configured with the following publish rates:
+    *   **IMU Sensor:** ~70 Hz
+    *   **GPS (NavSat):** ~20 Hz
+    *   **Heading Republisher (/gps/heading):** 20 Hz
+    *   **EKF Nodes:** ~50 Hz
 
 ## **7. Design Considerations / Mockups**
 
