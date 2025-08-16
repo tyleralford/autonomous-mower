@@ -6,6 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from pathlib import Path
 
 
 def generate_launch_description():
@@ -34,6 +35,30 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('use_rviz')
     
+    # Load saved datum (if available) to anchor navsat_transform to a persistent map frame
+    maps_dir = Path('/home/tyler/mower_ws/maps')
+    datum_file = maps_dir / 'datum.yaml'
+    navsat_datum_params = {}
+    if datum_file.exists():
+        try:
+            # Minimal, dependency-free parser for simple key: value YAML
+            lat = lon = None
+            with open(datum_file, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith('latitude:'):
+                        lat = float(line.split(':', 1)[1].strip())
+                    elif line.startswith('longitude:'):
+                        lon = float(line.split(':', 1)[1].strip())
+            if lat is not None and lon is not None:
+                navsat_datum_params = {
+                    'use_manual_datum': True,
+                    'datum': [lat, lon, 0.0]
+                }
+        except Exception:
+            # If parsing fails, proceed without manual datum
+            navsat_datum_params = {}
+
     return LaunchDescription([
         # Fix snap conflicts
         SetEnvironmentVariable('GTK_PATH', ''),
@@ -123,7 +148,7 @@ def generate_launch_description():
             executable='navsat_transform_node',
             name='navsat_transform',
             output='screen',
-            parameters=[navsat_config, {'use_sim_time': use_sim_time}],
+            parameters=[navsat_config, {'use_sim_time': use_sim_time}, navsat_datum_params],
             remappings=[
                 ('/imu', '/gps/heading'),
                 ('/gps/fix', '/gps/fix'),
@@ -215,5 +240,19 @@ def generate_launch_description():
                 ],
                 output='screen'
             )
-        ])
+        ]),
+
+        # Include Nav2 stack (map server, planner, controller, BT)
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare('mower_navigation'),
+                    'launch',
+                    'navigation.launch.py'
+                ])
+            ]),
+            launch_arguments={
+                'use_sim_time': use_sim_time
+            }.items()
+        )
     ])
