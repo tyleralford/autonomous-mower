@@ -12,6 +12,15 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('params_file', default_value='/home/tyler/mower_ws/src/mower_navigation/config/nav2_params.yaml'),
 
+        # Guard node: waits for valid map and in-bounds pose, then starts Nav2 lifecycle
+        Node(
+            package='mower_navigation',
+            executable='map_bounds_guard.py',
+            name='map_bounds_guard',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
+        ),
+        
         # Map server - loads the generated map
         Node(
             package='nav2_map_server',
@@ -71,10 +80,6 @@ def generate_launch_description():
             executable='lifecycle_manager',
             name='lifecycle_manager_navigation',
             output='screen',
-            parameters=[{
-                'use_sim_time': use_sim_time,
-                'autostart': True,
-                'node_names': ['map_server', 'planner_server', 'controller_server', 'bt_navigator', 'behavior_server']
-            }] 
+            parameters=[{'use_sim_time': use_sim_time}, params_file]
         )
     ])

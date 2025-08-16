@@ -65,6 +65,9 @@ The principal objective of Phase 3 is to **develop a complete, GPS-based autonom
 ### **NFR2: Usability**
 *   The map generation process **must** be fully automated and integrated into the system. It shall not require any manual, offline steps from the developer after a zone is recorded.
 
+### **NFR3: Robust Startup Behavior**
+*   The system **must** start gracefully when a map is missing or when the robot's initial pose is outside the map bounds. Nav2 shall not crash or enter a bad lifecycle state; instead, a status shall indicate the reason Nav2 is inactive and automatically start Nav2 when conditions become valid.
+
 ## **7. Design Considerations / Mockups**
 
 This phase is purely for backend and simulation development. No graphical user interface (GUI) is required. The primary visual interface for testing and validation will be RViz.
@@ -86,6 +89,14 @@ The successful completion of Phase 3 will be verified by a formal, three-part ac
 *   **Test C: Invalid Goal Handling**
     *   **Action:** Set a goal either inside a keep-out zone or outside the main boundary.
     *   **Expected Outcome:** The planner **must** fail to find a valid path, and an error message should be logged. The robot **must not** move.
+
+*   **Test D: Graceful Startup Without Map**
+    *   **Action:** Delete/map not present at startup.
+    *   **Expected Outcome:** Nav2 nodes remain inactive without error spam; a system status indicates `waiting_for_map`. When the map files are provided during runtime, Nav2 autostarts and becomes operational.
+
+*   **Test E: Robot Outside Map Bounds**
+    *   **Action:** Start with the robot's global pose outside the generated map extents.
+    *   **Expected Outcome:** Nav2 remains inactive with status `robot_outside_map`. After the robot is within bounds (or datum corrected), Nav2 autostarts and normal navigation proceeds.
 
 ## **9. Out of Scope / Future Considerations**
 

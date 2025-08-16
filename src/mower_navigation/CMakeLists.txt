@@ -9,4 +9,9 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(PROGRAMS
+  scripts/map_bounds_guard.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()

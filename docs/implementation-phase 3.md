@@ -83,30 +83,30 @@ This module builds on the recording feature to create the automated, persistent 
 
 This module integrates the full ROS 2 Navigation Stack to enable autonomous point-to-point motion.
 
-- [ ] **Task 3.1:** **Create Navigation Package and Configuration**
+- [x] **Task 3.1:** **Create Navigation Package and Configuration**
     - **Dependencies:** 2.2
     - **Context:** Create the dedicated package for all Nav2-related configurations.
     - **Sub-Task 3.1.1:** In `mower_ws/src`, create a new package: `ros2 pkg create --build-type ament_cmake mower_navigation`.
     - **Sub-Task 3.1.2:** Inside `mower_navigation`, create `config/` and `launch/` directories.
     - **Sub-Task 3.1.3:** In `config/`, create `nav2_params.yaml`.
 
-- [ ] **Task 3.2:** **Configure Nav2 Parameters**
+- [x] **Task 3.2:** **Configure Nav2 Parameters**
     - **Dependencies:** 3.1
     - **Context:** Populate the `nav2_params.yaml` file with all necessary configurations for the specified planners, controllers, and costmap layers.
-    - **Sub-Task 3.2.1:** Configure the `planner_server` to use `SmacPlannerHybrid`.
-    - **Sub-Task 3.2.2:** Configure the `controller_server` to use `DWBController`.
-    - **Sub-Task 3.2.3:** Configure the `global_costmap`. Set its plugins to use the `StaticLayer` (pointing to `map.pgm`) and the `InflationLayer`. Ensure its global frame is `map`.
-    - **Sub-Task 3.2.4:** Configure the `local_costmap`. Set its plugins and ensure its global frame is `odom`.
-    - **Sub-Task 3.2.5:** Configure the `behavior_server`, `bt_navigator`, and `lifecycle_manager` with default parameters.
+    - [x] **Sub-Task 3.2.1:** `planner_server` uses `nav2_smac_planner::SmacPlannerHybrid`.
+    - [x] **Sub-Task 3.2.2:** `controller_server` uses `dwb_core::DWBLocalPlanner`.
+    - [x] **Sub-Task 3.2.3:** `global_costmap` uses `StaticLayer` and `InflationLayer`, `global_frame: map`.
+    - [x] **Sub-Task 3.2.4:** `local_costmap` configured with `rolling_window` and `global_frame: odom`.
+    - [x] **Sub-Task 3.2.5:** `bt_navigator`, `behavior_server`, and `lifecycle_manager` configured.
 
-- [ ] **Task 3.3:** **Create Navigation Launch File**
+- [x] **Task 3.3:** **Create Navigation Launch File**
     - **Dependencies:** 3.2
     - **Context:** Create a launch file to bring up the entire Nav2 stack.
-    - **Sub-Task 3.3.1:** In `mower_navigation/launch`, create `navigation.launch.py`.
-    - **Sub-Task 3.3.2:** Use the `Nav2Bringup` library to include the standard Nav2 launch components, passing your custom `nav2_params.yaml` file as an argument. Ensure `use_sim_time` is set to `True`.
-    - **Sub-Task 3.3.3:** **Integrate Datum Loading:** Modify the `navsat_transform_node` launch configuration (in `sim.launch.py`) to load the parameters from the saved `datum.yaml` file. This is the critical step for map persistence.
-    - **Sub-Task 3.3.4:** Update the main `sim.launch.py` to include the new `navigation.launch.py`.
-    - **Sub-Task 3.3.5:** Commit all Nav2 configuration and launch files. (`git commit -m "feat(navigation): Configure and launch Nav2 stack"`)
+    - [x] **Sub-Task 3.3.1:** `launch/navigation.launch.py` present and launches map_server, planner, controller, BT, and lifecycle manager.
+    - [x] **Sub-Task 3.3.2:** Parameters are passed via `nav2_params.yaml`; `use_sim_time` is `true`.
+    - [x] **Sub-Task 3.3.3:** Datum loading integrated in `mower_bringup/launch/sim.launch.py` (reads `/home/tyler/mower_ws/maps/datum.yaml` and sets `use_manual_datum`).
+    - [x] **Sub-Task 3.3.4:** `sim.launch.py` includes `mower_navigation/launch/navigation.launch.py`.
+    - [x] **Sub-Task 3.3.5:** Files committed in `feature/phase-3-navigation`.
 
 - [ ] **MANDATORY TEST 3.A: Verify Nav2 Startup and Localization**
     - **Context:** Ensure the Nav2 stack launches correctly and the robot is properly localized on the custom map before attempting navigation. **This test cannot be skipped.**
@@ -119,6 +119,36 @@ This module integrates the full ROS 2 Navigation Stack to enable autonomous poin
         -   RViz displays the generated map from the `map_server`.
         -   The robot's model (visualized from the `/odometry/filtered/global` TF transform) appears correctly positioned within the boundaries of the map.
         -   The global and local costmaps are visible and show the correct inflation around obstacles.
+
+### Module 3b: Robust Startup and Map-Bounds Guard (New)
+
+To gracefully handle a missing map or the robot initially outside of the map extents, add a lightweight guard and adjust launch sequencing so Nav2 does not error or enter a bad state.
+
++- [x] **Task 3.4:** **Implement Map/Bounds Guard Node**
+    - **Dependencies:** 3.3
+    - **Context:** Prevent Nav2 from activating until a valid map exists and the robot's global pose is within the map bounds. Provide clear, actionable status.
+    - [x] **Sub-Task 3.4.1:** Create `mower_navigation/map_bounds_guard.py`.
+        - Subscribe to `/odometry/filtered/global`.
+        - Read `/home/tyler/mower_ws/maps/map.yaml` to compute map bounds (resolution, origin, width/height from image).
+        - When map.yaml or map.pgm is missing, publish a latched status (e.g., `/mower/nav_status`) and keep Nav2 inactive.
+        - When pose is within bounds, trigger Nav2 startup via `nav2_msgs/srv/ManageLifecycleNodes` (`/lifecycle_manager_navigation/manage_nodes`, command STARTUP).
+        - If pose leaves bounds later, log warnings and optionally command PAUSE (defer RESUME policy until we have UI).
+    - [ ] **Sub-Task 3.4.2:** Add a small `mower_navigation/msg/NavStatus.msg` (or reuse diagnostics) to report: {ready, reason}.
+    - [ ] **Sub-Task 3.4.3:** Unit-test guard's bounds math with synthetic poses.
+
+- [x] **Task 3.5:** **Launch Integration for Guard**
+    - **Dependencies:** 3.4
+    - [x] **Sub-Task 3.5.1:** Set `lifecycle_manager.autostart: false` in `nav2_params.yaml` and remove direct autostart in `navigation.launch.py`.
+    - [x] **Sub-Task 3.5.2:** Launch `map_bounds_guard.py` from Nav2 launch; guard starts lifecycle when safe.
+    - [x] **Sub-Task 3.5.3:** Verified `planner_server.GridBased.allow_unknown: true` and `global_costmap.always_send_full_costmap: true`.
+
+- [ ] **MANDATORY TEST 3.B: Guard Behavior**
+    - **Dependencies:** 3.5
+    - **Scenario 1 (Missing Map):** Remove `/home/tyler/mower_ws/maps/map.yaml` and launch sim.
+        - Expected: Nav2 nodes remain inactive; `/mower/nav_status` reports `ready=false, reason="waiting_for_map"`. No hard errors from nav2.
+        - Then place valid `map.yaml`/`map.pgm`; Expected: Guard detects map and starts Nav2 automatically.
+    - **Scenario 2 (Robot Outside Map):** Intentionally set a datum that puts the robot 20 m outside map bounds.
+        - Expected: Guard holds Nav2 inactive and reports `ready=false, reason="robot_outside_map"`. After driving into bounds or fixing datum, Guard starts Nav2.
 
 ### **Module 4: Final Validation**
 

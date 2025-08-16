@@ -60,6 +60,7 @@ controller_server:
       min_vel_y: 0.0
       max_vel_x: 0.8
       max_vel_y: 0.0
+      min_vel_theta: -1.0
       max_vel_theta: 1.0
       min_speed_xy: 0.0
       max_speed_xy: 0.8
@@ -138,8 +139,8 @@ local_costmap:
       cost_scaling_factor: 2.5
       inflation_radius: 0.6
 
-lifecycle_manager:
+lifecycle_manager_navigation:
   ros__parameters:
     use_sim_time: true
-    autostart: true
+    autostart: false
     node_names: ["map_server", "planner_server", "controller_server", "bt_navigator", "behavior_server"]

@@ -3,7 +3,9 @@ Panels:
     Help Height: 70
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 356
   - Class: rviz_common/Selection
@@ -60,9 +62,9 @@ Visualization Manager:
         left_wheel:
           Value: true
         map:
-          Value: false
+          Value: true
         odom:
-          Value: false
+          Value: true
         reel:
           Value: true
         reel_motor:
