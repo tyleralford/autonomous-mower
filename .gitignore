@@ -13,6 +13,7 @@ Thumbs.db
 
 # IDE specific files
 .vscode/
+.kiro/
 .idea/
 *.swp
 *.swo
