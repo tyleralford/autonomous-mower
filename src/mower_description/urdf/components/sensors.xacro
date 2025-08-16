@@ -80,7 +80,7 @@
           <x>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.0005</stddev>
+              <stddev>0.000005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.0001</bias_stddev>
             </noise>
@@ -88,7 +88,7 @@
           <y>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.0005</stddev>
+              <stddev>0.000005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.0001</bias_stddev>
             </noise>
@@ -96,7 +96,7 @@
           <z>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.0005</stddev>
+              <stddev>0.000005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.0001</bias_stddev>
             </noise>
@@ -106,7 +106,7 @@
           <x>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.005</stddev>
+              <stddev>0.00005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -114,7 +114,7 @@
           <y>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.005</stddev>
+              <stddev>0.00005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -122,7 +122,7 @@
           <z>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.005</stddev>
+              <stddev>0.00005</stddev>
               <bias_mean>0.0</bias_mean>
               <bias_stddev>0.01</bias_stddev>
             </noise>
@@ -145,9 +145,9 @@
           <type>gaussian</type>
           <mean>0.0</mean>
           <stddev>
-            <latitude>0.00000001</latitude>
-            <longitude>0.00000001</longitude>
-            <altitude>0.0000001</altitude>
+            <latitude>0.0000000001</latitude>
+            <longitude>0.0000000001</longitude>
+            <altitude>0.000000001</altitude>
           </stddev>
         </noise>
       </navsat>
