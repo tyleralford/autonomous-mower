@@ -17,7 +17,7 @@ class GroundTruthHeadingNode(Node):
         self.get_logger().info('Ground Truth Heading Node initialized')
 
         # Parameters
-        self.declare_parameter('noise_stddev_rad', 0.01)  # Standard deviation for orientation noise in radians
+        self.declare_parameter('noise_stddev_rad', 0.005)  # Standard deviation for orientation noise in radians
         self.noise_stddev = self.get_parameter('noise_stddev_rad').get_parameter_value().double_value
 
     # Publisher for the heading topic
