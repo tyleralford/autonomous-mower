@@ -119,7 +119,7 @@ class RecorderNode(Node):
                 self._save_datum_once(maps_dir)
 
                 # Generate map from all CSVs in directory
-                map_yaml, map_pgm = generate_map(maps_dir)
+                map_yaml, map_pgm = generate_map(maps_dir, frame='map')
                 self.get_logger().info(f'Generated map: {map_yaml}, {map_pgm}')
             except Exception as e:
                 import traceback

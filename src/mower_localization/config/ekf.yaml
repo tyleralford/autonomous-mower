@@ -1,6 +1,6 @@
 utm_ekf_node:
   ros__parameters:
-    frequency: 30.0
+    frequency: 50.0
     sensor_timeout: 0.3
     two_d_mode: true
     transform_time_offset: 0.0
@@ -8,31 +8,35 @@ utm_ekf_node:
     print_diagnostics: true
     publish_tf: true
 
-    map_frame: utm   # world/map frame now UTM
-    odom_frame: utm  # keep odom_frame same as world for single frame design
+    map_frame: map
+    odom_frame: odom
     base_link_frame: base_link
     world_frame: utm
 
     # Input 1: Wheel odometry (relative velocities) - currently using diff_drive_controller/odom if available
-    # Uncomment and tune when wheel odom topic is available
-    # odom0: /diff_drive_controller/odom
-    # odom0_config: [false, false, false,
-    #                false, false, false,
-    #                 true,  true, false,
-    #                false, false,  true,
-    #                false, false, false]
-    # odom0_differential: false
-    # odom0_relative: true
+    #                x      y      z
+    #                r      p      y
+    #                vx     vy     vz
+    #                vr     vp     vy
+    #                ax     ay     az
+    odom0: /diff_drive_controller/odom
+    odom0_config: [false, false, false,
+                   false, false, false,
+                    true,  true, false,
+                   false, false,  true,
+                   false, false, false]
+    odom0_differential: false
+    odom0_relative: true
 
     # Input 2: GPS UTM position via navsat_transform (absolute XY). Reuse existing /odometry/gps.
-    odom0: /odometry/gps
-    odom0_config: [ true,  true, false,
+    odom1: /odometry/gps
+    odom1_config: [ true,  true, false,
                    false, false, false,
                    false, false, false,
                    false, false, false,
                    false, false, false]
-    odom0_differential: false
-    odom0_relative: false
+    odom1_differential: false
+    odom1_relative: false
 
     # Input 3: IMU for yaw velocity + orientation (currently using synthesized heading topic)
     imu0: /gps/heading

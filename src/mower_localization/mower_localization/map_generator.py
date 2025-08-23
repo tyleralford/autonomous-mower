@@ -121,6 +121,7 @@ def generate_map(
     boundary_files: Optional[List[str]] = None,
     keepout_files: Optional[List[str]] = None,
     travel_files: Optional[List[str]] = None,
+    frame: str = "utm",
 ) -> Tuple[str, str]:
     """
     Generate map.pgm and map.yaml in output_dir.
@@ -128,6 +129,8 @@ def generate_map(
     If file lists aren't provided, they are discovered in output_dir by prefix.
 
     Returns a tuple (map_yaml_path, map_pgm_path).
+    frame: 'utm' (default) writes map.yaml origin in UTM. 'map' writes origin as 0,0,0 and saves
+           the original UTM lower-left in map_origin_utm.yaml for transform publishing.
     """
     spec = map_spec or MapSpec()
     os.makedirs(output_dir, exist_ok=True)
@@ -196,7 +199,15 @@ def generate_map(
     if not cv2.imwrite(map_pgm, img):  # pragma: no cover
         raise RuntimeError("Failed to write map.pgm")
 
-    origin = (float(min_x), float(min_y), 0.0)
-    _write_yaml(map_yaml, map_pgm, spec.resolution, origin)
+    utm_origin = (float(min_x), float(min_y), 0.0)
+    if frame == "map":
+        # Write map frame origin at (0,0,0)
+        _write_yaml(map_yaml, map_pgm, spec.resolution, (0.0, 0.0, 0.0))
+        # Persist utm origin companion file
+        companion = os.path.join(output_dir, "map_origin_utm.yaml")
+        with open(companion, "w") as f:
+            f.write(f"utm_origin: [{utm_origin[0]:.6f}, {utm_origin[1]:.6f}, {utm_origin[2]:.6f}]\n")
+    else:
+        _write_yaml(map_yaml, map_pgm, spec.resolution, utm_origin)
 
     return map_yaml, map_pgm

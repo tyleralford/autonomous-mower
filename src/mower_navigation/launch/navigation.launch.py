@@ -2,7 +2,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -29,7 +30,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file]
         ),
-        
+
         # Planner server - path planning using SmacPlannerHybrid
         Node(
             package='nav2_planner',
@@ -39,7 +40,7 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}, params_file]
         ),
         
-    # Controller server - path following using DWB controller (UTM frame)
+        # Controller server - path following using DWB controller (UTM frame)
         Node(
             package='nav2_controller',
             executable='controller_server',
@@ -49,7 +50,7 @@ def generate_launch_description():
             remappings=[('/odom', '/odometry/filtered')]
         ),
         
-    # Behavior Tree Navigator - high-level navigation logic (UTM frame)
+        # Behavior Tree Navigator - high-level navigation logic (UTM frame)
         Node(
             package='nav2_bt_navigator',
             executable='bt_navigator',
@@ -67,7 +68,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file]
         ),
-        
+
         # Lifecycle manager - manages Nav2 node lifecycle
         Node(
             package='nav2_lifecycle_manager',

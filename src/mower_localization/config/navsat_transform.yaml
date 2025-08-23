@@ -14,7 +14,7 @@ navsat_transform:
     yaw_offset: 0.0
     zero_altitude: true
     publish_filtered_gps: false
-    use_odometry_yaw: true
+    use_odometry_yaw: false
     #wait_for_datum: true  # Use hardcoded datum for simulation
     
     # Hardcoded datum for simulation (Alabama coordinates)
@@ -27,5 +27,5 @@ navsat_transform:
     # Frames
     base_link_frame: base_link
     gps_frame: gps_link
-  odom_frame: utm
-  world_frame: utm
+    odom_frame: odom
+    world_frame: utm

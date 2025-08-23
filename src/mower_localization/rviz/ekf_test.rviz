@@ -61,8 +61,6 @@ Visualization Manager:
           Value: true
         left_wheel:
           Value: true
-        map:
-          Value: true
         odom:
           Value: true
         reel:
@@ -71,13 +69,15 @@ Visualization Manager:
           Value: true
         right_wheel:
           Value: true
+        utm:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
+        utm:
           odom:
             base_link:
               counterweight:
@@ -461,15 +461,15 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 0.9005281925201416
+      Distance: 10.848214149475098
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.0969345569610596
-        Y: 4.1183552742004395
+        X: 1.5404763221740723
+        Y: 4.152750492095947
         Z: 6.146620750427246
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
@@ -477,7 +477,7 @@ Visualization Manager:
       Name: Current View
       Near Clip Distance: 0.009999999776482582
       Pitch: 0.9197969436645508
-      Target Frame: <Fixed Frame>
+      Target Frame: utm
       Value: Orbit (rviz_default_plugins)
       Yaw: 1.1103949546813965
     Saved: ~

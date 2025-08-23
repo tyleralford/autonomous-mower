@@ -52,7 +52,7 @@ diff_drive_controller:
     open_loop: false
     
     # Publish odom->base_link transform
-    enable_odom_tf: false
+    enable_odom_tf: true
     
     # Command timeout
     cmd_vel_timeout: 0.5  # seconds

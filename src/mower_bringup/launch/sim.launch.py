@@ -156,7 +156,7 @@ def generate_launch_description():
             ]
         ),
 
-    # Recorder node for drive-to-record zone creation service (now consumes /odometry/filtered in UTM frame)
+        # Recorder node for drive-to-record zone creation service (now consumes /odometry/filtered in UTM frame)
         Node(
             package='mower_localization',
             executable='recorder_node',
@@ -241,5 +241,13 @@ def generate_launch_description():
             launch_arguments={
                 'use_sim_time': use_sim_time
             }.items()
+        ),
+        # Static transform publisher map->utm (after map generation creates map_origin_utm.yaml)
+        Node(
+            package='mower_localization',
+            executable='map_to_utm_broadcaster',
+            name='map_to_utm_broadcaster',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 'maps_dir': '/home/tyler/mower_ws/maps'}]
         )
     ])
