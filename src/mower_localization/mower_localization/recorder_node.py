@@ -82,7 +82,7 @@ class RecorderNode(Node):
 
             # Subscribe to odometry
             self._odom_sub = self.create_subscription(
-                Odometry, '/odometry/filtered/global', self.odom_cb, self._odom_qos
+                Odometry, '/odometry/filtered', self.odom_cb, self._odom_qos
             )
 
             response.success = True

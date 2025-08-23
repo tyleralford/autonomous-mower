@@ -61,8 +61,8 @@ class MapBoundsGuard(Node):
         qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.status_pub = self.create_publisher(NavStatus, self.status_topic, qos)
 
-        # Subscribe to global odom
-        self.odom_sub = self.create_subscription(Odometry, '/odometry/filtered/global', self.odom_cb, 10)
+        # Subscribe to fused UTM odometry
+        self.odom_sub = self.create_subscription(Odometry, '/odometry/filtered', self.odom_cb, 10)
 
         # Service client for lifecycle
         self.lifecycle_cli = self.create_client(ManageLifecycleNodes, self.lifecycle_service_name)
@@ -136,23 +136,26 @@ class MapBoundsGuard(Node):
     def in_bounds(self, x: float, y: float) -> bool:
         return in_bounds(self.bounds, x, y)
 
-    def try_start_nav(self):
-        if not self.auto_start or self.nav_started:
-            return
-        if not self.lifecycle_cli.wait_for_service(timeout_sec=0.1):
-            return
+    def send_lifecycle_command(self, command):
+        if not self.lifecycle_cli.wait_for_service(timeout_sec=0.5):
+            return False
         req = ManageLifecycleNodes.Request()
-        req.command = ManageLifecycleNodes.Request.STARTUP
+        req.command = command
         future = self.lifecycle_cli.call_async(req)
         def _done(_):
             res = future.result()
-            if res and res.success:
-                self.get_logger().info('Nav2 lifecycle STARTUP succeeded')
-                self.nav_started = True
-                self.publish_status(True, 'ready')
-            else:
-                self.get_logger().warn('Nav2 lifecycle STARTUP failed')
+            if not res or not res.success:
+                self.get_logger().warn(f'Lifecycle command {command} failed')
         future.add_done_callback(_done)
+        return True
+
+    def try_start_nav(self):
+        if not self.auto_start or self.nav_started:
+            return
+        if self.send_lifecycle_command(ManageLifecycleNodes.Request.STARTUP):
+            self.get_logger().info('Nav2 lifecycle STARTUP requested')
+            self.nav_started = True
+            self.publish_status(True, 'ready')
 
     def odom_cb(self, msg: Odometry):
         self.last_pose = (msg.pose.pose.position.x, msg.pose.pose.position.y)
@@ -168,6 +171,11 @@ class MapBoundsGuard(Node):
         x, y = self.last_pose
         if not self.in_bounds(x, y):
             self.publish_status(False, 'robot_outside_map')
+            # If nav already started, pause lifecycle
+            if self.nav_started:
+                self.get_logger().warn('Robot left map bounds; sending PAUSE')
+                self.send_lifecycle_command(ManageLifecycleNodes.Request.PAUSE)
+                self.nav_started = False
             return
         # All good; start nav if not already
         self.try_start_nav()

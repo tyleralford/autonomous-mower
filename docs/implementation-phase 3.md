@@ -72,7 +72,7 @@ This module creates the automated, georeferenced map required by Nav2.
 
 This module implements the core architectural change from a dual-EKF `map`/`odom` system to a single EKF `utm` system.
 
-- [ ] **Task 3.1:** **Create Single EKF Configuration**
+- [x] **Task 3.1:** **Create Single EKF Configuration**
     - **Dependencies:** 2.2
     - **Context:** Create a new, unified EKF configuration file to fuse all sensor data into the UTM frame.
     - **Sub-Task 3.1.1:** In `mower_localization/config`, create `ekf.yaml`.
@@ -80,7 +80,7 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
     - **Sub-Task 3.1.3:** Configure the four inputs as specified in the PRD: wheel odometry (`odom0`), IMU (`imu0`), GPS UTM position (`odom1`), and GPS heading (`imu1`). Set the `_config` matrices appropriately to fuse the correct variables from each.
     - **Sub-Task 3.1.4:** Commit the new configuration. (`git commit -m "feat(localization): Create single EKF config for UTM frame"`)
 
-- [ ] **Task 3.2:** **Update System Launch for Single EKF**
+- [x] **Task 3.2:** **Update System Launch for Single EKF**
     - **Dependencies:** 3.1
     - **Context:** Reconfigure the main launch file to use the new single EKF.
     - **Sub-Task 3.2.1:** Edit `mower_bringup/launch/sim.launch.py`.
@@ -97,7 +97,7 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
         4.  Echo the EKF output topic: `ros2 topic echo /odometry/filtered`.
     - **Expected Outcome:** The TF tree now shows a direct `utm` -> `base_link` transform. The `/odometry/filtered` topic is publishing poses in the `utm` frame.
 
-- [ ] **Task 3.3:** **Update Mapping Workflow for UTM**
+- [x] **Task 3.3:** **Update Mapping Workflow for UTM**
     - **Dependencies:** 3.2
     - **Context:** Update the custom mapping tools to operate in the UTM frame.
     - **Sub-Task 3.3.1:** In `recorder_node.py`, change the subscriber to listen to `/odometry/filtered` to save poses in UTM coordinates.
@@ -113,8 +113,8 @@ This module integrates the Nav2 stack to use the new UTM-based localization.
     - **Context:** Create the Nav2 package and configure it to operate entirely within the `utm` frame.
     - [x] **Sub-Task 4.1.1:** Package exists with `config/` and `launch/`.
     - [x] **Sub-Task 4.1.2:** `nav2_params.yaml` present with Smac + DWB + layered costmaps.
-    - [ ] **Sub-Task 4.1.3:** global_frame currently set to `map` (needs change to `utm`).
-    - [ ] **Sub-Task 4.1.4:** map_server frame currently implicit (needs explicit `utm`).
+    - [x] **Sub-Task 4.1.3:** global_frame set to `utm`.
+    - [x] **Sub-Task 4.1.4:** map_server frame explicitly set to `utm`.
 
 - [x] **Task 4.2:** **Create Navigation Launch File**
     - **Dependencies:** 4.1
@@ -141,7 +141,7 @@ This module implements the new supervisor node for robust, safe startup and oper
     - **Context:** Create the node that prevents Nav2 from activating until all preconditions are met.
     - [x] **Sub-Task 5.1.1:** Implemented as script in `scripts/` (`map_bounds_guard.py`).
     - [x] **Sub-Task 5.1.2:** Logic implemented (currently uses `/odometry/filtered/global` and status topic).
-    - [ ] **Sub-Task 5.1.3:** STARTUP implemented; PAUSE on out-of-bounds not yet implemented.
+    - [x] **Sub-Task 5.1.3:** STARTUP and PAUSE implemented (PAUSE on out-of-bounds).
 
 - [x] **Task 5.2:** **Integrate Guard into Launch**
     - **Dependencies:** 5.1

@@ -24,8 +24,8 @@ def generate_launch_description():
     controller_config = os.path.join(pkg_mower_control, 'config', 'mower_controllers.yaml')
 
     # Localization config files
-    ekf_local_config = os.path.join(pkg_mower_localization, 'config', 'ekf_local.yaml')
-    ekf_global_config = os.path.join(pkg_mower_localization, 'config', 'ekf_global.yaml')
+    # Single UTM EKF config
+    utm_ekf_config = os.path.join(pkg_mower_localization, 'config', 'ekf.yaml')
     navsat_config = os.path.join(pkg_mower_localization, 'config', 'navsat_transform.yaml')
     
     # Nridge config file
@@ -130,19 +130,7 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}]
         ),
 
-        # Local EKF - fuses wheel odom and IMU, publishes odom->base_link
-        Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='local_ekf_node',
-            output='screen',
-            parameters=[ekf_local_config, {'use_sim_time': use_sim_time}],
-            remappings=[
-                ('/odometry/filtered', '/odometry/filtered/local')
-            ]
-        ),
-
-        # NavSat Transform Node - converts GPS to map-frame odometry
+        # NavSat Transform Node - converts GPS to UTM-frame odometry input
         Node(
             package='robot_localization',
             executable='navsat_transform_node',
@@ -152,24 +140,23 @@ def generate_launch_description():
             remappings=[
                 ('/imu', '/gps/heading'),
                 ('/gps/fix', '/gps/fix'),
-                ('/odometry/filtered', '/odometry/filtered/local'),
+                ('/odometry/filtered', '/odometry/filtered'),
                 ('/odometry/gps', '/odometry/gps')
             ]
         ),
-
-        # Global EKF - fuses local EKF, GPS position, and GPS heading, publishes map->odom
+        # Single UTM EKF - publishes utm->base_link
         Node(
             package='robot_localization',
             executable='ekf_node',
-            name='global_ekf_node',
+            name='utm_ekf_node',
             output='screen',
-            parameters=[ekf_global_config, {'use_sim_time': use_sim_time}],
+            parameters=[utm_ekf_config, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/odometry/filtered', '/odometry/filtered/global')
+                ('/odometry/filtered', '/odometry/filtered')
             ]
         ),
 
-        # Recorder node for drive-to-record zone creation service
+    # Recorder node for drive-to-record zone creation service (now consumes /odometry/filtered in UTM frame)
         Node(
             package='mower_localization',
             executable='recorder_node',
