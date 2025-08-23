@@ -72,33 +72,23 @@
       <topic>imu</topic>
       <gz_frame_id>imu_link</gz_frame_id>
       <imu>
-        <orientation_reference_frame>
-          <localization>ENU</localization>
-        </orientation_reference_frame>
-        <enable_orientation>true</enable_orientation>
         <angular_velocity>
           <x>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.000005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.0001</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </x>
           <y>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.000005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.0001</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </y>
           <z>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.000005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.0001</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </z>
         </angular_velocity>
@@ -106,25 +96,19 @@
           <x>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.00005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.01</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </x>
           <y>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.00005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.01</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </y>
           <z>
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.00005</stddev>
-              <bias_mean>0.0</bias_mean>
-              <bias_stddev>0.01</bias_stddev>
+              <stddev>0.0</stddev>
             </noise>
           </z>
         </linear_acceleration>
@@ -141,15 +125,20 @@
       <topic>/gps/fix</topic>
       <gz_frame_id>gps_link</gz_frame_id>
       <navsat>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>
-            <latitude>0.0000000001</latitude>
-            <longitude>0.0000000001</longitude>
-            <altitude>0.000000001</altitude>
-          </stddev>
-        </noise>
+        <position_sensing>
+          <horizontal>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0</stddev>
+            </noise>
+          </horizontal>
+          <vertical>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0</stddev>
+            </noise>
+          </vertical>
+        </position_sensing>
       </navsat>
     </sensor>
   </gazebo>

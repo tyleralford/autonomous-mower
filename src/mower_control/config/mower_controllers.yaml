@@ -45,8 +45,8 @@ diff_drive_controller:
     publish_rate: 70.0  # Hz
     odom_frame_id: odom
     base_frame_id: base_link
-    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+    pose_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+    twist_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
     
     # Open loop odometry (no feedback from wheels)
     open_loop: false

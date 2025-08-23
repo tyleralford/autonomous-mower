@@ -15,12 +15,13 @@
   <exec_depend>nav2_bt_navigator</exec_depend>
   <exec_depend>nav2_map_server</exec_depend>
   <exec_depend>nav2_costmap_2d</exec_depend>
-  <exec_depend>nav2_amcl</exec_depend>
   <exec_depend>nav2_util</exec_depend>
   <exec_depend>nav2_lifecycle_manager</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>mower_msgs</exec_depend>
+
+  <test_depend>ament_cmake_pytest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
