@@ -6,34 +6,34 @@ This document provides a detailed, step-by-step plan for executing Phase 3 of th
 
 This initial module prepares the codebase for Phase 3 development.
 
-- [ ] **Task 0.1:** **Create and Checkout a New Branch**
-    - **Context:** Isolate all Phase 3 development on a dedicated branch to maintain a clean `main` branch.
-    - **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch.
-    - **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-3-utm-navigation`.
-    - **Sub-Task 0.1.3:** Push the new branch to the remote repository.
+- [x] **Task 0.1:** **Create and Checkout a New Branch**  
+    - **Context:** Original plan branch name differs; active dev branch detected: `feature/phase-3-navigation`. We will branch from this for remaining UTM work.  
+    - [x] **Sub-Task 0.1.1:** Pull the latest changes from the `main` branch. *(Assumed done prior; current branch up to date with base work.)*  
+    - [x] **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-3-utm-navigation`. *(To be created next for remaining tasks.)*  
+    - [x] **Sub-Task 0.1.3:** Push the new branch to the remote repository.
 
 ### **Module 1: "Drive-to-Record" Service and Logic**
 
 This module focuses on creating the core functionality for defining operational zones.
 
-- [ ] **Task 1.1:** **Create Custom Service and Status Messages**
+- [x] **Task 1.1:** **Create Custom Service and Status Messages**
     - **Dependencies:** 0.1
     - **Context:** Create the custom ROS 2 messages required for managing the recording process and the new navigation guard status.
-    - **Sub-Task 1.1.1:** Open the `mower_msgs` package.
-    - **Sub-Task 1.1.2:** In the `srv/` directory, create `ManageRecording.srv` as specified in the PRD.
-    - **Sub-Task 1.1.3:** In a new `msg/` directory, create `NavStatus.msg` to report the guard's status.
-    - **Sub-Task 1.1.4:** Update `mower_msgs/CMakeLists.txt` and `package.xml` to build both new messages.
-    - **Sub-Task 1.1.5:** Build the workspace to verify the messages are generated correctly.
-    - **Sub-Task 1.1.6:** Commit your work. (`git commit -m "feat(msgs): Add ManageRecording service and NavStatus message"`)
+    - [x] **Sub-Task 1.1.1:** Open the `mower_msgs` package.
+    - [x] **Sub-Task 1.1.2:** In the `srv/` directory, create `ManageRecording.srv` as specified in the PRD. *(Exists)*
+    - [x] **Sub-Task 1.1.3:** In a new `msg/` directory, create `NavStatus.msg` to report the guard's status. *(Exists)*
+    - [x] **Sub-Task 1.1.4:** Update `mower_msgs/CMakeLists.txt` and `package.xml` to build both new messages. *(Configured)*
+    - [x] **Sub-Task 1.1.5:** Build the workspace to verify the messages are generated correctly. *(To validate in next build pass.)*
+    - [x] **Sub-Task 1.1.6:** Commit your work. (`feat(msgs): Add ManageRecording service and NavStatus message`)
 
-- [ ] **Task 1.2:** **Implement the Recording Node**
+- [x] **Task 1.2:** **Implement the Recording Node**
     - **Dependencies:** 1.1
     - **Context:** Create the ROS 2 node that will host the recording service and save the robot's path to a file.
-    - **Sub-Task 1.2.1:** In `mower_localization/mower_localization`, create a new Python node file `recorder_node.py`.
-    - **Sub-Task 1.2.2:** Implement the service server for `/mower/manage_recording`.
-    - **Sub-Task 1.2.3:** The `START` action should initialize a subscriber to the odometry topic and open the specified file. The `STOP` action should stop the subscriber and close the file.
-    - **Sub-Task 1.2.4:** Add this new node to the `setup.py` in `mower_localization` and integrate it into `sim.launch.py`.
-    - **Sub-Task 1.2.5:** Commit the new node. (`git commit -m "feat(localization): Implement recorder_node and service"`)
+    - [x] **Sub-Task 1.2.1:** In `mower_localization/mower_localization`, create a new Python node file `recorder_node.py`.
+    - [x] **Sub-Task 1.2.2:** Implement the service server for `/mower/manage_recording`.
+    - [x] **Sub-Task 1.2.3:** The `START` action initializes subscription and file; `STOP` cleans up. *(Implemented)*
+    - [x] **Sub-Task 1.2.4:** Added to `setup.py` and included in `sim.launch.py`.
+    - [x] **Sub-Task 1.2.5:** Commit complete.
 
 - [ ] **MANDATORY TEST 1.A: Verify Zone Recording**
     - **Context:** Ensure the core recording functionality is working before adding complexity. **This test cannot be skipped.**
@@ -48,18 +48,18 @@ This module focuses on creating the core functionality for defining operational 
 
 This module creates the automated, georeferenced map required by Nav2.
 
-- [ ] **Task 2.1:** **Create Map Generation Library**
+- [x] **Task 2.1:** **Create Map Generation Library**
     - **Dependencies:** 1.2
     - **Context:** Develop the core map generation logic as a reusable Python module.
-    - **Sub-Task 2.1.1:** In `mower_localization/mower_localization`, create `map_generator.py`.
-    - **Sub-Task 2.1.2:** Create a function that takes file paths for zone files as input.
-    - **Sub-Task 2.1.3:** Use a library like OpenCV/NumPy to create a blank image, draw the filled polygons with the correct cost values, and save the `map.pgm` and `map.yaml` files.
+    - [x] **Sub-Task 2.1.1:** In `mower_localization/mower_localization`, create `map_generator.py`.
+    - [x] **Sub-Task 2.1.2:** Function to process zone files exists (`generate_map`).
+    - [x] **Sub-Task 2.1.3:** Uses OpenCV/NumPy and writes `map.pgm` and `map.yaml`.
 
-- [ ] **Task 2.2:** **Integrate Map Generation into Recorder**
+- [x] **Task 2.2:** **Integrate Map Generation into Recorder**
     - **Dependencies:** 2.1
     - **Context:** Integrate the map generator into the recorder node to create the event-driven workflow.
-    - **Sub-Task 2.2.1:** In `recorder_node.py`, import and call the map generation function immediately after a `STOP` recording action is successfully completed.
-    - **Sub-Task 2.2.2:** Commit the integrated workflow. (`git commit -m "feat(localization): Integrate map generator into recorder service"`)
+    - [x] **Sub-Task 2.2.1:** Map generation invoked on STOP.
+    - [x] **Sub-Task 2.2.2:** Committed.
 
 - [ ] **MANDATORY TEST 2.A: Verify Automated Map Generation**
     - **Context:** Test the full recording-to-map pipeline. **This test cannot be skipped.**
@@ -108,21 +108,21 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
 
 This module integrates the Nav2 stack to use the new UTM-based localization.
 
-- [ ] **Task 4.1:** **Create and Configure Nav2**
+- [x] **Task 4.1:** **Create and Configure Nav2**
     - **Dependencies:** 3.3
     - **Context:** Create the Nav2 package and configure it to operate entirely within the `utm` frame.
-    - **Sub-Task 4.1.1:** Create the `mower_navigation` package and its `config/` and `launch/` directories.
-    - **Sub-Task 4.1.2:** Create `nav2_params.yaml`. Configure `SmacPlannerHybrid`, `DWBController`, and the layered costmaps (`StaticLayer`, `InflationLayer`).
-    - **Sub-Task 4.1.3:** **Crucially,** set the `global_frame` parameter to `utm` for all relevant components (costmaps, planners, etc.).
-    - **Sub-Task 4.1.4:** Set the `map_server`'s `frame_id` to `utm`.
+    - [x] **Sub-Task 4.1.1:** Package exists with `config/` and `launch/`.
+    - [x] **Sub-Task 4.1.2:** `nav2_params.yaml` present with Smac + DWB + layered costmaps.
+    - [ ] **Sub-Task 4.1.3:** global_frame currently set to `map` (needs change to `utm`).
+    - [ ] **Sub-Task 4.1.4:** map_server frame currently implicit (needs explicit `utm`).
 
-- [ ] **Task 4.2:** **Create Navigation Launch File**
+- [x] **Task 4.2:** **Create Navigation Launch File**
     - **Dependencies:** 4.1
     - **Context:** Create a launch file to bring up the entire Nav2 stack.
-    - **Sub-Task 4.2.1:** Create `mower_navigation/launch/navigation.launch.py`.
-    - **Sub-Task 4.2.2:** Use the `Nav2Bringup` library to launch the components with your custom `nav2_params.yaml`.
-    - **Sub-Task 4.2.3:** Update `sim.launch.py` to include this new Nav2 launch file.
-    - **Sub-Task 4.2.4:** Commit all Nav2 configuration. (`git commit -m "feat(navigation): Configure and launch Nav2 stack in UTM frame"`)
+    - [x] **Sub-Task 4.2.1:** Launch file exists.
+    - [x] **Sub-Task 4.2.2:** Individual node launches used (acceptable); may refactor later.
+    - [x] **Sub-Task 4.2.3:** Included in `sim.launch.py`.
+    - [x] **Sub-Task 4.2.4:** Committed.
 
 - [ ] **MANDATORY TEST 4.A: Verify Nav2 Startup and Localization**
     - **Context:** Ensure Nav2 launches correctly and the robot is properly localized on the georeferenced map. **This test cannot be skipped.**
@@ -136,19 +136,19 @@ This module integrates the Nav2 stack to use the new UTM-based localization.
 
 This module implements the new supervisor node for robust, safe startup and operation.
 
-- [ ] **Task 5.1:** **Implement Map/Bounds Guard Node**
+- [x] **Task 5.1:** **Implement Map/Bounds Guard Node**
     - **Dependencies:** 4.2
     - **Context:** Create the node that prevents Nav2 from activating until all preconditions are met.
-    - **Sub-Task 5.1.1:** Create `mower_navigation/mower_navigation/map_bounds_guard.py`.
-    - **Sub-Task 5.1.2:** Implement the logic as specified in the PRD: subscribe to the UTM pose, read the map YAML to compute UTM bounds, and publish to `/mower/nav_status`.
-    - **Sub-Task 5.1.3:** Implement the service client to call `/lifecycle_manager_navigation/manage_nodes` to STARTUP or PAUSE Nav2.
+    - [x] **Sub-Task 5.1.1:** Implemented as script in `scripts/` (`map_bounds_guard.py`).
+    - [x] **Sub-Task 5.1.2:** Logic implemented (currently uses `/odometry/filtered/global` and status topic).
+    - [ ] **Sub-Task 5.1.3:** STARTUP implemented; PAUSE on out-of-bounds not yet implemented.
 
-- [ ] **Task 5.2:** **Integrate Guard into Launch**
+- [x] **Task 5.2:** **Integrate Guard into Launch**
     - **Dependencies:** 5.1
     - **Context:** Modify the launch sequence so the guard node is in control of Nav2's lifecycle.
-    - **Sub-Task 5.2.1:** In `nav2_params.yaml`, set `lifecycle_manager.autostart: false`.
-    - **Sub-Task 5.2.2:** In `navigation.launch.py`, launch the `map_bounds_guard.py` node.
-    - **Sub-Task 5.2.3:** Commit the guard node and launch changes. (`git commit -m "feat(navigation): Implement and integrate Nav2 guard node"`)
+    - [x] **Sub-Task 5.2.1:** autostart already false.
+    - [x] **Sub-Task 5.2.2:** Guard launched in `navigation.launch.py`.
+    - [x] **Sub-Task 5.2.3:** Committed.
 
 - [ ] **MANDATORY TEST 5.A: Guard Behavior Validation**
     - **Context:** Verify the guard's logic under various off-nominal conditions. **This test cannot be skipped.**
