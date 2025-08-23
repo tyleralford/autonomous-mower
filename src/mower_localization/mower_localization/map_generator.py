@@ -2,7 +2,7 @@
 Map generation utilities for Autonomous Mower Phase 3.
 
 Reads recorded polygons (boundary, keepouts, optional travel areas) from CSV files
-in world coordinates (meters, map frame) and generates a Nav2 static map as a
+in world coordinates (meters, UTM frame) and generates a Nav2 static map as a
 PGM grayscale image with corresponding YAML metadata.
 
 Cost encoding (per PRD):
@@ -11,7 +11,8 @@ Cost encoding (per PRD):
 - Free (inside boundary excluding lethal and medium): white (255)
 
 The YAML uses the 'map_server' format and sets origin at the lower-left corner
-of the generated image in the map/world frame. Resolution is configurable.
+of the generated image in the UTM world frame (same frame as /odometry/filtered).
+Resolution is configurable.
 """
 from __future__ import annotations
 
