@@ -39,30 +39,24 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}, params_file]
         ),
         
-        # Controller server - path following using DWB controller
+    # Controller server - path following using DWB controller (UTM frame)
         Node(
             package='nav2_controller',
             executable='controller_server',
             name='controller_server',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file],
-            remappings=[
-                # Use GPS-corrected odometry instead of AMCL
-                ('/odom', '/odometry/filtered/global')
-            ]
+            remappings=[('/odom', '/odometry/filtered')]
         ),
         
-        # Behavior Tree Navigator - high-level navigation logic
+    # Behavior Tree Navigator - high-level navigation logic (UTM frame)
         Node(
             package='nav2_bt_navigator',
             executable='bt_navigator',
             name='bt_navigator',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file],
-            remappings=[
-                # Use GPS-corrected odometry instead of AMCL
-                ('/odom', '/odometry/filtered/global')
-            ]
+            remappings=[('/odom', '/odometry/filtered')]
         ),
         
         # Behavior server - recovery behaviors
