@@ -1,10 +1,10 @@
 # NavSat Transform Configuration
 #
-# This node converts GPS lat/lon coordinates to Cartesian coordinates in the map frame.
-# It subscribes to GPS data and publishes odometry messages for the global EKF.
+# This node converts GPS lat/lon coordinates to Cartesian coordinates in the UTM frame.
+# It publishes /odometry/gps in the UTM frame for the single EKF fusion.
 #
 # Inputs: GPS fix data, IMU orientation, local EKF odometry
-# Output: /odometry/gps in 'map' frame
+# Output: /odometry/gps in 'utm' frame
 
 navsat_transform:
   ros__parameters:
@@ -27,5 +27,5 @@ navsat_transform:
     # Frames
     base_link_frame: base_link
     gps_frame: gps_link
-    odom_frame: odom
-    world_frame: map
+  odom_frame: utm
+  world_frame: utm

@@ -167,7 +167,7 @@ class RecorderNode(Node):
                     'latitude': float(msg.latitude),
                     'longitude': float(msg.longitude),
                     'heading': 0.0,  # default east-aligned heading
-                    'world_frame': 'map',
+                    'world_frame': 'utm',
                     'base_link_frame': 'base_link',
                 }
                 with open(datum_path, 'w') as f:
