@@ -1,6 +1,6 @@
 utm_ekf_node:
   ros__parameters:
-    frequency: 50.0
+    frequency: 20.0
     sensor_timeout: 0.3
     two_d_mode: true
     transform_time_offset: 0.0
@@ -8,7 +8,7 @@ utm_ekf_node:
     print_diagnostics: true
     publish_tf: true
 
-    map_frame: map
+    map_frame: utm
     odom_frame: odom
     base_link_frame: base_link
     world_frame: utm
