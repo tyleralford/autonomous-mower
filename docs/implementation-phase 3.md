@@ -35,7 +35,7 @@ This module focuses on creating the core functionality for defining operational 
     - [x] **Sub-Task 1.2.4:** Added to `setup.py` and included in `sim.launch.py`.
     - [x] **Sub-Task 1.2.5:** Commit complete.
 
-- [ ] **MANDATORY TEST 1.A: Verify Zone Recording**
+- [x] **MANDATORY TEST 1.A: Verify Zone Recording** ✅
     - **Context:** Ensure the core recording functionality is working before adding complexity. **This test cannot be skipped.**
     - **Procedure:**
         1.  Launch the simulation.
@@ -61,7 +61,7 @@ This module creates the automated, georeferenced map required by Nav2.
     - [x] **Sub-Task 2.2.1:** Map generation invoked on STOP.
     - [x] **Sub-Task 2.2.2:** Committed.
 
-- [ ] **MANDATORY TEST 2.A: Verify Automated Map Generation**
+- [x] **MANDATORY TEST 2.A: Verify Automated Map Generation** ✅
     - **Context:** Test the full recording-to-map pipeline. **This test cannot be skipped.**
     - **Procedure:**
         1.  Delete any old map files.
@@ -88,7 +88,7 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
     - **Sub-Task 3.2.3:** Add a single `ekf_node` instance, loading the new `ekf.yaml` configuration.
     - **Sub-Task 3.2.4:** Commit the launch file changes. (`git commit -m "refactor(bringup): Switch to single EKF for UTM localization"`)
 
-- [ ] **MANDATORY TEST 3.A: Verify UTM Transform**
+- [x] **MANDATORY TEST 3.A: Verify UTM Transform** ✅
     - **Context:** This is a critical test to ensure the new localization architecture is working correctly before building on top of it. **This test cannot be skipped.**
     - **Procedure:**
         1.  Build and source the workspace.
@@ -124,7 +124,7 @@ This module integrates the Nav2 stack to use the new UTM-based localization.
     - [x] **Sub-Task 4.2.3:** Included in `sim.launch.py`.
     - [x] **Sub-Task 4.2.4:** Committed.
 
-- [ ] **MANDATORY TEST 4.A: Verify Nav2 Startup and Localization**
+- [x] **MANDATORY TEST 4.A: Verify Nav2 Startup and Localization** ✅ (Passed after guard refactor)
     - **Context:** Ensure Nav2 launches correctly and the robot is properly localized on the georeferenced map. **This test cannot be skipped.**
     - **Procedure:**
         1.  Record a new map to ensure it is in UTM coordinates.
@@ -150,7 +150,7 @@ This module implements the new supervisor node for robust, safe startup and oper
     - [x] **Sub-Task 5.2.2:** Guard launched in `navigation.launch.py`.
     - [x] **Sub-Task 5.2.3:** Committed.
 
-- [ ] **MANDATORY TEST 5.A: Guard Behavior Validation**
+- [x] **MANDATORY TEST 5.A: Guard Behavior Validation** ✅ (Now PASSED after guard refinements: added map-frame shift via companion utm origin, selective hysteresis re-entry margin, faster out-of-bounds detection, lifecycle STARTUP/resume sequencing, status publish throttling.)
     - **Context:** Verify the guard's logic under various off-nominal conditions. **This test cannot be skipped.**
     - **Procedure:**
         1.  **Scenario 1 (Missing Map):** Delete the map files and launch.
@@ -162,7 +162,7 @@ This module implements the new supervisor node for robust, safe startup and oper
 
 This module performs the final acceptance test as defined in the PRD.
 
-- [ ] **Task 6.1:** **Perform Three-Part Navigation Test**
+- [ ] **Task 6.1:** **Perform Three-Part Navigation Test** (PARTIAL ❗ — Goals accepted; robot did not move)
     - **Dependencies:** 5.2
     - **Context:** This is the final end-to-end test for Phase 3, validating the entire navigation pipeline's performance.
     - **Sub-Task 6.1.1:** Execute Test A (Valid Path), Test B (Keep-Out Path), and Test C (Invalid Goal) from the PRD's success metrics.
@@ -175,3 +175,63 @@ This module performs the final acceptance test as defined in the PRD.
     - **Sub-Task 6.2.2:** Update the `README.md` with instructions on how to record zones and use the full navigation system.
     - **Sub-Task 6.2.3:** Create a Pull Request on GitHub from `feature/phase-3-utm-navigation` to `main`, including validation screenshots.
     - **Sub-Task 6.2.4:** After review, merge the pull request. Phase 3 is now complete.
+
+### **Module 7: Remediation & Stabilization (Added After Initial Testing)**
+
+This module records the gaps discovered in Tests 4.A, 5.A, and 6.1 and defines the corrective actions required before final validation.
+
+#### Findings Summary (Updated after Test 5.A pass)
+- 1.A / 2.A / 3.A / 4.A / 5.A: PASSED.
+    - 4.A: Passed after lifecycle sequencing adjustments & velocity remap.
+    - 5.A: Passed after guard rewrite (map-frame shift using `map_origin_utm.yaml`, raw bound detection + detection vs re-entry hysteresis, timed resume logic, pose staleness handling).
+- 6.1: Still PARTIAL — motion path validation pending re-run with stabilized guard.
+
+#### Root Cause Hypotheses (Historical) & Current Disposition
+1. Lifecycle mis-sequencing: Mitigated (STARTUP + timed resume). Full lifecycle state polling still a potential enhancement.
+2. nav_status not updating: Resolved (centralized publish with silence window & state tracking).
+3. Boundary strictness / frame mismatch: Resolved (map-frame shift + hysteresis). Buffer now applied only for re-entry margin.
+4. Velocity integration: Partially addressed (remap added); requires confirmation in 6.1 retest.
+5. Activation timing: Guard self-waits; no additional delay currently required.
+
+#### Remediation Tasks
+- **Task 7.1 Guard Buffer & State Machine**
+    - Add parameter `boundary_buffer_m` (default 0.5) applied to (xmin,xmax,ymin,ymax) expansion.
+    - Implement explicit state enum: WAITING_FOR_MAP, WAITING_FOR_POSE, OUT_OF_BOUNDS, READY, STARTING_NAV.
+    - Publish nav_status on every state transition (deduplicate identical publishes).
+    - Add parameter `verbose` for debug logs.
+- **Task 7.2 Lifecycle Robustness**
+    - Query lifecycle states (via `/lifecycle_manager_navigation` service or individual node get) before deciding command.
+    - Command sequence: if any required node unconfigured -> STARTUP; if inactive -> ACTIVATE (or RESUME fallback); if paused -> RESUME.
+    - Retry with exponential backoff (e.g., attempts every 1s, doubling to max 8s, cap 5 tries).
+- **Task 7.3 Velocity Path Validation**
+    - Inspect diff_drive controller config for expected input; adjust Nav2 controller param `cmd_vel_topic` or add remap in launch.
+    - If needed, create lightweight relay node converting `Twist` to `TwistStamped` or vice versa.
+    - Add temporary topic echo tests to confirm non-zero linear.x publish during active navigation.
+- **Task 7.4 nav_status Test Harness**
+    - Optional Python script: fake map bounds + synthetic pose messages to exercise all guard transitions offline.
+- **Task 7.5 Launch & Parameterization**
+    - Expose guard parameters (buffer, auto_start, verbose) via `navigation.launch.py`.
+    - Delay guard startup until after map_server provides map (TimerAction or readiness check) OR let guard self-wait gracefully.
+- **Task 7.6 Retest Block**
+    - Re-run 4.A ensuring lifecycle nodes become ACTIVE.
+    - Re-run 5.A three scenarios verifying transitions & nav_status reasons.
+    - Add new micro-test: issue a NavigateToPose and confirm wheel joint velocities > 0 (joint_states or /diff_drive_controller/odom twist).
+- **Task 7.7 Re-run 6.1 Navigation Tests**
+    - Valid Path (success), Keep-Out Path (rerouted or fails gracefully), Invalid Goal (rejected/aborted with plausible message).
+- **Task 7.8 Optional Frame Unification (Deferred)**
+    - Decide whether to retire `map` frame and run Nav2 directly in `utm` after stabilization. (Not required for functional completion.)
+- **Task 7.9 Documentation & Cleanup**
+    - Update README with: recording workflow, guard states & meanings, troubleshooting (inactive lifecycle, no motion), parameters.
+    - Add summary of final test outcomes + screenshots before merge.
+
+#### Acceptance Criteria (Post-Remediation)
+| Area | Criterion |
+|------|-----------|
+| Guard | nav_status transitions through expected states; selective hysteresis & frame shift applied |
+| Lifecycle | All Nav2 nodes ACTIVE within 15s or failure reason logged |
+| Motion | NavigateToPose produces wheel motion & /odometry/filtered updates continuously |
+| Safety | Out-of-bounds triggers PAUSE within 1s and status=robot_outside_map |
+| Docs | README updated with Phase 3 usage & troubleshooting |
+
+#### Exit Gate
+Pending: Complete successful motion tests for 6.1 (A/B/C) then proceed to Module 6.2 merge steps.
