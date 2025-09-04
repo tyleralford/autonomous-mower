@@ -8,10 +8,17 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
+    boundary_buffer_m = LaunchConfiguration('boundary_buffer_m')
+    auto_start = LaunchConfiguration('auto_start')
+    verbose = LaunchConfiguration('verbose')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('params_file', default_value='/home/tyler/mower_ws/src/mower_navigation/config/nav2_params.yaml'),
+        # Exposed guard parameters
+        DeclareLaunchArgument('boundary_buffer_m', default_value='0.2'),
+        DeclareLaunchArgument('auto_start', default_value='true'),
+        DeclareLaunchArgument('verbose', default_value='false'),
 
         # Guard node: waits for valid map and in-bounds pose, then starts Nav2 lifecycle
         Node(
@@ -21,9 +28,10 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'use_sim_time': use_sim_time,
-                 'boundary_buffer_m': 0.2,
-                 'verbose': False,
-                 'auto_start': True,
+                 'boundary_buffer_m': boundary_buffer_m,
+                 'verbose': verbose,
+                 'auto_start': auto_start,
+                 # Keeping lifecycle schedule static (array typing issues via launch substitutions)
                  'lifecycle_retry_seconds': [0.0, 5.0, 10.0]}
             ]
         ),
@@ -46,18 +54,26 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}, params_file]
         ),
         
-        # Controller server - path following using DWB controller (UTM frame)
+        # Controller server - path following using DWB controller (map/odom frames)
         Node(
             package='nav2_controller',
             executable='controller_server',
             name='controller_server',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file],
-            remappings=[('/odom', '/odometry/filtered'),
-                        ('/cmd_vel', '/diff_drive_controller/cmd_vel')]
+            remappings=[('/odom', '/odometry/filtered')]
+        ),
+
+        # Velocity stamping bridge: converts Nav2 Twist -> TwistStamped for diff_drive_controller
+        Node(
+            package='mower_navigation',
+            executable='cmd_vel_stamper.py',
+            name='cmd_vel_stamper',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}]
         ),
         
-        # Behavior Tree Navigator - high-level navigation logic (UTM frame)
+        # Behavior Tree Navigator - high-level navigation logic (map frame)
         Node(
             package='nav2_bt_navigator',
             executable='bt_navigator',

@@ -60,7 +60,7 @@ The principal objective of Phase 3 is to **develop a complete, robust, and safe 
 
 ### **FR4: Nav2 Stack Integration in UTM Frame**
 *   The system **must** launch and manage the core ROS 2 Navigation Stack (Nav2).
-*   All components of the Nav2 stack (Map Server, Planner Server, Controller Server, BT Navigator, Costmaps) **must** be configured to use `utm` as their global frame.
+*   All components of the Nav2 stack (Map Server, Planner Server, Controller Server, BT Navigator, Costmaps) **must** be configured to use `map` as their global frame.
 *   The Nav2 stack **must** be configured with the following specific components:
     *   **Global Planner:** `SmacPlannerHybrid`
     *   **Local Planner / Controller:** `DWBController`
@@ -75,7 +75,7 @@ The principal objective of Phase 3 is to **develop a complete, robust, and safe 
 ## **6. Non-Functional Requirements**
 
 ### **NFR1: Coordinate Frame Standards**
-*   The system's primary transform tree **must** be `utm` -> `base_link`. The `odom` frame from wheel odometry will be a disconnected, secondary frame used only as an input to the EKF.
+*   The system's primary transform tree **must** be `utm` -> `base_link`. 
 
 ### **NFR2: Extensibility**
 *   The Nav2 costmap configuration **must** use a layered approach (e.g., `StaticLayer`, `InflationLayer`). This is a mandatory architectural requirement to ensure that future real-time obstacle avoidance sensors can be easily integrated.

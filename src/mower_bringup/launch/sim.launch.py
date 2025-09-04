@@ -144,11 +144,11 @@ def generate_launch_description():
                 ('/odometry/gps', '/odometry/gps')
             ]
         ),
-        # Single UTM EKF - publishes utm->base_link
+        # Global EKF - publishes map->odom (and map->base_link reference) using wheel + GPS + heading
         Node(
             package='robot_localization',
             executable='ekf_node',
-            name='utm_ekf_node',
+            name='map_ekf_node',
             output='screen',
             parameters=[utm_ekf_config, {'use_sim_time': use_sim_time}],
             remappings=[
@@ -242,12 +242,5 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time
             }.items()
         ),
-        # Static transform publisher map->utm (after map generation creates map_origin_utm.yaml)
-        Node(
-            package='mower_localization',
-            executable='map_to_utm_broadcaster',
-            name='map_to_utm_broadcaster',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 'maps_dir': '/home/tyler/mower_ws/maps'}]
-        )
+    # UTM static transform removed – operating purely in map frame
     ])

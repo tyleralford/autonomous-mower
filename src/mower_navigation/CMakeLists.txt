@@ -12,6 +12,7 @@ install(DIRECTORY
 
 install(PROGRAMS
   scripts/map_bounds_guard.py
+  scripts/cmd_vel_stamper.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

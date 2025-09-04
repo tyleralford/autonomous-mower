@@ -2,16 +2,18 @@
 Map generation utilities for Autonomous Mower Phase 3.
 
 Reads recorded polygons (boundary, keepouts, optional travel areas) from CSV files
-in world coordinates (meters, UTM frame) and generates a Nav2 static map as a
-PGM grayscale image with corresponding YAML metadata.
+in world coordinates (meters). Runtime now operates purely in the map frame;
+historically these coordinates were treated as UTM but georeferenced frame
+broadcasting was removed for simplicity. The generated Nav2 static map is a
+PGM grayscale image with YAML metadata.
 
-Cost encoding (per PRD):
+Cost encoding:
 - Lethal (outside boundary and inside keepouts): black (0)
 - Medium (travel areas): grey (128)
 - Free (inside boundary excluding lethal and medium): white (255)
 
 The YAML uses the 'map_server' format and sets origin at the lower-left corner
-of the generated image in the UTM world frame (same frame as /odometry/filtered).
+of the generated image (either padded or raw depending on `origin_mode`).
 Resolution is configurable.
 """
 from __future__ import annotations
@@ -121,7 +123,8 @@ def generate_map(
     boundary_files: Optional[List[str]] = None,
     keepout_files: Optional[List[str]] = None,
     travel_files: Optional[List[str]] = None,
-    frame: str = "utm",
+    frame: str = "map",
+    origin_mode: str = "raw",
 ) -> Tuple[str, str]:
     """
     Generate map.pgm and map.yaml in output_dir.
@@ -166,12 +169,23 @@ def generate_map(
         except Exception:
             continue
 
-    # Compute bounds with padding
-    min_x, min_y, max_x, max_y = _compute_bounds([outer_boundary])
-    min_x -= spec.padding_m
-    min_y -= spec.padding_m
-    max_x += spec.padding_m
-    max_y += spec.padding_m
+    # Compute raw polygon bounds (no padding yet)
+    raw_min_x, raw_min_y, raw_max_x, raw_max_y = _compute_bounds([outer_boundary])
+
+    # Apply padding symmetrically; padded bounds define the raster extent.
+    min_x = raw_min_x - spec.padding_m
+    min_y = raw_min_y - spec.padding_m
+    max_x = raw_max_x + spec.padding_m
+    max_y = raw_max_y + spec.padding_m
+
+    # Decide map origin (lower-left) coordinate in world terms.
+    # origin_mode == 'padded': origin is the padded lower-left (default, matches current behavior).
+    # origin_mode == 'raw': origin is the unpadded lower-left (raw_min_x/raw_min_y); raster still includes padding but
+    #                        map origin stays at the boundary corner (useful if consumers expect that anchor).
+    if origin_mode not in ("padded", "raw"):
+        raise ValueError("origin_mode must be 'padded' or 'raw'")
+    origin_x = min_x if origin_mode == "padded" else raw_min_x
+    origin_y = min_y if origin_mode == "padded" else raw_min_y
 
     width_px = int(np.ceil((max_x - min_x) / spec.resolution))
     height_px = int(np.ceil((max_y - min_y) / spec.resolution))
@@ -199,15 +213,9 @@ def generate_map(
     if not cv2.imwrite(map_pgm, img):  # pragma: no cover
         raise RuntimeError("Failed to write map.pgm")
 
-    utm_origin = (float(min_x), float(min_y), 0.0)
-    if frame == "map":
-        # Write map frame origin at (0,0,0)
-        _write_yaml(map_yaml, map_pgm, spec.resolution, (0.0, 0.0, 0.0))
-        # Persist utm origin companion file
-        companion = os.path.join(output_dir, "map_origin_utm.yaml")
-        with open(companion, "w") as f:
-            f.write(f"utm_origin: [{utm_origin[0]:.6f}, {utm_origin[1]:.6f}, {utm_origin[2]:.6f}]\n")
-    else:
-        _write_yaml(map_yaml, map_pgm, spec.resolution, utm_origin)
+    # utm_origin variable retained name for backward compatibility with earlier georeferenced design.
+    utm_origin = (float(origin_x), float(origin_y), 0.0)
+    # For both frame modes we now write the computed origin (padded or raw depending on origin_mode)
+    _write_yaml(map_yaml, map_pgm, spec.resolution, utm_origin)
 
     return map_yaml, map_pgm

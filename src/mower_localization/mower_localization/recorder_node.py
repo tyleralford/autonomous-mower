@@ -27,6 +27,13 @@ TRAVEL = 2
 
 
 class RecorderNode(Node):
+    """Records boundary / keepout / travel polygons from filtered odometry.
+
+    START action begins writing a CSV (x,y in current map/world coordinates),
+    STOP closes it and triggers full map regeneration (map.pgm + map.yaml).
+    A one-time `datum.yaml` (first GPS fix) is also stored for historical
+    reproducibility, though live navigation uses only map/odom/base_link.
+    """
     def __init__(self):
         super().__init__('recorder_node')
         self._recording: bool = False
