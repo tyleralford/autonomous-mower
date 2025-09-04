@@ -19,7 +19,13 @@ def generate_launch_description():
             executable='map_bounds_guard.py',
             name='map_bounds_guard',
             output='screen',
-            parameters=[{'use_sim_time': use_sim_time}]
+            parameters=[
+                {'use_sim_time': use_sim_time,
+                 'boundary_buffer_m': 0.2,
+                 'verbose': False,
+                 'auto_start': True,
+                 'lifecycle_retry_seconds': [0.0, 5.0, 10.0]}
+            ]
         ),
         
         # Map server - loads the generated map
@@ -47,7 +53,8 @@ def generate_launch_description():
             name='controller_server',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}, params_file],
-            remappings=[('/odom', '/odometry/filtered')]
+            remappings=[('/odom', '/odometry/filtered'),
+                        ('/cmd_vel', '/diff_drive_controller/cmd_vel')]
         ),
         
         # Behavior Tree Navigator - high-level navigation logic (UTM frame)

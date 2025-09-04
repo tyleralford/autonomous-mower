@@ -51,4 +51,6 @@ frames*.gv
 frames*.pdf
 
 # Generated maps and recordings
-maps/*
+maps/*.pgm
+maps/*.yaml
+maps/*.csv
