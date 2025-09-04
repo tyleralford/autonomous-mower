@@ -6,6 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from pathlib import Path
 
 
 def generate_launch_description():
@@ -23,8 +24,8 @@ def generate_launch_description():
     controller_config = os.path.join(pkg_mower_control, 'config', 'mower_controllers.yaml')
 
     # Localization config files
-    ekf_local_config = os.path.join(pkg_mower_localization, 'config', 'ekf_local.yaml')
-    ekf_global_config = os.path.join(pkg_mower_localization, 'config', 'ekf_global.yaml')
+    # Single UTM EKF config
+    utm_ekf_config = os.path.join(pkg_mower_localization, 'config', 'ekf.yaml')
     navsat_config = os.path.join(pkg_mower_localization, 'config', 'navsat_transform.yaml')
     
     # Nridge config file
@@ -34,6 +35,30 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('use_rviz')
     
+    # Load saved datum (if available) to anchor navsat_transform to a persistent map frame
+    maps_dir = Path('/home/tyler/mower_ws/maps')
+    datum_file = maps_dir / 'datum.yaml'
+    navsat_datum_params = {}
+    if datum_file.exists():
+        try:
+            # Minimal, dependency-free parser for simple key: value YAML
+            lat = lon = None
+            with open(datum_file, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith('latitude:'):
+                        lat = float(line.split(':', 1)[1].strip())
+                    elif line.startswith('longitude:'):
+                        lon = float(line.split(':', 1)[1].strip())
+            if lat is not None and lon is not None:
+                navsat_datum_params = {
+                    'use_manual_datum': True,
+                    'datum': [lat, lon, 0.0]
+                }
+        except Exception:
+            # If parsing fails, proceed without manual datum
+            navsat_datum_params = {}
+
     return LaunchDescription([
         # Fix snap conflicts
         SetEnvironmentVariable('GTK_PATH', ''),
@@ -105,43 +130,39 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}]
         ),
 
-        # Local EKF - fuses wheel odom and IMU, publishes odom->base_link
-        Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='local_ekf_node',
-            output='screen',
-            parameters=[ekf_local_config, {'use_sim_time': use_sim_time}],
-            remappings=[
-                ('/odometry/filtered', '/odometry/filtered/local')
-            ]
-        ),
-
-        # NavSat Transform Node - converts GPS to map-frame odometry
+        # NavSat Transform Node - converts GPS to UTM-frame odometry input
         Node(
             package='robot_localization',
             executable='navsat_transform_node',
             name='navsat_transform',
             output='screen',
-            parameters=[navsat_config, {'use_sim_time': use_sim_time}],
+            parameters=[navsat_config, {'use_sim_time': use_sim_time}, navsat_datum_params],
             remappings=[
                 ('/imu', '/gps/heading'),
                 ('/gps/fix', '/gps/fix'),
-                ('/odometry/filtered', '/odometry/filtered/local'),
+                ('/odometry/filtered', '/odometry/filtered'),
                 ('/odometry/gps', '/odometry/gps')
             ]
         ),
-
-        # Global EKF - fuses local EKF, GPS position, and GPS heading, publishes map->odom
+        # Global EKF - publishes map->odom (and map->base_link reference) using wheel + GPS + heading
         Node(
             package='robot_localization',
             executable='ekf_node',
-            name='global_ekf_node',
+            name='map_ekf_node',
             output='screen',
-            parameters=[ekf_global_config, {'use_sim_time': use_sim_time}],
+            parameters=[utm_ekf_config, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/odometry/filtered', '/odometry/filtered/global')
+                ('/odometry/filtered', '/odometry/filtered')
             ]
+        ),
+
+        # Recorder node for drive-to-record zone creation service (now consumes /odometry/filtered in UTM frame)
+        Node(
+            package='mower_localization',
+            executable='recorder_node',
+            name='recorder_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
         ),
         
         # Spawn the robot using the gz_spawn_model launch file
@@ -206,5 +227,20 @@ def generate_launch_description():
                 ],
                 output='screen'
             )
-        ])
+        ]),
+
+        # Include Nav2 stack (map server, planner, controller, BT)
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare('mower_navigation'),
+                    'launch',
+                    'navigation.launch.py'
+                ])
+            ]),
+            launch_arguments={
+                'use_sim_time': use_sim_time
+            }.items()
+        ),
+    # UTM static transform removed – operating purely in map frame
     ])

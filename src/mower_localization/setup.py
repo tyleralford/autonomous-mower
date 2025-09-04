@@ -25,6 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             'ground_truth_heading_node = mower_localization.ground_truth_heading_node:main',
+            'recorder_node = mower_localization.recorder_node:main',
+            'map_to_utm_broadcaster = mower_localization.map_to_utm_broadcaster:main'
         ],
     },
 )

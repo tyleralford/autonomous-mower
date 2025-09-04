@@ -1,0 +1,1 @@
+the maps folder holds generated map sections.

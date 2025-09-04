@@ -13,6 +13,7 @@ Thumbs.db
 
 # IDE specific files
 .vscode/
+.kiro/
 .idea/
 *.swp
 *.swo
@@ -48,3 +49,8 @@ core.*
 *.patch
 frames*.gv
 frames*.pdf
+
+# Generated maps and recordings
+maps/*.pgm
+maps/*.yaml
+maps/*.csv

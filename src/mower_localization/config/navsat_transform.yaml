@@ -1,10 +1,10 @@
 # NavSat Transform Configuration
 #
 # This node converts GPS lat/lon coordinates to Cartesian coordinates in the map frame.
-# It subscribes to GPS data and publishes odometry messages for the global EKF.
+# The map frame is established as the world_frame for localization; no UTM frame is used at runtime.
 #
 # Inputs: GPS fix data, IMU orientation, local EKF odometry
-# Output: /odometry/gps in 'map' frame
+# Output: /odometry/gps in 'utm' frame
 
 navsat_transform:
   ros__parameters:
@@ -14,7 +14,7 @@ navsat_transform:
     yaw_offset: 0.0
     zero_altitude: true
     publish_filtered_gps: false
-    use_odometry_yaw: true
+    use_odometry_yaw: false
     #wait_for_datum: true  # Use hardcoded datum for simulation
     
     # Hardcoded datum for simulation (Alabama coordinates)
