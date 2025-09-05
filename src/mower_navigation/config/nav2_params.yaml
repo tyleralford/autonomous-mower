@@ -105,8 +105,8 @@ global_costmap:
       global_frame: map
       map_frame: map
       robot_base_frame: base_link
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 5.0
+      publish_frequency: 2.0
       always_send_full_costmap: true
       footprint: "[[0.3, 0.2], [0.3, -0.2], [-0.3, -0.2], [-0.3, 0.2]]"
       plugins: ["static_layer", "inflation_layer"]
@@ -124,8 +124,8 @@ local_costmap:
       use_sim_time: true
       global_frame: odom
       robot_base_frame: base_link
-      update_frequency: 5.0
-      publish_frequency: 2.0
+      update_frequency: 10.0
+      publish_frequency: 5.0
       rolling_window: true
       width: 10
       height: 10

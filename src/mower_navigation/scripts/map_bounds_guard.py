@@ -48,6 +48,8 @@ class MapBoundsGuard(Node):
             ('verbose', False),
             ('lifecycle_retry_seconds', [0.0, 5.0, 10.0]),
             ('activation_wait_sec', 3.0),
+            # Added stabilization delay for re-entry (time inside bounds before RESUME)
+            ('reentry_stabilization_sec', 5.0),
             ('check_rate_hz_initial', 10.0),
             ('check_rate_hz_active', 2.0),
             ('max_state_silence_sec', 2.0),
@@ -72,6 +74,7 @@ class MapBoundsGuard(Node):
         except Exception:
             self.lifecycle_schedule = [0.0, 5.0, 10.0]
         self.activation_wait = gp('activation_wait_sec').double_value
+        self.reentry_stabilization = gp('reentry_stabilization_sec').double_value
         self.check_rate_initial = gp('check_rate_hz_initial').double_value
         self.check_rate_active = gp('check_rate_hz_active').double_value
         self.max_state_silence = gp('max_state_silence_sec').double_value
@@ -97,6 +100,8 @@ class MapBoundsGuard(Node):
         self.startup_sent_time = None
         self.nav_active_assumed = False
         self.paused_due_to_bounds = False
+        # Timestamp when robot first satisfies interior hysteresis on re-entry
+        self.reentry_stable_start_time = None
         self.lifecycle_commands_sent = set()
         self.violated_axes = set()  # track which boundaries were crossed for targeted hysteresis
         self.map_frame_shift = (0.0, 0.0)  # utm_origin (utm -> map translation) if map.yaml origin is (0,0,0)
@@ -255,6 +260,12 @@ class MapBoundsGuard(Node):
             self.send_lifecycle_command(ManageLifecycleNodes.Request.PAUSE)
             self.nav_active_assumed = False
             self.paused_due_to_bounds = True
+            self.reentry_stable_start_time = None  # reset stabilization tracking
+            # Allow future RESUME (remove prior one if present)
+            try:
+                self.lifecycle_commands_sent.discard(ManageLifecycleNodes.Request.RESUME)
+            except Exception:
+                pass
         self.publish_status(False, 'robot_outside_map')
 
     def odom_cb(self, msg: Odometry):
@@ -314,10 +325,25 @@ class MapBoundsGuard(Node):
                 if need_more:
                     self.publish_status(False, 'robot_outside_map')
                     return
-            # Clear pause and attempt RESUME sequence
-            self.paused_due_to_bounds = False
-            self.startup_sent_time = self.get_clock().now()
-            self.publish_status(False, 'starting_nav')
+            # At this point interior margin satisfied; apply stabilization delay before RESUME
+            now = self.get_clock().now()
+            if self.reentry_stable_start_time is None:
+                self.reentry_stable_start_time = now
+                self.publish_status(False, 'reentry_stabilizing')
+                return
+            elapsed_stable = (now - self.reentry_stable_start_time).nanoseconds / 1e9
+            if elapsed_stable < self.reentry_stabilization:
+                self.publish_status(False, 'reentry_stabilizing')
+                return
+            # Stabilization period complete – issue RESUME then transition to starting_nav state
+            if self.send_lifecycle_command(ManageLifecycleNodes.Request.RESUME):
+                self.lifecycle_commands_sent.add(ManageLifecycleNodes.Request.RESUME)
+                self.startup_sent_time = now
+                self.paused_due_to_bounds = False
+                self.reentry_stable_start_time = None
+                self.publish_status(False, 'starting_nav')
+                # Do not proceed to sequence_lifecycle this tick; wait for next cycle
+                return
         self.sequence_lifecycle()
         if self.nav_active_assumed:
             self.publish_status(True, 'active')
