@@ -25,7 +25,7 @@ The principal objective of Phase 3 is to **develop a complete, robust, and safe 
 
 *   "As a developer, I want to run a service to start and stop recording the robot's path to define distinct operational zones, with all data saved in UTM coordinates."
 *   "As a developer, I want the system to automatically process my recorded zone files into a persistent, georeferenced Nav2 map as soon as I finish recording."
-*   "As a developer, I want to configure a single EKF to fuse all sensor data and produce a robust pose estimate in the `utm` frame."
+*   "As a developer, I want to configure a single EKF to fuse all sensor data and produce a robust pose estimate in the `map` frame."
 *   "As a developer, I want to launch the Nav2 stack and see that the robot's UTM-based position is correctly localized within its georeferenced map."
 *   "As a developer, I want to send a navigation goal in RViz and have the robot plan and execute a path that respects all defined zones."
 *   "As a developer, I want the navigation system to remain safely inactive if the robot is started without a map or outside of the map's boundaries, preventing errors."
@@ -48,9 +48,9 @@ The principal objective of Phase 3 is to **develop a complete, robust, and safe 
     *   **Medium Cost (Grey):** The area inside any `travel_area` polygons.
     *   **Free Space (White):** The remaining area inside the `boundary` polygon.
 
-### **FR3: Single EKF (UTM Frame) Configuration**
+### **FR3: Single EKF (map Frame) Configuration**
 *   The dual-EKF system **must** be replaced with a single `robot_localization` `ekf_node`.
-*   The EKF's `world_frame` **must** be set to `utm`.
+*   The EKF's `world_frame` **must** be set to `map`.
 *   The EKF **must** be configured to fuse data from four sources:
     1.  **Wheel Odometry:** For high-frequency relative velocity updates.
     2.  **IMU:** For high-frequency relative orientation and angular velocity updates.
@@ -75,7 +75,7 @@ The principal objective of Phase 3 is to **develop a complete, robust, and safe 
 ## **6. Non-Functional Requirements**
 
 ### **NFR1: Coordinate Frame Standards**
-*   The system's primary transform tree **must** be `utm` -> `base_link`. 
+*   The system's primary transform tree **must** be `map` -> `base_link`. 
 
 ### **NFR2: Extensibility**
 *   The Nav2 costmap configuration **must** use a layered approach (e.g., `StaticLayer`, `InflationLayer`). This is a mandatory architectural requirement to ensure that future real-time obstacle avoidance sensors can be easily integrated.
@@ -95,7 +95,7 @@ The successful completion of Phase 3 will be verified by a formal, multi-part ac
 *   **Setup:**
     1.  Use the `/mower/manage_recording` service to record and generate a georeferenced map.
     2.  Launch the full navigation stack.
-    3.  In RViz, set the "Fixed Frame" to `utm`. Display the robot's pose, the Nav2 costmap, and the global plan topic.
+    3.  In RViz, set the "Fixed Frame" to `map`. Display the robot's pose, the Nav2 costmap, and the global plan topic.
 *   **Test A: Valid Path in Free Space**
     *   **Action:** Use the "2D Nav Goal" tool in RViz to set a goal in an open area of the map.
     *   **Expected Outcome:** Nav2 successfully generates a smooth path to the goal, and the robot navigates to the destination.

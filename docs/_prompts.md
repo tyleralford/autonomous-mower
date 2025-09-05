@@ -20,8 +20,8 @@ Follow these instructions precisely and provide unbiased, neutral guidance.
 Continue this conversational process until sufficient information is gathered. Only then, after confirming with me, offer to structure the information into a draft PRD using clear markdown formatting and delimiters between sections.
 MY INITIAL BRAINDUMP:
 --- BRAINDUMP START ---
-I have now completed Phase 1. The attached documents are the PRD and implementation plan after completing phase 1. I have the project on github at https://github.com/tyleralford/autonomous-mower
-review the codebase and the implementation of phase 1, along with the development plan we have laid out, and help me develop the PRD for phase 2 of this project.
+I have now completed Phase 3. The attached documents are the PRD and implementation plan after completing phase 1. I have the project on github at https://github.com/tyleralford/autonomous-mower .
+Review the codebase and the implementation of phase 1, 2, and 3, along with the development plan we have laid out, and help me develop the PRD for phase 4 of this project.
 --- BRAINDUMP END ---
 YOUR TASK NOW:
 Review the brain dump above carefully, applying the rules outlined in the PROCESS section. Do not write the PRD yet. Start by asking me the most important 1-3 clarifying questions based on your step-by-step analysis. Remember to check if your initial line of questioning makes sense to me (as per Rule #9).

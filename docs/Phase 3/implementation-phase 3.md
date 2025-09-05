@@ -70,15 +70,15 @@ This module creates the automated, georeferenced map required by Nav2.
 
 ### **Module 3: Architectural Shift to UTM Frame**
 
-This module implements the core architectural change from a dual-EKF `map`/`odom` system to a single EKF `utm` system.
+This module implements the core architectural change from a dual-EKF `map`/`odom` system to a single EKF `map` system.
 
 - [x] **Task 3.1:** **Create Single EKF Configuration**
     - **Dependencies:** 2.2
     - **Context:** Create a new, unified EKF configuration file to fuse all sensor data into the UTM frame.
     - **Sub-Task 3.1.1:** In `mower_localization/config`, create `ekf.yaml`.
-    - **Sub-Task 3.1.2:** Set `world_frame: utm`.
+    - **Sub-Task 3.1.2:** Set `world_frame: map`.
     - **Sub-Task 3.1.3:** Configure the four inputs as specified in the PRD: wheel odometry (`odom0`), IMU (`imu0`), GPS UTM position (`odom1`), and GPS heading (`imu1`). Set the `_config` matrices appropriately to fuse the correct variables from each.
-    - **Sub-Task 3.1.4:** Commit the new configuration. (`git commit -m "feat(localization): Create single EKF config for UTM frame"`)
+    - **Sub-Task 3.1.4:** Commit the new configuration. (`git commit -m "feat(localization): Create single EKF config for map frame"`)
 
 - [x] **Task 3.2:** **Update System Launch for Single EKF**
     - **Dependencies:** 3.1
@@ -86,7 +86,7 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
     - **Sub-Task 3.2.1:** Edit `mower_bringup/launch/sim.launch.py`.
     - **Sub-Task 3.2.2:** Remove the two `ekf_node` instances (`local_ekf_node`, `global_ekf_node`).
     - **Sub-Task 3.2.3:** Add a single `ekf_node` instance, loading the new `ekf.yaml` configuration.
-    - **Sub-Task 3.2.4:** Commit the launch file changes. (`git commit -m "refactor(bringup): Switch to single EKF for UTM localization"`)
+    - **Sub-Task 3.2.4:** Commit the launch file changes. (`git commit -m "refactor(bringup): Switch to single EKF for map localization"`)
 
 - [x] **MANDATORY TEST 3.A: Verify UTM Transform** ✅
     - **Context:** This is a critical test to ensure the new localization architecture is working correctly before building on top of it. **This test cannot be skipped.**
@@ -95,14 +95,14 @@ This module implements the core architectural change from a dual-EKF `map`/`odom
         2.  Launch the main simulation.
         3.  In a new terminal, run `ros2 run tf2_tools view_frames.py`.
         4.  Echo the EKF output topic: `ros2 topic echo /odometry/filtered`.
-    - **Expected Outcome:** The TF tree now shows a direct `utm` -> `base_link` transform. The `/odometry/filtered` topic is publishing poses in the `utm` frame.
+    - **Expected Outcome:** The TF tree now shows a direct `map` -> `base_link` transform. The `/odometry/filtered` topic is publishing poses in the `map` frame.
 
 - [x] **Task 3.3:** **Update Mapping Workflow for UTM**
     - **Dependencies:** 3.2
     - **Context:** Update the custom mapping tools to operate in the UTM frame.
     - **Sub-Task 3.3.1:** In `recorder_node.py`, change the subscriber to listen to `/odometry/filtered` to save poses in UTM coordinates.
     - **Sub-Task 3.3.2:** In `map_generator.py`, update the logic to correctly calculate the map `origin` in the `map.yaml` file using UTM coordinates.
-    - **Sub-Task 3.3.3:** Commit the updates. (`git commit -m "refactor(localization): Update mapping tools to operate in UTM frame"`)
+    - **Sub-Task 3.3.3:** Commit the updates. (`git commit -m "refactor(localization): Update mapping tools to operate in map frame"`)
 
 ### **Module 4: Nav2 Integration in UTM Frame**
 
@@ -110,7 +110,7 @@ This module integrates the Nav2 stack to use the new UTM-based localization.
 
 - [x] **Task 4.1:** **Create and Configure Nav2**
     - **Dependencies:** 3.3
-    - **Context:** Create the Nav2 package and configure it to operate entirely within the `utm` frame.
+    - **Context:** Create the Nav2 package and configure it to operate entirely within the `map` frame.
     - [x] **Sub-Task 4.1.1:** Package exists with `config/` and `launch/`.
     - [x] **Sub-Task 4.1.2:** `nav2_params.yaml` present with Smac + DWB + layered costmaps.
     - [x] **Sub-Task 4.1.3:** global_frame set to `map`. 
@@ -129,7 +129,7 @@ This module integrates the Nav2 stack to use the new UTM-based localization.
     - **Procedure:**
         1.  Record a new map to ensure it is in UTM coordinates.
         2.  Launch the full simulation.
-        3.  Open RViz and set the Fixed Frame to `utm`.
+        3.  Open RViz and set the Fixed Frame to `map`.
     - **Expected Outcome:** Nav2 starts without errors. RViz displays the georeferenced map. The robot's model appears correctly positioned within the map boundaries.
 
 ### **Module 5: Navigation Guard**
