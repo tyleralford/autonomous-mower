@@ -20,7 +20,7 @@ Follow these instructions precisely and provide unbiased, neutral guidance.
 Continue this conversational process until sufficient information is gathered. Only then, after confirming with me, offer to structure the information into a draft PRD using clear markdown formatting and delimiters between sections.
 MY INITIAL BRAINDUMP:
 --- BRAINDUMP START ---
-I have now completed Phase 3. The attached documents are the PRD and implementation plan after completing phase 1. I have the project on github at https://github.com/tyleralford/autonomous-mower .
+I have now completed Phase 3. The attached documents are the PRD and implementation plan after completing phase 1, 2, and 3. I have the project on github at https://github.com/tyleralford/autonomous-mower
 Review the codebase and the implementation of phase 1, 2, and 3, along with the development plan we have laid out, and help me develop the PRD for phase 4 of this project.
 --- BRAINDUMP END ---
 YOUR TASK NOW:
@@ -45,12 +45,12 @@ Please ask your first set of clarifying questions based on my brain dump, and le
 
 ## **Final PRD generation prompt after all questions have been answered.**
 
-yes, generate the full phase 3 PRD in markdown format. ensure that it includes all details and requirements that we have covered such that it could stand alone and still provide enough information to implement this phase of the project.
+yes, generate the full phase 4 PRD in markdown format. ensure that it includes all details and requirements that we have covered such that it could stand alone and still provide enough information to implement this phase of the project.
 
 
 ## **Implementatino plan generation prompt after all questions have been answered.**
 
-Based on the generated phase 2 PRD and all of the information we have covered in this conversation, create a fully complete detailed step-by-step plan document to build this project.
+Based on the generated phase 4 PRD and all of the information we have covered in this conversation, create a fully complete detailed step-by-step plan document to build this project.
 Then break it down into small tasks that build on each other.
 Based on those tasks, break them into smaller subtasks and even smaller subtasks if necessary.
 Make sure the steps are small enough to be implemented in a step but big enough to finish the project with success.
@@ -71,7 +71,7 @@ If the PRD calls for use of a software or library or system or plugin, search th
 
 ## **Agent implementation following the generated documentation.**
 
-You're a senior embedded software and robotics engineer. Study #docs/requirements-phase 3.md and implement what's still missing in #docs/implementation-phase 3.md. Implement each task and subtask in the project plan and respect task and subtask dependencies. Once finished a task or subtask, check it in the list and move to the next. It is critical to always keep the project plan up to date. Reference #docs/Autonomous Mower Development Plan v2.md for context to the larger project.
+You're a senior embedded software and robotics engineer. Study #docs/requirements-phase 4.md and implement what's still missing in #docs/implementation-phase 4.md. Implement each task and subtask in the project plan and respect task and subtask dependencies. Once finished a task or subtask, check it in the list and move to the next. It is critical to always keep the project plan up to date. Reference #docs/Autonomous Mower Development Plan v3.md for context to the larger project.
 
 VERY IMPORTANT:
 - When using a library be sure to search the internet and read and understand the library documentation before implementing any code to use the library.
