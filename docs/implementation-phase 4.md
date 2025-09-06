@@ -1,10 +1,10 @@
 ## **Autonomous Mower: Phase 4 Implementation Plan**
 
-This document provides a detailed, step-by-step plan for executing Phase 4 of the Autonomous Mower project. It is designed to be followed sequentially by a developer. Each task builds upon the previous one, with mandatory testing checkpoints to ensure system integrity at every stage.
+This document provides a detailed, step-by-step plan for executing Phase 4 of the Autonomous Mower project. It is designed to be followed sequentially by a junior developer. Each task builds upon the previous one, with mandatory testing checkpoints to ensure system integrity at every stage.
 
-### **Module 0: Project Setup**
+### **Module 0: Project Setup and Interfaces**
 
-This initial module prepares the codebase for Phase 4 development.
+This module establishes the foundational packages and ROS 2 interfaces for the mission control system.
 
 - [ ] **Task 0.1:** **Create and Checkout a New Branch**
     - **Context:** Isolate all Phase 4 development on a dedicated branch.
@@ -12,154 +12,183 @@ This initial module prepares the codebase for Phase 4 development.
     - **Sub-Task 0.1.2:** Create and check out a new branch named `feature/phase-4-mission-control`.
     - **Sub-Task 0.1.3:** Push the new branch to the remote repository.
 
-### **Module 1: Foundational Interfaces and Packages**
-
-This module creates the scaffolding for the mission control system: the ROS 2 Action definition and the C++ package that will house the logic.
-
-- [ ] **Task 1.1:** **Create the `StartMowing` Action Message**
+- [ ] **Task 0.2:** **Define the "Start Mowing" Action**
     - **Dependencies:** 0.1
-    - **Context:** Define the primary ROS 2 interface for starting and managing mowing jobs.
-    - **Sub-Task 1.1.1:** In the `mower_msgs` package, create an `action/` directory.
-    - **Sub-Task 1.1.2:** Create a new file `StartMowing.action` with the definition specified in the PRD (Goal, Result, Feedback).
-    - **Sub-Task 1.1.3:** Update `mower_msgs/CMakeLists.txt` and `package.xml` to build the new action message.
-    - **Sub-Task 1.1.4:** Build the workspace to verify the message is generated correctly.
-    - **Sub-Task 1.1.5:** Commit your work. (`git commit -m "feat(msgs): Create StartMowing action definition"`)
+    - **Context:** Create the custom ROS 2 Action that will be the primary entry point for starting and managing mowing jobs.
+    - **Sub-Task 0.2.1:** In the `mower_msgs` package, create an `action/` directory.
+    - **Sub-Task 0.2.2:** Create a new file `StartMowing.action` with the full definition specified in the PRD (goal, result, feedback).
+    - **Sub-Task 0.2.3:** Update `mower_msgs/CMakeLists.txt` and `package.xml` to build the new action message.
+    - **Sub-Task 0.2.4:** Build the workspace (`colcon build`) and verify the new message interfaces are generated correctly (`ros2 interface show mower_msgs/action/StartMowing`).
+    - **Sub-Task 0.2.5:** Commit your work. (`git commit -m "feat(msgs): Create StartMowing action definition"`)
 
-- [ ] **Task 1.2:** **Create the Mission Control Package**
+- [ ] **Task 0.3:** **Create Mission Control Package**
+    - **Dependencies:** 0.2
+    - **Context:** Create the new C++ package that will house all the mission logic, including the Behavior Tree nodes.
+    - **Sub-Task 0.3.1:** In `mower_ws/src`, create a new ROS 2 package: `ros2 pkg create --build-type ament_cmake --dependencies rclcpp rclcpp_action nav2_msgs mower_msgs behaviortree_cpp_v4 --node-name mission_control_node mower_mission_control`.
+    - **Sub-Task 0.3.2:** Inside `mower_mission_control`, create the following directory structure: `bt_xml/` for Behavior Tree definitions and `include/mower_mission_control/` and `src/` for C++ node source files.
+    - **Sub-Task 0.3.3:** Commit the new package structure. (`git commit -m "feat(mission): Create mower_mission_control package"`)
+
+### **Module 1: Hardware Simulators and Interfaces**
+
+This module creates the simulated hardware interfaces required to test the mission logic without a physical robot.
+
+- [ ] **Task 1.1:** **Implement Battery Simulator Node**
+    - **Dependencies:** 0.3
+    - **Context:** To test the `IsBatteryLow` condition, we need a way to simulate the battery's state. This node will publish fake battery data and provide a service to control it during tests.
+    - **Sub-Task 1.1.1:** In a new package (e.g., `mower_simulation`), create a Python node `battery_simulator_node.py`.
+    - **Sub-Task 1.1.2:** The node should continuously publish a `sensor_msgs/BatteryState` message to the `/battery_state` topic.
+    - **Sub-Task 1.1.3:** Create a ROS 2 service (e.g., `/mower/set_battery_level`) that allows a developer to send a float value (e.g., 0.0 to 1.0) to set the `percentage` field of the published message.
+    - **Sub-Task 1.1.4:** Add the node to the main `sim.launch.py` so it starts with the system.
+    - **Sub-Task 1.1.5:** Commit the new simulator node. (`git commit -m "feat(simulation): Implement battery simulator node"`)
+
+- [ ] **MANDATORY TEST 1.A: Verify Hardware Interfaces**
+    - **Context:** Before building any mission logic, ensure the required sensor topics are available and behaving as expected. **This test cannot be skipped.**
+    - **Procedure:**
+        1.  Build and source the workspace.
+        2.  Launch the main simulation: `ros2 launch mower_bringup sim.launch.py`.
+        3.  In a new terminal, check the topic list for `/battery_state` and `/gps/fix`.
+        4.  Echo both topics and verify they are publishing the correct message types.
+        5.  Call the `/mower/set_battery_level` service with a value of `0.5` and confirm the echoed `/battery_state` message updates accordingly.
+    - **Expected Outcome:** All required sensor topics are active and publishing valid data, and the battery simulator is controllable.
+
+### **Module 2: Core Behavior Tree Scaffolding**
+
+This module focuses on creating the C++ node that runs the Behavior Tree and implementing the first, most basic navigation action.
+
+- [ ] **Task 2.1:** **Implement the Behavior Tree Manager Node**
     - **Dependencies:** 1.1
-    - **Context:** Create the C++ package that will contain the Behavior Tree (BT) nodes and the main mission control executable.
-    - **Sub-Task 1.2.1:** In `mower_ws/src`, create a new package: `ros2 pkg create --build-type ament_cmake mower_mission_control`.
-    - **Sub-Task 1.2.2:** Inside `mower_mission_control`, create the following directory structure: `src/`, `include/mower_mission_control/`, and `bt_xml/`.
-    - **Sub-Task 1.2.3:** Commit the new package structure. (`git commit -m "feat: Create mower_mission_control package"`)
+    - **Context:** This C++ node is the "engine" that loads and runs our Behavior Tree. It will also host the `StartMowing` action server.
+    - **Sub-Task 2.1.1:** In `mower_mission_control/src/mission_control_node.cpp`, set up a basic ROS 2 node.
+    - **Sub-Task 2.1.2:** Use the `behaviortree_cpp_v4` library to create a `BT::BehaviorTreeFactory`.
+    - **Sub-Task 2.1.3:** Implement the `StartMowing` action server. For now, the `handle_goal` callback can simply accept any new goal.
+    - **Sub-Task 2.1.4:** In the `execute` callback of the action server, load a simple BT from an XML file (e.g., `mower_mission_control/bt_xml/main.xml`).
+    - **Sub-Task 2.1.5:** Create a simple `main.xml` with only a `<BehaviorTree ID="MainTree"><AlwaysSuccess/></BehaviorTree>` tag.
+    - **Sub-Task 2.1.6:** The node should "tick" the tree at a regular rate (e.g., 10 Hz) as long as the action is active.
+    - **Sub-Task 2.1.7:** Add the node to the main `sim.launch.py`.
+    - **Sub-Task 2.1.8:** Commit the BT manager node. (`git commit -m "feat(mission): Implement BT manager and action server"`)
 
-### **Module 2: Simulation Support**
-
-This module creates the necessary simulation nodes to test reactive behaviors without hardware.
-
-- [ ] **Task 2.1:** **Implement the Battery Simulator Node**
-    - **Dependencies:** 1.2
-    - **Context:** Create a simple node to simulate the robot's battery, allowing for testing of the `IsBatteryLow` condition.
-    - **Sub-Task 2.1.1:** In `mower_simulation/scripts`, create a new Python node `battery_simulator_node.py`.
-    - **Sub-Task 2.1.2:** The node must publish `sensor_msgs/BatteryState` messages to the `/battery_state` topic at a regular interval (e.g., 1 Hz).
-    - **Sub-Task 2.1.3:** The node must host a service (e.g., `/mower/set_battery_level`) that allows a developer to set the simulated battery voltage or percentage.
-    - **Sub-Task 2.1.4:** Add the new node to `mower_simulation/setup.py` and integrate it into the main `sim.launch.py`.
-    - **Sub-Task 2.1.5:** Commit the new simulator node. (`git commit -m "feat(simulation): Implement battery simulator node"`)
-
-- [ ] **MANDATORY TEST 2.A: Verify Battery Simulation**
-    - **Context:** Ensure the battery simulator is working correctly before it is used as a dependency for testing the BT. **This test cannot be skipped.**
-    - **Procedure:**
-        1.  Launch the full simulation.
-        2.  Check that the `/battery_state` topic is being published.
-        3.  Call the `/mower/set_battery_level` service to set a new battery level.
-    - **Expected Outcome:** The messages published on `/battery_state` should reflect the new value set via the service call.
-
-### **Module 3: Core Behavior Tree Implementation**
-
-This module implements the main BT runner and the library of custom nodes that will form the building blocks of the mission logic.
-
-- [ ] **Task 3.1:** **Implement the Main Mission Control Node**
+- [ ] **Task 2.2:** **Create a "NavigateToPose" BT Action Node**
     - **Dependencies:** 2.1
-    - **Context:** Create the main C++ node that will load, register, and "tick" the Behavior Tree.
-    - **Sub-Task 3.1.1:** In `mower_mission_control/src`, create `mission_control_node.cpp`.
-    - **Sub-Task 3.1.2:** This node should use the `BehaviorTreeFactory` to register custom nodes (which will be created next) and load a BT definition from an XML file.
-    - **Sub-Task 3.1.3:** Create a timer that "ticks" the loaded tree at a regular frequency (e.g., 10 Hz).
-    - **Sub-Task 3.1.4:** In `mower_mission_control/bt_xml`, create a simple `mower_main.xml` with a placeholder node (e.g., a `PrintMessage` node) to test the loading mechanism.
-    - **Sub-Task 3.1.5:** Add the executable to the `CMakeLists.txt` and integrate it into the main `sim.launch.py`.
+    - **Context:** This is our first custom BT node. It will connect the Behavior Tree to the Nav2 stack, allowing the BT to command the robot to move. This is a critical integration point.
+    - **Reference:** [Nav2 Documentation on BT Nodes](https://navigation.ros.org/plugin_tutorials/docs/writing_new_nav2_bt_plugin.html), [BT.CPP ROS2 Integration](https://www.behaviortree.dev/docs/ros2_integration/)
+    - **Sub-Task 2.2.1:** In `mower_mission_control`, create a new C++ class `NavigateToPoseNode` that inherits from `BT::RosActionNode<nav2_msgs::action::NavigateToPose>`.
+    - **Sub-Task 2.2.2:** This node will take a goal pose from the BT's "blackboard" as an input port.
+    - **Sub-Task 2.2.3:** In the `mission_control_node.cpp`, register this new custom node with the `BT::BehaviorTreeFactory` using a name like "NavigateToPose".
+    - **Sub-Task 2.2.4:** Update `main.xml` to use this new node. For testing, you can hardcode a goal pose on the blackboard.
+    - **Sub-Task 2.2.5:** Commit the new BT node. (`git commit -m "feat(mission): Implement NavigateToPose BT action node"`)
 
-- [ ] **MANDATORY TEST 3.A: Verify BT Loading and Ticking**
-    - **Context:** Ensure the core BT engine is running before adding complex custom nodes. **This test cannot be skipped.**
+- [ ] **MANDATORY TEST 2.A: Verify BT-Controlled Navigation**
+    - **Context:** This test is the "first light" for the mission controller, proving that the Behavior Tree can successfully command the robot to move using the Nav2 stack. **This test cannot be skipped.**
     - **Procedure:**
-        1.  Launch the full simulation.
-    - **Expected Outcome:** The `mission_control_node` starts without errors. The placeholder message from the simple BT XML is printed to the console repeatedly, confirming the tree is being ticked.
+        1.  Build and source the workspace.
+        2.  Launch the main simulation.
+        3.  In a new terminal, send a simple goal to the `/mower/start_mowing` action server (the goal content doesn't matter yet).
+        4.  Observe the robot's behavior in RViz.
+    - **Expected Outcome:** Upon receiving the action goal, the Behavior Tree should tick the `NavigateToPose` node, which should in turn call the Nav2 action. The robot should autonomously navigate to the hardcoded goal pose in the simulation.
 
-- [ ] **Task 3.2:** **Implement Simple Condition and Action Nodes**
+### **Module 3: Coverage Path Planning Logic**
+
+This module implements the core algorithm for generating the mowing pattern.
+
+- [ ] **Task 3.1:** **Implement Boustrophedon Planner**
+    - **Dependencies:** 2.2
+    - **Context:** Create the standalone, non-ROS logic for the coverage path planner. This makes it easy to test the algorithm in isolation.
+    - **Sub-Task 3.1.1:** In a new utility library within `mower_mission_control`, create a function that implements the Boustrophedon decomposition algorithm.
+    - **Sub-Task 3.1.2:** The function should take a polygon and all mowing parameters (overlap, angle, perimeters, etc.) as input.
+    - **Sub-Task 3.1.3:** The function's output should be a list of poses (e.g., a `std::vector` of pose objects).
+    - **Sub-Task 3.1.4:** Write a simple, non-ROS unit test to verify the planner's output for a simple rectangular polygon.
+    - **Sub-Task 3.1.5:** Commit the planner library. (`git commit -m "feat(mission): Implement Boustrophedon coverage planner library"`)
+
+- [ ] **Task 3.2:** **Create "GenerateCoveragePath" BT Node**
     - **Dependencies:** 3.1
-    - **Context:** Create the first set of custom C++ BT nodes for basic checks and actions.
-    - **Sub-Task 3.2.1:** Create header and source files for each new node (e.g., `is_battery_low.hpp`, `is_gps_good.hpp`, `engage_cutter.hpp`).
-    - **Sub-Task 3.2.2:** Implement the nodes. `IsBatteryLow` and `IsGpsGood` will subscribe to their respective topics and return `SUCCESS` or `FAILURE`. `EngageCutter` will log a message (functionality will be expanded later).
-    - **Sub-Task 3.2.3:** Export these nodes as plugins using `pluginlib` and update the `CMakeLists.txt` and `package.xml` accordingly.
-    - **Sub-Task 3.2.4:** Register the new nodes in `mission_control_node.cpp`.
-    - **Sub-Task 3.2.5:** Commit the new nodes. (`git commit -m "feat(bt_nodes): Implement simple condition and action nodes"`)
+    - **Context:** Wrap the planner logic in a new BT node so it can be called from the Behavior Tree.
+    - **Sub-Task 3.2.1:** Create a new C++ class `GenerateCoveragePathNode` that inherits from `BT::SyncActionNode`.
+    - **Sub-Task 3.2.2:** The node should take the mowing area polygon and all parameters from input ports on the blackboard.
+    - **Sub-Task 3.2.3:** The node's `tick()` method should call the Boustrophedon planner function.
+    - **Sub-Task 3.2.4:** It should write the resulting list of waypoints to an output port on the blackboard.
+    - **Sub-Task 3.2.5:** Register this new node with the `BT::BehaviorTreeFactory`.
+    - **Sub-Task 3.2.6:** Commit the new BT node. (`git commit -m "feat(mission): Implement GenerateCoveragePath BT node"`)
 
-- [ ] **Task 3.3:** **Implement Nav2 Interfacing Action Nodes**
+### **Module 4: Executing the Full Mowing Mission**
+
+This module assembles the components into a complete, end-to-end mowing sequence.
+
+- [ ] **Task 4.1:** **Create "FollowWaypoints" BT Action Node**
     - **Dependencies:** 3.2
-    - **Context:** Create the complex BT nodes that interface with Nav2's action servers.
-    - **Sub-Task 3.3.1:** Create nodes for `NavigateToPose` and `FollowWaypoints`.
-    - **Sub-Task 3.3.2:** Implement these nodes by inheriting from the `nav2_behavior_tree::BtActionNode` base class, which simplifies interfacing with ROS 2 Action servers.
-    - **Sub-Task 3.3.3:** Export and register these nodes as plugins.
-    - **Sub-Task 3.3.4:** Commit the Nav2 nodes. (`git commit -m "feat(bt_nodes): Implement Nav2 interfacing nodes"`)
+    - **Context:** Create the BT node that will execute the path generated by the planner.
+    - **Reference:** [Nav2 Documentation on FollowWaypoints](https://navigation.ros.org/tutorials/docs/navigation2_waypoints.html)
+    - **Sub-Task 4.1.1:** Create a new C++ class `FollowWaypointsNode` that inherits from `BT::RosActionNode<nav2_msgs::action::FollowWaypoints>`.
+    - **Sub-Task 4.1.2:** The node will take the list of waypoints from an input port on the blackboard.
+    - **Sub-Task 4.1.3:** Register this new node with the `BT::BehaviorTreeFactory`.
+    - **Sub-Task 4.1.4:** Commit the new BT node. (`git commit -m "feat(mission): Implement FollowWaypoints BT action node"`)
 
-- [ ] **MANDATORY TEST 3.B: Verify Custom Node Functionality**
-    - **Context:** Test each new node in isolation using simple test trees. **This test cannot be skipped.**
-    - **Procedure:**
-        1.  Create temporary, simple BT XML files for testing each node (e.g., `test_nav.xml` that just calls `NavigateToPose`).
-        2.  Launch the system and send a navigation goal via the test tree.
-        3.  Use the battery simulator to trigger the `IsBatteryLow` condition and verify the BT logic branches correctly.
-    - **Expected Outcome:** The `NavigateToPose` node successfully commands the robot to move. The condition nodes correctly return `SUCCESS`/`FAILURE` based on simulated sensor data.
-
-### **Module 4: Coverage Path Planner**
-
-This module implements the core logic for generating the mowing pattern.
-
-- [ ] **Task 4.1:** **Implement the `GenerateCoveragePath` BT Node**
-    - **Dependencies:** 3.3
-    - **Context:** Create the C++ BT node that contains the Boustrophedon path generation algorithm.
-    - **Sub-Task 4.1.1:** Create the `generate_coverage_path.hpp` and `.cpp` files.
-    - **Sub-Task 4.1.2:** The node must read the mowing area polygon and all mowing parameters from the BT's input blackboard.
-    - **Sub-Task 4.1.3:** Implement the logic to generate the perimeter paths based on the `num_perimeters` parameter.
-    - **Sub-Task 4.1.4:** Implement the Boustrophedon decomposition algorithm to generate the back-and-forth lanes for the remaining area.
-    - **Sub-Task 4.1.5:** Combine all paths into a single, ordered list of `geometry_msgs/PoseStamped` waypoints.
-    - **Sub-Task 4.1.6:** Write the final waypoint list to the BT's output blackboard.
-    - **Sub-Task 4.1.7:** Export and register this node as a plugin.
-    - **Sub-Task 4.1.8:** Commit the planner node. (`git commit -m "feat(bt_nodes): Implement GenerateCoveragePath node"`)
-
-- [ ] **MANDATORY TEST 4.A: Verify Path Generation**
-    - **Context:** Ensure the planner can generate a valid and correct path before attempting to execute it. **This test cannot be skipped.**
-    - **Procedure:**
-        1.  Create a test BT XML that runs only the `GenerateCoveragePath` node with hardcoded input parameters.
-        2.  Launch the system and tick the test tree.
-        3.  The node should log the generated waypoints or allow inspection via debug topics.
-        4.  Visualize the generated waypoints in RViz to confirm the pattern is correct.
-    - **Expected Outcome:** For a given input polygon, the node generates a valid, non-empty list of waypoints that correctly represents the desired perimeter and Boustrophedon pattern.
-
-### **Module 5: Full Mission Integration**
-
-This module assembles all the created components into the final, reactive mission logic.
-
-- [ ] **Task 5.1:** **Assemble the Full Behavior Tree**
+- [ ] **Task 4.2:** **Assemble the Mowing Sequence in BT XML**
     - **Dependencies:** 4.1
-    - **Context:** Update `mower_main.xml` to implement the complete, hierarchical, and reactive mission logic described in the PRD.
-    - **Sub-Task 5.1.1:** Use a high-level `ReactiveFallback` or `ReactiveSequence` to constantly check for events like "Pause," "Low Battery," or "Bad GPS."
-    - **Sub-Task 5.1.2:** Implement the main mowing sequence (`NavigateToPose` -> `GenerateCoveragePath` -> `FollowWaypoints` -> `NavigateToPose`) as a subtree that can be interrupted by the reactive layer.
-    - **Sub-Task 5.1.3:** Implement the logic for handling Pause/Resume and Stop commands using blackboard variables.
-    - **Sub-Task 5.1.4:** Implement the navigation failure recovery logic (e.g., using a `Retry` decorator node).
+    - **Context:** Modify the main Behavior Tree XML to define the complete, sequential mowing logic.
+    - **Sub-Task 4.2.1:** In `main.xml`, create a `<Sequence>` node for the main mowing task.
+    - **Sub-Task 4.2.2:** The sequence should contain the following nodes in order:
+        1.  `NavigateToPose` (to get to the start of the mow area).
+        2.  `GenerateCoveragePath`.
+        3.  `FollowWaypoints`.
+        4.  `NavigateToPose` (to return to the dock).
+    - **Sub-Task 4.2.3:** In the `mission_control_node`, update the `StartMowing` action server to take the goal parameters and write them to the blackboard for the BT to use.
+    - **Sub-Task 4.2.4:** Commit the updated BT XML. (`git commit -m "feat(mission): Assemble full mowing sequence in BT XML"`)
 
-- [ ] **Task 5.2:** **Implement the `StartMowing` Action Server**
+- [ ] **MANDATORY TEST 4.A: Verify Full Mission Execution**
+    - **Context:** This test validates that the robot can perform a complete, end-to-end mowing job, without any reactivity yet. **This test cannot be skipped.**
+    - **Procedure:**
+        1.  Launch the full system.
+        2.  Use `ros2 action send_goal` to send a `StartMowing` goal with a defined mow area polygon and simple parameters (e.g., 0 perimeters, 0-degree angle).
+        3.  Observe the robot in RViz.
+    - **Expected Outcome:** The robot navigates to the start of the area, generates a visible Boustrophedon path, follows the waypoints to cover the area, and returns to its starting point.
+
+### **Module 5: Adding Reactivity**
+
+This module adds the final layer of intelligence, allowing the mission to be interrupted by external events.
+
+- [ ] **Task 5.1:** **Implement Condition Nodes**
+    - **Dependencies:** 4.2
+    - **Context:** Create the BT nodes that will check for critical events.
+    - **Sub-Task 5.1.1:** Create a C++ class `IsBatteryLowNode` that subscribes to `/battery_state` and returns `SUCCESS` if the battery is low, `FAILURE` otherwise.
+    - **Sub-Task 5.1.2:** Create a C++ class `IsGpsGoodNode` that subscribes to `/gps/fix` and returns `SUCCESS` if the fix quality is acceptable, `FAILURE` otherwise.
+    - **Sub-Task 5.1.3:** Create a C++ class `IsJobPausedNode` that checks a variable on the blackboard and returns `SUCCESS` if the job is paused.
+    - **Sub-Task 5.1.4:** Register all new condition nodes with the `BT::BehaviorTreeFactory`.
+    - **Sub-Task 5.1.5:** Commit the condition nodes. (`git commit -m "feat(mission): Implement BT condition nodes for reactivity"`)
+
+- [ ] **Task 5.2:** **Implement Pause/Resume/Stop Logic**
     - **Dependencies:** 5.1
-    - **Context:** Implement the ROS 2 Action server in the `mission_control_node` that acts as the entry point for all jobs.
-    - **Sub-Task 5.2.1:** In `mission_control_node.cpp`, create an action server for `StartMowing`.
-    - **Sub-Task 5.2.2:** The `handle_goal` callback should accept or reject a new job.
-    - **Sub-Task 5.2.3:** The `handle_accepted` callback should take the goal parameters, write them to the BT blackboard, and begin ticking the main tree.
-    - **Sub-Task 5.2.4:** While the tree is running, the node must periodically read status from the blackboard and publish it as action feedback.
-    - **Sub-Task 5.2.5:** When the BT finishes (returns `SUCCESS` or `FAILURE`), the action server must report the final result.
-    - **Sub-Task 5.2.6:** Commit the fully integrated mission logic. (`git commit -m "feat(mission_control): Integrate full BT logic and action server"`)
+    - **Context:** Create the ROS 2 interface for controlling the mission externally.
+    - **Sub-Task 5.2.1:** In the `mission_control_node`, create services (e.g., `/mower/pause_mission`, `/mower/resume_mission`).
+    - **Sub-Task 5.2.2:** The service callbacks should simply set a `is_paused` variable on the BT blackboard.
+    - **Sub-Task 5.2.3:** The `StartMowing` action server's `cancel_callback` should handle the "Stop" command by halting the tree.
+
+- [ ] **Task 5.3:** **Update BT XML with Reactive Logic**
+    - **Dependencies:** 5.2
+    - **Context:** Re-structure the main BT to use reactive nodes, making it interruptible.
+    - **Sub-Task 5.3.1:** In `main.xml`, wrap the main mowing `<Sequence>` in a `ReactiveFallback`.
+    - **Sub-Task 5.3.2:** This fallback's children should be, in order:
+        1.  A sequence to handle a low battery event (e.g., log message, return to dock).
+        2.  A sequence to handle a pause command.
+        3.  The main mowing `<Sequence>` itself.
+    - **Sub-Task 5.3.3:** This structure ensures that if the battery is low, that behavior is executed. If not, it checks if the job is paused. If not, it executes the mowing task.
+    - **Sub-Task 5.3.4:** Commit the final reactive BT. (`git commit -m "refactor(mission): Restructure BT XML for reactive logic"`)
 
 ### **Module 6: Final Validation**
 
 This module performs the final acceptance test as defined in the PRD.
 
-- [ ] **Task 6.1:** **Perform Multi-Part Acceptance Test**
-    - **Dependencies:** 5.2
-    - **Context:** This is the final end-to-end test for Phase 4, validating the entire mission control system.
-    - **Sub-Task 6.1.1:** **Execute Test A (Full Mission):** Use `ros2 action send_goal` to start a complete mowing job.
-    - **Sub-Task 6.1.2:** **Execute Test B (Pause/Resume):** During the mission, use a separate command-line call to set a "paused" flag on the BT blackboard and then clear it.
-    - **Sub-Task 6.1.3:** **Execute Test C (Low Battery Abort):** During the mission, use the battery simulator's service to trigger a low-battery state.
-    - **Sub-tASK 6.1.4:** Document the results of all three tests with screenshots and terminal logs.
+- [ ] **Task 6.1:** **Perform Full Acceptance Test**
+    - **Dependencies:** 5.3
+    - **Context:** This is the final end-to-end test for Phase 4, validating all requirements.
+    - **Sub-Task 6.1.1:** Execute **Test A (Full Mission)** from the PRD.
+    - **Sub-Task 6.1.2:** Execute **Test B (Pause and Resume)** from the PRD by calling the new pause/resume services during the mission.
+    - **Sub-Task 6.1.3:** Execute **Test C (Low Battery Abort)** from the PRD by using the battery simulator's service to trigger a low battery state.
+    - **Sub-Task 6.1.4:** Document the results of all three tests with screenshots or videos.
 
 - [ ] **Task 6.2:** **Finalize and Merge**
     - **Dependencies:** 6.1
     - **Context:** Clean up the feature branch and merge it into the main branch, completing the phase.
-    - **Sub-Task 6.2.1:** Review all code for clarity and comments.
-    - **Sub-Task 6.2.2:** Update the `README.md` with instructions on how to start a mowing job and interact with the mission controller.
+    - **Sub-Task 6.2.1:** Review all new code for clarity, comments, and documentation.
+    - **Sub-Task 6.2.2:** Update the `README.md` with instructions on how to start and interact with a mowing mission.
     - **Sub-Task 6.2.3:** Create a Pull Request on GitHub from `feature/phase-4-mission-control` to `main`, including validation artifacts.
     - **Sub-Task 6.2.4:** After review, merge the pull request. Phase 4 is now complete.
